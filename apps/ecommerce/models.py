@@ -321,7 +321,7 @@ class DiscountConditionProductCollection(BaseModel):
 
 class ProductTag(BaseModel):
     pass
-class DiscountConditionProductTag(models.Model):
+class DiscountConditionProductTag(BaseModel):
     product_tag_id = models.CharField(primary_key=True, max_length=255)
     condition_id = models.CharField(primary_key=True, max_length=255)
     product_tag = models.ForeignKey(ProductTag, on_delete=models.CASCADE)
@@ -331,7 +331,7 @@ class DiscountConditionProductTag(models.Model):
 
 class ProductType(BaseModel):
     pass
-class DiscountConditionProductType(models.Model):
+class DiscountConditionProductType(BaseModel):
     product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name='discount_condition_product_types')
     discount_condition = models.ForeignKey(DiscountCondition, on_delete=models.CASCADE, related_name='discount_condition_product_types')
     metadata = models.JSONField(null=True)
@@ -342,7 +342,7 @@ class DiscountConditionProductType(models.Model):
 
 class Product(BaseModel):
     pass
-class DiscountConditionProduct(models.Model):
+class DiscountConditionProduct(BaseModel):
     product_id = models.CharField(max_length=255)
     condition_id = models.CharField(max_length=255)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="discount_condition_products")
@@ -355,7 +355,7 @@ class DiscountConditionProduct(models.Model):
 
 class DiscountRule(BaseModel):
     pass
-class DiscountCondition(models.Model):
+class DiscountCondition(BaseModel):
     Discount_Condition_Type = (
         ("products", "PRODUCTS"),
         ("product_types", "PRODUCT_TYPES"),
@@ -404,19 +404,173 @@ class DiscountCondition(models.Model):
     metadata = models.JSONField(null=True)
 
 
-class DiscountRuleType(models.TextChoices):
-    FIXED = 'fixed'
-    PERCENTAGE = 'percentage'
-    FREE_SHIPPING = 'free_shipping'
+class DiscountRule(BaseModel):
+    Discount_Rule_Type = (
+        ("fixed", "FIXED"),
+        ("percentage", "PERCENTAGE"),
+        ("free_shipping", "FREE_SHIPPING"),
+    )
 
-class AllocationType(models.TextChoices):
-    TOTAL = 'total'
-    ITEM = 'item'
-
-class DiscountRule(models.Model):
+    Allocation_Type = (
+        ("total", "TOTAL"),
+        ("item", "ITEM"),
+    )
     description = models.CharField(max_length=255, null=True)
-    type = models.CharField(choices=DiscountRuleType.choices, max_length=20)
+    type = models.CharField(choices=Discount_Rule_Type, max_length=20)
     value = models.FloatField()
-    allocation = models.CharField(choices=AllocationType.choices, max_length=20, null=True)
+    allocation = models.CharField(choices=Allocation_Type, max_length=20, null=True)
     conditions = models.ManyToManyField('DiscountCondition', related_name='discount_rule')
     metadata = models.JSONField(null=True)
+
+
+class Discount(BaseModel):
+    code = models.CharField(max_length=255, unique=True)
+    is_dynamic = models.BooleanField()
+    rule = models.ForeignKey(DiscountRule, on_delete=models.CASCADE, null=True)
+    is_disabled = models.BooleanField()
+    parent_discount = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    starts_at = models.DateTimeField(auto_now_add=True)
+    ends_at = models.DateTimeField(null=True, blank=True)
+    valid_duration = models.CharField(max_length=255, null=True, blank=True)
+    regions = models.ManyToManyField(Region)
+    usage_limit = models.IntegerField(null=True, blank=True)
+    usage_count = models.IntegerField(default=0)
+    metadata = models.JSONField(null=True, blank=True)
+
+
+class DraftOrder(BaseModel):
+    Draft_Order_Status = (
+        ("open", "OPEN"),
+        ("completed", "COMPLETED"),
+    )
+    status = models.CharField(max_length=10,choices=Draft_Order_Status, default="OPEN")
+    display_id = models.AutoField(primary_key=True)
+    cart = models.OneToOneField(Cart, on_delete=models.CASCADE, null=True, related_name='draft_order')
+    order = models.OneToOneField(Order, on_delete=models.SET_NULL, null=True)
+    canceled_at = models.DateTimeField(null=True)
+    completed_at = models.DateTimeField(null=True)
+    no_notification_order = models.BooleanField(null=True)
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(max_length=255, null=True)
+
+
+    
+class Fulfillment(BaseModel):
+    pass
+
+class FulfillmentItem(BaseModel):
+    fulfillment = models.ForeignKey(Fulfillment, on_delete=models.CASCADE)
+    item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+
+
+
+class FulfillmentProvider(BaseModel):
+    is_installed = models.BooleanField(default=True)
+
+
+class Swap(BaseModel):
+    pass
+
+class TrackingLink(BaseModel):
+    pass
+
+class Fulfillment(BaseModel):
+    claim_order = models.ForeignKey(ClaimOrder, on_delete=models.CASCADE, null=True, related_name='fulfillments')
+    swap = models.ForeignKey(Swap, on_delete=models.CASCADE, null=True, related_name='fulfillments')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='fulfillments')
+    no_notification = models.BooleanField(null=True)
+    provider = models.ForeignKey(FulfillmentProvider, on_delete=models.CASCADE)
+    location_id = models.CharField(max_length=255, null=True)
+    items = models.OneToManyField(FulfillmentItem, on_delete=models.CASCADE, related_name='fulfillment')
+    tracking_links = models.OneToManyField(TrackingLink, on_delete=models.CASCADE, related_name='fulfillment')
+    tracking_numbers = models.JSONField(default=[])
+    data = models.JSONField()
+    shipped_at = models.DateTimeField(null=True)
+    canceled_at = models.DateTimeField(null=True)
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(max_length=255, null=True)
+
+
+
+class GiftCard(BaseModel):
+    pass
+
+
+from django.db import models
+
+class GiftCard(BaseModel):
+    code = models.CharField(max_length=255, unique=True)
+    value = models.IntegerField()
+    balance = models.IntegerField()
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
+    is_disabled = models.BooleanField(default=False)
+    ends_at = models.DateTimeField(null=True, blank=True)
+    tax_rate = models.FloatField(null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
+
+
+class GiftCardTransaction(BaseModel):
+    gift_card = models.ForeignKey(GiftCard, on_delete=models.CASCADE, related_name='gift_card_transactions')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order')
+    amount = models.IntegerField()
+    is_taxable = models.BooleanField(null=True, blank=True)
+    tax_rate = models.FloatField(null=True, blank=True)
+    
+    class Meta:
+        unique_together = ("gift_card_id", "order_id")
+
+
+class IdempotencyKey(BaseModel):
+    idempotency_key = models.CharField(unique=True, max_length=255)
+    locked_at = models.DateTimeField(null=True, blank=True)
+    request_method = models.CharField(max_length=255, null=True, blank=True)
+    request_params = models.JSONField(null=True, blank=True)
+    request_path = models.CharField(max_length=255, null=True, blank=True)
+    response_code = models.IntegerField(null=True, blank=True)
+    response_body = models.JSONField(null=True, blank=True)
+    recovery_point = models.CharField(default="started", max_length=255)
+
+
+class Image(BaseModel):
+    url = models.CharField(max_length=255,null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+
+class Invite(models.Model):
+    User_Roles = (
+        ("admin", "ADMIN"),
+        ("member", "MEMBER"),
+        ("developer", "DEVELOPER"),
+    )
+    user_email = models.EmailField(unique=True)
+    role = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in UserRoles], default=UserRoles.MEMBER)
+    accepted = models.BooleanField(default=False)
+    token = models.CharField(max_length=255)
+    expires_at = models.DateTimeField()
+    metadata = models.JSONField(null=True)
+    deleted_at = models.DateTimeField(null=True)
+
+
+class LineItemAdjustment(BaseModel):
+    item = models.ForeignKey(LineItem, on_delete=models.CASCADE, related_name="line_item_adjustments")
+    description = models.CharField(max_length=255, null=True, blank=True)
+    discount = models.ManyToManyField(Discount)
+    amount = models.IntegerField(null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
+
+
+
+from django.db import models
+from django.db.models import CASCADE
+
+
+class LineItemAdjustment(models.Model):
+    item = models.ForeignKey(LineItem, on_delete=CASCADE, related_name="line_item_adjustments")
+    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True)
+    description = models.CharField(max_length=255)
+    amount = models.IntegerField()
+    metadata = models.JSONField(null=True, blank=True)
+
