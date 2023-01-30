@@ -4,8 +4,90 @@ from apps.core.models import BaseModel
 from django.core.validators import EmailValidator
 
 
-class Order(BaseModel):
-    pass
+class Order(models.Model):
+    Order_Status = (
+        ("pending", "PENDING"),
+        ("completed", "COMPLETED"),
+        ("archived", "ARCHIVED"),
+        ("canceled", "CANCELED"),
+        ("requires_action", "REQUIRES_ACTION"),
+    )
+
+    Fulfillment_Status = (
+        ("not_fulfilled", "NOT_FULFILLED"),
+        ("partially_fulfilled", "PARTIALLY_FULFILLED"),
+        ("fulfilled", "FULFILLED"),
+        ("partially_shipped", "PARTIALLY_SHIPPED"),
+        ("shipped", "SHIPPED"),
+        ("partially_returned", "PARTIALLY_RETURNED"),
+        ("returned", "RETURNED"),
+        ("canceled", "CANCELED"),
+        ("requires_action", "REQUIRES_ACTION"),
+    )
+
+    Payment_Status = (
+        ("not_paid", "NOT PAID"),
+        ("awaiting", "AWAITING"),
+        ("captured", "CAPTURED"),
+        ("partially_refunded", "PARTIALLY REFUNDED"),
+        ("refunded", "REFUNDED"),
+        ("canceled", "CANCELED"),
+        ("requires_action", "REQUIRES ACTION"),
+
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Order_Status,
+        default= "Not PAID",
+    )
+    fulfillment_status = models.CharField(
+        max_length=20,
+        choices=Fulfillment_Status,
+        default= "NOT_FULFILLED"
+    )
+    payment_status = models.CharField(
+        max_length=20,
+        choices=Payment_Status,
+        default="NOT PAID"
+    )
+    # display_id = models.AutoField(primary_key=True)
+    cart = models.OneToOneField("Cart", on_delete=models.CASCADE, null=True)
+    customer = models.ForeignKey("Customer", on_delete=models.CASCADE)
+    email = models.EmailField()
+    billing_address = models.ForeignKey("Address", on_delete=models.CASCADE, related_name="orders", null=True)
+    shipping_address = models.ForeignKey("Address", on_delete=models.CASCADE, related_name="orders", null=True)
+    region = models.foreignKey('Region', on_delete = models.CASCADE)
+    order_number = models.CharField(max_length=255, unique=True)
+    order_date = models.DateTimeField(auto_now_add=True)
+    subtotal_price = models.DecimalField(max_digits=20, decimal_places=2)
+    total_price = models.DecimalField(max_digits=20, decimal_places=2)
+
+
+    # currency_code = models.CharField(max_length=10)
+    currency = models.ForeignKey('Currency', on_delete=models.CASCADE)
+    tax_rate = models.FloatField(null=True)
+    discounts = models.ManyToManyField('Discount', through='OrderDiscount')
+    gift_cards = models.ManyToManyField('GiftCard', through='OrderGiftCard')
+    draft_order = models.OneToOneField('DraftOrder', on_delete=models.CASCADE, related_name="orders", null=True)
+    canceled_at = models.DateField(null=True)
+    metadata = models.JSONField(null=True)
+    no_notification = models.BooleanField(null=True)
+    idempotency_key = models.CharField(max_length=255, null=True)
+    external_id = models.CharField(max_length=255, null=True, blank=True)
+    sales_channel = models.ForeignKey('SalesChannel', on_delete=models.CASCADE, related_name="orders", null=True, blank=True)
+
+    # Total fields
+    shipping_total = models.IntegerField()
+    discount_total = models.FloatField()
+    tax_total = models.FloatField(null=True)
+    refunded_total = models.FloatField()
+    total = models.FloatField()
+    sub_total = models.FloatField()
+    paid_total = models.FloatField()
+    refundable_amount = models.FloatField()
+    gift_card_total = models.FloatField()
+    gift_card_tax_total = models.FloatField()
+
 
 class Customer(BaseModel):
     email = models.EmailField(validators=[EmailValidator()], unique=True)
@@ -97,8 +179,40 @@ class Discount(BaseModel):
 class GiftCard(BaseModel):
     pass
 
-class LineItem(BaseModel):
-    cart = models.ForeignKey('Cart', on_delete=models.CASCADE)
+
+class LineItem(models.Model):
+    cart = models.ForeignKey('Cart', on_delete=models.SET_NULL, null=True, related_name='line_items')
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name='line_items')
+    swap = models.ForeignKey('Swap', on_delete=models.SET_NULL, null=True, related_name='line_items')
+    claim_order = models.ForeignKey('ClaimOrder', on_delete=models.SET_NULL, null=True, related_name='line_items')
+    original_item = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='line_item')
+    order_edit = models.ForeignKey('OrderEdit', on_delete=models.SET_NULL, null=True, related_name='line_items')
+    variant = models.ForeignKey('ProductVariant', on_delete=models.SET_NULL, null=True, related_name="line_items")
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True)
+    thumbnail = models.TextField(null=True)
+    is_return = models.BooleanField(default=False)
+    is_giftcard = models.BooleanField(default=False)
+    should_merge = models.BooleanField(default=True)
+    allow_discounts = models.BooleanField(default=True)
+    has_shipping = models.BooleanField(null=True)
+    unit_price = models.IntegerField()
+    quantity = models.IntegerField()
+    fulfilled_quantity = models.PositiveIntegerField(null=True)
+    returned_quantity = models.PositiveIntegerField(null=True)
+    shipped_quantity = models.PositiveIntegerField(null=True)
+    metadata = models.JSONField(null=True)
+    includes_tax = models.BooleanField(default=False)
+    refundable = models.PositiveIntegerField(null=True)
+    subtotal = models.PositiveIntegerField(null=True)
+    tax_total = models.PositiveIntegerField(null=True)
+    total = models.PositiveIntegerField(null=True)
+    original_total = models.PositiveIntegerField(null=True)
+    original_tax_total = models.PositiveIntegerField(null=True)
+    discount_total = models.PositiveIntegerField(null=True)
+    gift_cart_total = models.PositiveIntegerField(null=True)
+
+
 
 class Payment(BaseModel):
     pass
@@ -138,9 +252,6 @@ class Cart(BaseModel):
     context = models.JSONField(blank=True, null=True)
     metadata = models.JSONField() # [FIXME] do we even need this ? 
     sales_channel = models.ForeignKey(SalesChannel, related_name='sales_channel', on_delete=models.SET_NULL, null=True)
-
-
-
 
 
 
@@ -574,3 +685,156 @@ class LineItemAdjustment(models.Model):
     amount = models.IntegerField()
     metadata = models.JSONField(null=True, blank=True)
 
+
+class TaxLine(models.Model):
+    pass
+
+class LineItemTaxLine(models.Model):
+    item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
+    code = models.CharField(max_length=255, unique=True)
+
+
+class MoneyAmount(models.Model):
+    # do we need this ? 
+    # currency_code = models.CharField(max_length=255, null=True, blank=True)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='money_amounts')
+    amount = models.IntegerField()
+    min_quantity = models.IntegerField(null=True)
+    max_quantity = models.IntegerField(null=True)
+    price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE, null=True, related_name='money_amounts')
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name='money_amounts')
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True, related_name='money_amounts')
+
+
+class Note(models.Model):
+    value = models.TextField()
+    resource_type = models.CharField(max_length=255, null=True, blank=True)
+    resource_id = models.CharField(max_length=255, null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    metadata = models.JSONField(null=True)
+
+
+
+class NotificationProvider(models.Model):
+    is_installed = models.BooleanField(default=True)
+
+
+
+class Notification(models.Model):
+    event_name = models.CharField(max_length=255, null=True)
+    resource_type = models.CharField(max_length=255)
+    resource_id = models.CharField(max_length=255)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='notifications')
+    to = models.CharField(max_length=255)
+    data = models.JSONField()
+    parent_notification = models.ForeignKey('self', on_delete=models.CASCADE, related_name='notifications', null=True)
+    provider = models.ForeignKey(NotificationProvider, on_delete=models.CASCADE, related_name='notifications')
+    
+
+class Oauth(models.Model):
+    display_name = models.CharField(max_length=255)
+    application_name = models.CharField(max_length=255, unique=True)
+    install_url = models.CharField(max_length=255, null=True)
+    uninstall_url = models.CharField(max_length=255, null=True)
+    data = models.JSONField(null=True)
+    
+
+class OrderEdit(models.Model):
+    Order_Edit_Status = (
+        ("confirmed", "CONFIRMED"),
+        ("declined", "DECLINED"),
+        ("requested", "REQUESTED"),
+        ("created", "CREATED"),
+        ("canceled", "CANCELED"),
+    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="edits")
+    changes = models.ManyToManyField("OrderItemChange", related_name="order_edit")
+    internal_note = models.TextField(null=True)
+    created_by = models.CharField(max_length=255)
+    requested_by = models.CharField(max_length=255, null=True)
+    requested_at = models.DateTimeField(null=True)
+    confirmed_by = models.CharField(max_length=255, null=True)
+    confirmed_at = models.DateTimeField(null=True)
+    declined_by = models.CharField(max_length=255, null=True)
+    declined_reason = models.TextField(null=True)
+    declined_at = models.DateTimeField(null=True)
+    canceled_by = models.CharField(max_length=255, null=True)
+    canceled_at = models.DateTimeField(null=True)
+    items = models.ManyToManyField(LineItem, related_name="order_edits")
+    payment_collection = models.OneToOneField("PaymentCollection", on_delete=models.SET_NULL, null=True)
+    shipping_total = models.IntegerField()
+    discount_total = models.FloatField()
+    tax_total = models.FloatField(null=True)
+    total = models.FloatField()
+    subtotal = models.FloatField()
+    gift_card_total = models.FloatField()
+    gift_card_tax_total = models.FloatField()
+    difference_due = models.FloatField()
+    status = models.CharField(choices=Order_Edit_Status, max_length=20, default="CREATED")
+
+
+class OrderItemChange(models.Model):
+    Order_Edit_Item_Change_Type = (
+        ("item_add", "ITEM_ADD"),
+        ("item_remove", "ITEM_REMOVE"),
+        ("item_update", "ITEM_UPDATE"),
+    )
+    type = models.CharField(
+        max_length=20,
+        choices= Order_Edit_Item_Change_Type
+    )
+    order_edit = models.ForeignKey(
+        OrderEdit,
+        on_delete=models.CASCADE,
+        related_name='order_item_changes'
+    )
+    original_line_item = models.ForeignKey(
+        LineItem,
+        on_delete=models.SET_NULL,
+        related_name='order_item_changes',
+        null=True,
+        blank=True,
+    )
+    line_item = models.OneToOneField(
+        LineItem,
+        on_delete=models.SET_NULL,
+        related_name='order_item_changes',
+        null=True,
+        blank=True,
+    )
+
+
+
+class PaymentCollectionStatus(models.TextChoices):
+    NOT_PAID = 'not_paid'
+    AWAITING = 'awaiting'
+    AUTHORIZED = 'authorized'
+    PARTIALLY_AUTHORIZED = 'partially_authorized'
+    CANCELED = 'canceled'
+
+class PaymentCollectionType(models.TextChoices):
+    ORDER_EDIT = 'order_edit'
+
+class PaymentCollection(models.Model):
+    Payment_Collection_Status = (
+        ("not_paid", "NOT_PAID"),
+        ("awaiting", "AWAITING"),
+        ("authorized", "AUTHORIZED"),
+        ("partially_authorized", "PARTIALLY_AUTHORIZED"),
+        ("canceled", "CANCELED"),
+    )
+
+    Payment_Collection_Type  = (
+        ("order_edit", "ORDER_EDIT"),
+    )
+    type = models.CharField(choices=Payment_Collection_Status, max_length=20)
+    status = models.CharField(choices=PaymentCollectionStatus.choices, max_length=20)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    amount = models.IntegerField()
+    authorized_amount = models.IntegerField(null=True, blank=True)
+    region = models.ForeignKey('Region', on_delete=models.CASCADE)
+    currency = models.ForeignKey('Currency', on_delete=models.CASCADE)
+    payment_sessions = models.ManyToManyField('PaymentSession')
+    payments = models.ManyToManyField('Payment')
+    metadata = models.JSONField()
+    created_by = models.CharField(max_length=255)
