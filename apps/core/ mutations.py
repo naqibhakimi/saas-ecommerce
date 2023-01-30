@@ -1,3 +1,4 @@
+from apps.core.types import ExpectedErrorType
 import graphene
 
 class Output:

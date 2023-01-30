@@ -230,12 +230,12 @@ class LineItem(models.Model):
     discount_total = models.PositiveIntegerField(null=True)
     gift_cart_total = models.PositiveIntegerField(null=True)
 
-
 class Payment(BaseModel):
     pass
 
 class PaymentSession(BaseModel):
     cart = models.ForeignKey('Cart', on_delete=models.CASCADE)
+
 
 
 class ShippingMethod(models.Model):
@@ -305,7 +305,6 @@ class ClaimItem(BaseModel):
         ('production_failure', 'Production Failure'),
         ('other', 'Other'),
     )
-
     images = models.ManyToManyField('ClaimImage')
     claim_order = models.ForeignKey("ClaimOrder", related_name="claim_items", on_delete=models.SET_NULL, null=True, blank=True)
     item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
@@ -571,6 +570,7 @@ class Product(models.Model):
     sales_channels = models.ManyToManyField(SalesChannel, related_name='products')
     # deleted_at = models.DateTimeField(null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
+
 
 
 class DiscountConditionProduct(BaseModel):
@@ -1052,6 +1052,7 @@ class Refund(models.Model):
     amount = models.IntegerField()
     note = models.TextField(null=True)
     reason = models.CharField(choices=Refund_Reason, max_length=16)
+
     metadata = models.JSONField(null=True)
     idempotency_key = models.CharField(null=True)
 
