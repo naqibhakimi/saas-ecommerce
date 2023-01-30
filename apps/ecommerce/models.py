@@ -221,11 +221,30 @@ class PaymentSession(BaseModel):
     cart = models.ForeignKey('Cart', on_delete=models.CASCADE)
 
 
-class ShippingMethod(BaseModel):
-    cart = models.ForeignKey('Cart', on_delete=models.CASCADE)
 
-class SalesChannel(BaseModel):
-    pass
+class ShippingMethod(models.Model):
+    shipping_option = models.ForeignKey("ShippingOption", on_delete=models.CASCADE, related_name="shipping_methods")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name="shipping_methods")
+    claim_order = models.ForeignKey("ClaimOrder", on_delete=models.CASCADE, null=True, related_name="shipping_methods")
+    cart = models.ForeignKey("Cart", on_delete=models.CASCADE, null=True, related_name="shipping_methods")
+    swap = models.ForeignKey("Swap", on_delete=models.CASCADE, null=True, related_name="shipping_methods")
+    return_order = models.OneToOneField("Return", on_delete=models.CASCADE, related_name="shipping_method", null=True)
+    # tax_lines = models.ManyToManyField("ShippingMethodTaxLine", related_name="shipping_methods", through="ShippingMethodTaxLine")
+    price = models.PositiveIntegerField()
+    data = models.JSONField()
+    includes_tax = models.BooleanField(default=False)
+    subtotal = models.PositiveIntegerField(null=True)
+    total = models.PositiveIntegerField(null=True)
+    tax_total = models.PositiveIntegerField(null=True)
+
+
+
+class SalesChannel(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    is_disabled = models.BooleanField(default=False)
+
+
 class Cart(BaseModel):
     CART_TYPE_CHOICES = (
         ("default", "Default"),
@@ -290,11 +309,35 @@ class ClaimImage(BaseModel):
 
 
 
-class Return(BaseModel):
-    pass
+class Return(models.Model):
+    Return_Status = (
+        ("requested", "REQUESTED"),
+        ("received", "RECEIVED"),
+        ("requires_action", "REQUIRES_ACTION"),
+        ("canceled", "CANCELED"),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Return_Status,
+        default="REQUESTED",
+    )
+    # items = models.ManyToManyField(ReturnItem, related_name='returns', through='ReturnItem')
+    swap = models.OneToOneField("Swap", on_delete=models.SET_NULL, related_name='returns', null=True)
+    claim_order = models.OneToOneField(ClaimOrder, on_delete=models.SET_NULL, related_name='returns', null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='returns', null=True)
+    shipping_method = models.OneToOneField(ShippingMethod, on_delete=models.CASCADE, related_name='return_order')
+    # location_id = models.CharField(max_length=100, null=True)
+    shipping_data = models.JSONField(null=True)
+    refund_amount = models.FloatField()
+    received_at = models.DateTimeField(null=True)
+    no_notification = models.BooleanField()
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(max_length=100, null=True)
+
 
 class Fulfillment(BaseModel):
     pass
+
 class ClaimOrder(BaseModel):
     Claim_Type = (
             ('refund', 'REFUND'),
@@ -383,8 +426,25 @@ class Currency(BaseModel):
     includes_tax = models.BooleanField(default=False)
 
 
-class ShippingOption(BaseModel):
-    pass
+class ShippingOption(models.Model):
+    Shipping_Option_Price_Type = (
+        ("flat_rate", "FLAT_RATE"),
+        ("calculated", "CALCULATED")
+    )
+    name = models.CharField(max_length=255)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    profile = models.ForeignKey("ShippingProfile", on_delete=models.CASCADE, related_name="shipping_options")
+    provider = models.ForeignKey("FulfillmentProvider", on_delete=models.CASCADE, related_name="shipping_options")
+    price_type = models.CharField(max_length=20, choices=Shipping_Option_Price_Type, default="FLAT_RATE")
+    amount = models.PositiveIntegerField(null=True)
+    is_return = models.BooleanField(default=False)
+    admin_only = models.BooleanField(default=False)
+    # requirements = models.ManyToManyField("ShippingOptionRequirement", through="ShippingOptionRequirement")
+    data = models.JSONField()
+    metadata = models.JSONField(null=True)
+    includes_tax = models.BooleanField(default=False)
+
+
 class CustomShippingOption(BaseModel):
     price = models.IntegerField()
     shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE)
@@ -395,8 +455,16 @@ class CustomShippingOption(BaseModel):
         unique_together = (('shipping_option', 'cart'),)
 
 
-class PriceList(BaseModel):
-    pass
+class PriceList(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    type = models.CharField(max_length=255, default="sale")
+    status = models.CharField(max_length=255, default="draft")
+    starts_at = models.DateTimeField(null=True, blank=True)
+    ends_at = models.DateTimeField(null=True, blank=True)
+    customer_groups = models.ManyToManyField('CustomerGroup', related_name='price_lists')
+    prices = models.OneToManyField('MoneyAmount', related_name='price_list', on_delete=models.CASCADE)
+    includes_tax = models.BooleanField(default=False)
 
 class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)
@@ -441,7 +509,10 @@ class DiscountConditionProductTag(BaseModel):
 
 
 class ProductType(BaseModel):
-    pass
+    value = models.CharField(max_length=255, null=True, blank=True)
+    metadata = models.JSONField(blank=True, null=True)
+
+
 class DiscountConditionProductType(BaseModel):
     product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name='discount_condition_product_types')
     discount_condition = models.ForeignKey(DiscountCondition, on_delete=models.CASCADE, related_name='discount_condition_product_types')
@@ -451,8 +522,40 @@ class DiscountConditionProductType(BaseModel):
         unique_together = (("product_type", "discount_condition"),)
 
 
-class Product(BaseModel):
-    pass
+class Product(models.Model):
+    Product_Status = (
+        ('draft', 'DRAFT'),
+        ('proposed', 'PROPOSED'),
+        ('published', 'PUBLISHED'),
+        ('rejected', 'REJECTED')
+    )
+    title = models.CharField(max_length=255)
+    subtitle = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    handle = models.TextField(null=True, blank=True, unique=True)
+    is_gift_card = models.BooleanField(default=False)
+    status = models.CharField(max_length=255, choices=Product_Status, default='draft')
+    images = models.ManyToManyField("Image", related_name='products')
+    thumbnail = models.TextField(null=True, blank=True)
+    profile = models.ForeignKey('ShippingProfile', on_delete=models.CASCADE, related_name='products')
+    weight = models.PositiveIntegerField(null=True, blank=True)
+    length = models.PositiveIntegerField(null=True, blank=True)
+    height = models.PositiveIntegerField(null=True, blank=True)
+    width = models.PositiveIntegerField(null=True, blank=True)
+    hs_code = models.TextField(null=True, blank=True)
+    origin_country = models.TextField(null=True, blank=True)
+    mid_code = models.TextField(null=True, blank=True)
+    material = models.TextField(null=True, blank=True)
+    collection = models.ForeignKey(ProductCollection, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
+    type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
+    tags = models.ManyToManyField(ProductTag, related_name='products')
+    discountable = models.BooleanField(default=True)
+    external_id = models.TextField(null=True, blank=True)
+    sales_channels = models.ManyToManyField(SalesChannel, related_name='products')
+    # deleted_at = models.DateTimeField(null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
+
+
 class DiscountConditionProduct(BaseModel):
     product_id = models.CharField(max_length=255)
     condition_id = models.CharField(max_length=255)
@@ -657,7 +760,7 @@ class Invite(models.Model):
         ("developer", "DEVELOPER"),
     )
     user_email = models.EmailField(unique=True)
-    role = models.CharField(max_length=20, choices=[(tag.name, tag.value) for tag in UserRoles], default=UserRoles.MEMBER)
+    role = models.CharField(max_length=20, choices=User_Roles)
     accepted = models.BooleanField(default=False)
     token = models.CharField(max_length=255)
     expires_at = models.DateTimeField()
@@ -698,7 +801,7 @@ class MoneyAmount(models.Model):
     # do we need this ? 
     # currency_code = models.CharField(max_length=255, null=True, blank=True)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='money_amounts')
-    amount = models.IntegerField()
+    amount = models.FloatField()
     min_quantity = models.IntegerField(null=True)
     max_quantity = models.IntegerField(null=True)
     price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE, null=True, related_name='money_amounts')
@@ -730,6 +833,7 @@ class Notification(models.Model):
     parent_notification = models.ForeignKey('self', on_delete=models.CASCADE, related_name='notifications', null=True)
     provider = models.ForeignKey(NotificationProvider, on_delete=models.CASCADE, related_name='notifications')
     
+
 
 class Oauth(models.Model):
     display_name = models.CharField(max_length=255)
@@ -828,13 +932,309 @@ class PaymentCollection(models.Model):
         ("order_edit", "ORDER_EDIT"),
     )
     type = models.CharField(choices=Payment_Collection_Status, max_length=20)
-    status = models.CharField(choices=PaymentCollectionStatus.choices, max_length=20)
+    status = models.CharField(choices=Payment_Collection_Type, max_length=20)
     description = models.CharField(max_length=255, null=True, blank=True)
-    amount = models.IntegerField()
-    authorized_amount = models.IntegerField(null=True, blank=True)
-    region = models.ForeignKey('Region', on_delete=models.CASCADE)
-    currency = models.ForeignKey('Currency', on_delete=models.CASCADE)
-    payment_sessions = models.ManyToManyField('PaymentSession')
-    payments = models.ManyToManyField('Payment')
+    amount = models.FloatField()
+    authorized_amount = models.FloatField(null=True, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    payment_sessions = models.ManyToManyField(PaymentSession)
+    payments = models.ManyToManyField(Payment)
     metadata = models.JSONField()
     created_by = models.CharField(max_length=255)
+
+
+class PaymentProvider(BaseModel):
+    is_installed = models.BooleanField(default=True)
+
+
+
+from django.db import models
+from enum import Enum
+
+class PaymentSessionStatus(Enum):
+    AUTHORIZED = "authorized"
+    PENDING = "pending"
+    REQUIRES_MORE = "requires_more"
+    ERROR = "error"
+    CANCELED = "canceled"
+
+class PaymentSession(models.Model):
+    Payment_Session_Status = (
+        ("authorized", "AUTHORIZED"),
+        ("pending", "PENDING"),
+        ("requires_more", "REQUIRES_MORE"),
+        ("error", "ERROR"),
+        ("canceled", "CANCELED"),
+    )
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='payment_sessions', null=True)
+    provider_id = models.CharField(max_length=100)
+    is_selected = models.BooleanField(null=True)
+    is_initiated = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, choices=Payment_Session_Status)
+    data = models.JSONField()
+    idempotency_key = models.CharField(max_length=100, null=True)
+    amount = models.FloatField(null=True)
+    payment_authorized_at = models.DateTimeField(null=True)
+
+
+class Payment(models.Model):
+    swap = models.OneToOneField(Swap, on_delete=models.SET_NULL, null=True)
+    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, related_name='payment', null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='payments', null=True)
+    amount = models.FloatField()
+    # currency_code = models.CharField(max_length=3)
+    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, related_name='payments', null=True)
+    amount_refunded = models.FloatField(default=0)
+    provider_id = models.CharField(max_length=255)
+    data = models.JSONField()
+    captured_at = models.DateTimeField(null=True)
+    canceled_at = models.DateTimeField(null=True)
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(max_length=255, null=True)
+
+
+from django.db import models
+
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=255)
+    handle = models.CharField(max_length=255, unique=True, null=False)
+    is_active = models.BooleanField(default=False)
+    is_internal = models.BooleanField(default=False)
+    parent_category = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+
+
+class ProductCollection(BaseModel):
+    title = models.CharField(max_length=255, null=True, blank=True)
+    handle = models.CharField(max_length=255, null=True, blank=True)
+    # products = models.ManyToManyField(Product, related_name='collections')
+    metadata = models.JSONField(null=True, blank=True)
+
+
+class ProductCollection(BaseModel):
+    title = models.CharField(max_length=255)
+    handle = models.CharField(max_length=255, unique=True, null=True)
+    products = models.ManyToManyField(Product, related_name='collections')
+    metadata = models.JSONField(null=True)
+
+
+
+class ProductOptionValue(models.Model):
+    value = models.CharField(max_length=255)
+    option = models.ForeignKey("ProductOption", on_delete=models.CASCADE, related_name='product_option_values')
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name='product_option_values')
+    metadata = models.JSONField(null=True)
+
+
+
+class ProductOption(models.Model):
+    title = models.CharField(max_length=255)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='options')
+    metadata = models.JSONField(null=True)
+
+
+class ProductTag(BaseModel):
+    value = models.CharField(max_length=255, null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
+
+
+class ProductTaxRate(models.Model):
+    rate_id = models.CharField(max_length=255, primary_key=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    tax_rate = models.ForeignKey("TaxRate", on_delete=models.CASCADE)
+    metadata = models.JSONField(null=True)
+
+
+
+class ProductTypeTaxRate(models.Model):
+    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
+    tax_rate = models.ForeignKey("TaxRate", on_delete=models.CASCADE)
+    metadata = models.JSONField(blank=True, null=True)
+
+
+class ProductVariantInventoryItem(models.Model):
+    inventory_item_id = models.TextField(unique=True)
+    variant_id = models.TextField(unique=True)
+    required_quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = (('variant_id', 'inventory_item_id'),)
+
+
+
+from django.db import models
+
+class ProductVariant(models.Model):
+    title = models.CharField(max_length=255)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
+    sku = models.CharField(max_length=255,null=True, unique=True)
+    barcode = models.CharField(max_length=255,null=True, unique=True)
+    ean = models.CharField(max_length=255,null=True, unique=True)
+    upc = models.CharField(max_length=255,null=True, unique=True)
+    variant_rank = models.PositiveIntegerField(default=0)
+    inventory_quantity = models.PositiveIntegerField()
+    allow_backorder = models.BooleanField(default=False)
+    manage_inventory = models.BooleanField(default=True)
+    hs_code = models.CharField(max_length=255,null=True)
+    origin_country = models.CharField(max_length=255,null=True)
+    mid_code = models.CharField(max_length=255, null=True)
+    material = models.CharField(max_length=255, null=True)
+    weight = models.IntegerField(null=True, blank=True)
+    length = models.IntegerField(null=True, blank=True)
+    height = models.IntegerField(null=True, blank=True)
+    width = models.IntegerField(null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
+
+    class Meta:
+        unique_together = (("sku", "barcode", "ean", "upc"),)
+
+
+class PublishableApiKeySalesChannel(models.Model):
+    sales_channel_id = models.CharField(max_length=100, primary_key=True)
+    publishable_key_id = models.CharField(max_length=100, primary_key=True)
+
+
+from django.db import models
+
+class PublishableApiKey(models.Model):
+    created_by = models.CharField(max_length=100, null=True)
+    revoked_by = models.CharField(max_length=100, null=True)
+    revoked_at = models.DateTimeField(null=True)
+    title = models.CharField(max_length=100)
+
+
+class Refund(models.Model):
+    Refund_Reason = (
+        ("discount", "DISCOUNT"), 
+        ("return", "RETURN"), 
+        ("swap", "SWAP"), 
+        ("claim", "CLAIM"), 
+        ("other", "OTHER"), 
+    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='refunds')
+    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True, related_name='refunds')
+    amount = models.IntegerField()
+    note = models.TextField(null=True)
+    reason = models.CharField(choices=Refund_Reason, max_length=16)
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(null=True)
+
+
+class Region(models.Model):
+    name = models.CharField(max_length=100)
+    # currency_code = models.CharField(max_length=100)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='regions')
+    tax_rate = models.FloatField()
+    tax_rates = models.ForeignKey('TaxRate', on_delete=models.SET_NULL, related_name='regions', null=True, blank=True)
+    tax_code = models.CharField(max_length=100, null=True)
+    gift_cards_taxable = models.BooleanField(default=True)
+    automatic_taxes = models.BooleanField(default=True)
+    countries = models.ManyToManyField(Country, related_name='regions')
+    tax_provider = models.ForeignKey('TaxProvider', on_delete=models.SET_NULL, null=True)
+    payment_providers = models.ManyToManyField(PaymentProvider, related_name='regions')
+    fulfillment_providers = models.ManyToManyField(FulfillmentProvider, related_name='regions')
+    metadata = models.JSONField(null=True)
+    includes_tax = models.BooleanField(default=False)
+
+
+
+class ReturnItem(models.Model):
+    return_order = models.ForeignKey(Return, related_name = "return_items", null=True, blank=True)
+    item = models.ForeignKey(LineItem, related_name = "return_items", null=True, blank=True)
+    quantity = models.IntegerField()
+    is_requested = models.BooleanField(default=True)
+    requested_quantity = models.IntegerField(null=True)
+    received_quantity = models.IntegerField(null=True)
+    reason = models.ForeignKey("ReturnReason", on_delete=models.SET_NULL, related_name='reason', null=True)
+    note = models.TextField(null=True)
+    metadata = models.JSONField(null=True)
+
+
+from django.db import models
+
+class ReturnReason(models.Model):
+    value = models.CharField(max_length=255, unique=True)
+    label = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    parent_return_reason = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, blank=True, null=True
+    )
+    metadata = models.JSONField(blank=True, null=True)
+
+
+
+from django.db import models
+
+class ReturnStatus(models.TextChoices):
+    REQUESTED = "requested"
+    RECEIVED = "received"
+    REQUIRES_ACTION = "requires_action"
+    CANCELED = "canceled"
+
+
+class SalesChannelLocation(models.Model):
+    sales_channel_id = models.CharField(max_length=255)
+    location_id = models.CharField(max_length=255)
+
+
+class ShippingMethodTaxLine(models.Model):
+    shipping_method = models.ForeignKey(ShippingMethod, on_delete=models.CASCADE, related_name='shipping_method_tax_lines')
+    # code = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        unique_together = ('shipping_method', 'code')
+
+
+
+
+class ShippingOptionRequirement(models.Model):
+    Requirement_Type = (
+        ("min_subtotal", "MIN_SUBTOTAL"),
+        ("max_subtotal", "MAX_SUBTOTAL"),
+    )
+    shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE, related_name='requirements')
+    type = models.CharField(choices=Requirement_Type.choices, max_length=32)
+    amount = models.IntegerField()
+    deleted_at = models.DateTimeField(null=True)
+
+
+
+class ShippingProfileType(models.TextChoices):
+    DEFAULT = 'default'
+    GIFT_CARD = 'gift_card'
+    CUSTOM = 'custom'
+
+class ShippingProfile(models.Model):
+    Shipping_Profile_Type = (
+        ("default", "DEFAULT")
+        ("gift_card", "GIFT_CARD")
+        ("custom", "CUSTOM")
+    )
+    name = models.CharField(max_length=255)
+    type = models.CharField(choices=Shipping_Profile_Type, max_length=255)
+    metadata = models.JSONField(null=True)
+
+
+from django.db import models
+
+class ShippingOption(models.Model):
+    pass
+
+class TaxRate(models.Model):
+    pass
+
+class ShippingTaxRate(models.Model):
+    shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE, related_name='shipping_tax_rates')
+    tax_rate = models.ForeignKey(TaxRate, on_delete=models.CASCADE, related_name='shipping_tax_rates')
+    metadata = models.JSONField(null=True)
+
+class StagedJob(models.Model):
+    event_name = models.CharField(max_length=255)
+    data = models.JSONField()
+    options = models.JSONField(default={})
+
+
+class Store(BaseModel):
+    name = models.CharField(max_length=255, null=True, blank=True)
+    default_currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='stores')
+    
