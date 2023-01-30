@@ -138,3 +138,5 @@ GRAPHENE = {
         # "graphql_jwt.middleware.JSONWebTokenMiddleware",
     ],
 }
+
+# DEFAULT_AUTO_FIELD = "django.db.models.UUIDAutoField"

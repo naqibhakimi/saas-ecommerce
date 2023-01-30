@@ -1,10 +1,20 @@
-from django.contrib.auth.models import User
 from django.db import models
+from django.conf import settings
+
 from apps.core.models import BaseModel
 from django.core.validators import EmailValidator
 
+class OrderDiscount(BaseModel):
+    discount = models.ForeignKey('Discount', on_delete=models.CASCADE, related_name="+")
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name="+")
 
-class Order(models.Model):
+class OrderGiftCard(BaseModel):
+    gift_card = models.ForeignKey('GiftCard', on_delete=models.CASCADE, related_name="+")
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name="+")
+
+
+
+class Order(BaseModel):
     Order_Status = (
         ("pending", "PENDING"),
         ("completed", "COMPLETED"),
@@ -51,12 +61,12 @@ class Order(models.Model):
         default="NOT PAID"
     )
     # display_id = models.AutoField(primary_key=True)
-    cart = models.OneToOneField("Cart", on_delete=models.CASCADE, null=True)
-    customer = models.ForeignKey("Customer", on_delete=models.CASCADE)
+    cart = models.OneToOneField("Cart", on_delete=models.CASCADE, null=True,  related_name='+')
+    customer = models.ForeignKey("Customer", on_delete=models.CASCADE,  related_name='+')
     email = models.EmailField()
-    billing_address = models.ForeignKey("Address", on_delete=models.CASCADE, related_name="orders", null=True)
-    shipping_address = models.ForeignKey("Address", on_delete=models.CASCADE, related_name="orders", null=True)
-    region = models.ForeignKey('Region', on_delete = models.CASCADE)
+    billing_address = models.ForeignKey("Address", on_delete=models.CASCADE, related_name='+', null=True)
+    shipping_address = models.ForeignKey("Address", on_delete=models.CASCADE, related_name='+', null=True)
+    region = models.ForeignKey('Region', on_delete = models.CASCADE,  related_name='+')
     order_number = models.CharField(max_length=255, unique=True)
     order_date = models.DateTimeField(auto_now_add=True)
     subtotal_price = models.DecimalField(max_digits=20, decimal_places=2)
@@ -64,17 +74,17 @@ class Order(models.Model):
 
 
     # currency_code = models.CharField(max_length=10)
-    currency = models.ForeignKey('Currency', on_delete=models.CASCADE)
+    currency = models.ForeignKey('Currency', on_delete=models.CASCADE,  related_name='+')
     tax_rate = models.FloatField(null=True)
-    discounts = models.ManyToManyField('Discount', through='OrderDiscount')
-    gift_cards = models.ManyToManyField('GiftCard', through='OrderGiftCard')
-    draft_order = models.OneToOneField('DraftOrder', on_delete=models.CASCADE, related_name="orders", null=True)
+    discounts = models.ManyToManyField('Discount', through='OrderDiscount' ,  related_name='+')
+    gift_cards = models.ManyToManyField('GiftCard', through='OrderGiftCard',  related_name='+')
+    draft_order = models.OneToOneField('DraftOrder', on_delete=models.CASCADE, related_name='+', null=True)
     canceled_at = models.DateField(null=True)
     metadata = models.JSONField(null=True)
     no_notification = models.BooleanField(null=True)
     idempotency_key = models.CharField(max_length=255, null=True)
     external_id = models.CharField(max_length=255, null=True, blank=True)
-    sales_channel = models.ForeignKey('SalesChannel', on_delete=models.CASCADE, related_name="orders", null=True, blank=True)
+    sales_channel = models.ForeignKey('SalesChannel', on_delete=models.CASCADE, related_name='+', null=True, blank=True)
 
     # Total fields
     shipping_total = models.IntegerField()
@@ -94,15 +104,15 @@ class Customer(BaseModel):
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
     billing_address = models.OneToOneField(
-        'Address', on_delete=models.SET_NULL, null=True, blank=True, related_name='billing_address'
+        'Address', on_delete=models.SET_NULL, null=True, blank=True, related_name='+'
     )
     phone = models.CharField(max_length=255, blank=True, null=True)
     has_account = models.BooleanField(default=False)
     password_hash = models.CharField(max_length=255, blank=True, null=True)
     orders = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name='customers'
+        Order, on_delete=models.CASCADE, related_name='+'
     )
-    groups = models.ManyToManyField('CustomerGroup', related_name='group_customers')
+    groups = models.ManyToManyField('CustomerGroup', related_name='+')
     metadata = models.JSONField(blank=True, null=True)
 
 
@@ -114,11 +124,11 @@ class Country(BaseModel):
     num_code = models.IntegerField()
     name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
-    region = models.ForeignKey("Region", on_delete=models.SET_NULL, null=True, blank=True)
+    region = models.ForeignKey("Region", on_delete=models.SET_NULL, null=True, blank=True,  related_name='+')
 
 
 class Address(BaseModel):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE,  related_name='+')
     company = models.CharField(max_length=255, null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
@@ -126,7 +136,7 @@ class Address(BaseModel):
     address_2 = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     country_code = models.CharField(max_length=255, null=True, blank=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='+')
     province = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
@@ -134,7 +144,7 @@ class Address(BaseModel):
     
     
 class AnalyticsConfig(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, related_name='+')
     opt_out = models.BooleanField(default=False)
     anonymize = models.BooleanField(default=False)
 
@@ -143,7 +153,7 @@ class BatchJobStatus:
     pass 
 class BatchJob(BaseModel):
     type = models.CharField(max_length=255, null=True, blank=True )
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='+')
     context = models.JSONField(null=True, blank=True)
     result = models.JSONField(null=True, blank = True)
     dry_run = models.BooleanField(default=False, blank = True)
@@ -174,13 +184,13 @@ class BatchJob(BaseModel):
 class Discount(BaseModel):
     code = models.CharField(max_length=255, unique=True)
     is_dynamic = models.BooleanField()
-    rule = models.ForeignKey("DiscountRule", on_delete=models.CASCADE, null=True)
+    rule = models.ForeignKey("DiscountRule", on_delete=models.CASCADE, null=True, related_name='+')
     is_disabled = models.BooleanField()
-    parent_discount = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    parent_discount = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
     starts_at = models.DateTimeField(auto_now_add=True)
     ends_at = models.DateTimeField(null=True, blank=True)
     valid_duration = models.CharField(max_length=255, null=True, blank=True)
-    regions = models.ManyToManyField("Region")
+    regions = models.ManyToManyField("Region", related_name='+')
     usage_limit = models.IntegerField(null=True, blank=True)
     usage_count = models.IntegerField(default=0)
     metadata = models.JSONField(null=True, blank=True)
@@ -198,14 +208,14 @@ class GiftCard(BaseModel):
     metadata = models.JSONField(null=True, blank=True)
 
 
-class LineItem(models.Model):
-    cart = models.ForeignKey('Cart', on_delete=models.SET_NULL, null=True, related_name='line_items')
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name='line_items')
-    swap = models.ForeignKey('Swap', on_delete=models.SET_NULL, null=True, related_name='line_items')
-    claim_order = models.ForeignKey('ClaimOrder', on_delete=models.SET_NULL, null=True, related_name='line_items')
-    original_item = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='line_item')
-    order_edit = models.ForeignKey('OrderEdit', on_delete=models.SET_NULL, null=True, related_name='line_items')
-    variant = models.ForeignKey('ProductVariant', on_delete=models.SET_NULL, null=True, related_name="line_items")
+class LineItem(BaseModel):
+    cart = models.ForeignKey('Cart', on_delete=models.SET_NULL, null=True, related_name='+')
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name='+')
+    swap = models.ForeignKey('Swap', on_delete=models.SET_NULL, null=True, related_name='+')
+    claim_order = models.ForeignKey('ClaimOrder', on_delete=models.SET_NULL, null=True, related_name='+')
+    original_item = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='+')
+    order_edit = models.ForeignKey('OrderEdit', on_delete=models.SET_NULL, null=True, related_name='+')
+    variant = models.ForeignKey('ProductVariant', on_delete=models.SET_NULL, null=True, related_name='+')
     title = models.CharField(max_length=100)
     description = models.TextField(null=True)
     thumbnail = models.TextField(null=True)
@@ -230,22 +240,55 @@ class LineItem(models.Model):
     discount_total = models.PositiveIntegerField(null=True)
     gift_cart_total = models.PositiveIntegerField(null=True)
 
+
+
 class Payment(BaseModel):
-    pass
+    swap = models.OneToOneField("Swap", on_delete=models.SET_NULL, null=True,  related_name='+')
+    cart = models.ForeignKey('Cart', on_delete=models.SET_NULL, related_name='+', null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='+', null=True)
+    amount = models.FloatField()
+    # currency_code = models.CharField(max_length=3)
+    currency = models.ForeignKey('Currency', on_delete=models.SET_NULL, related_name='+', null=True)
+    amount_refunded = models.FloatField(default=0)
+    provider_id = models.CharField(max_length=255)
+    data = models.JSONField()
+    captured_at = models.DateTimeField(null=True)
+    canceled_at = models.DateTimeField(null=True)
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(max_length=255, null=True)
+
+
+
 
 class PaymentSession(BaseModel):
-    cart = models.ForeignKey('Cart', on_delete=models.CASCADE)
+    Payment_Session_Status = (
+        ("authorized", "AUTHORIZED"),
+        ("pending", "PENDING"),
+        ("requires_more", "REQUIRES_MORE"),
+        ("error", "ERROR"),
+        ("canceled", "CANCELED"),
+    )
+    cart = models.ForeignKey('Cart', on_delete=models.CASCADE, related_name='+', null=True)
+    provider_id = models.CharField(max_length=100)
+    is_selected = models.BooleanField(null=True)
+    is_initiated = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, choices=Payment_Session_Status)
+    data = models.JSONField()
+    idempotency_key = models.CharField(max_length=100, null=True)
+    amount = models.FloatField(null=True)
+    payment_authorized_at = models.DateTimeField(null=True)
 
 
 
-class ShippingMethod(models.Model):
-    shipping_option = models.ForeignKey("ShippingOption", on_delete=models.CASCADE, related_name="shipping_methods")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name="shipping_methods")
-    claim_order = models.ForeignKey("ClaimOrder", on_delete=models.CASCADE, null=True, related_name="shipping_methods")
-    cart = models.ForeignKey("Cart", on_delete=models.CASCADE, null=True, related_name="shipping_methods")
-    swap = models.ForeignKey("Swap", on_delete=models.CASCADE, null=True, related_name="shipping_methods")
-    return_order = models.OneToOneField("Return", on_delete=models.CASCADE, related_name="shipping_method", null=True)
-    # tax_lines = models.ManyToManyField("ShippingMethodTaxLine", related_name="shipping_methods", through="ShippingMethodTaxLine")
+
+class ShippingMethod(BaseModel):
+    shipping_option = models.ForeignKey("ShippingOption", on_delete=models.CASCADE, related_name='+')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='+')
+    claim_order = models.ForeignKey("ClaimOrder", on_delete=models.CASCADE, null=True, related_name='+')
+    cart = models.ForeignKey("Cart", on_delete=models.CASCADE, null=True, related_name='+')
+    swap = models.ForeignKey("Swap", on_delete=models.CASCADE, null=True, related_name='+')
+    return_order = models.OneToOneField("Return", on_delete=models.CASCADE, related_name='+', null=True)
+    # tax_lines = models.ManyToManyField("ShippingMethodTaxLine", related_name='+')
     price = models.PositiveIntegerField()
     data = models.JSONField()
     includes_tax = models.BooleanField(default=False)
@@ -255,7 +298,7 @@ class ShippingMethod(models.Model):
 
 
 
-class SalesChannel(models.Model):
+class SalesChannel(BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True, blank=True)
     is_disabled = models.BooleanField(default=False)
@@ -270,27 +313,24 @@ class Cart(BaseModel):
         ("claim", "Claim"),
     )
     email = models.EmailField(blank=True, null=True)
-    billing_address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='carts_billing_address', blank=True, null=True)
-    shipping_address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='carts_shipping_address', blank=True, null=True)
-    items = models.ManyToManyField(LineItem, blank=True)
+    billing_address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
+    shipping_address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
+    items = models.ManyToManyField(LineItem, blank=True, related_name='+')
     region = models.ForeignKey("Region", on_delete=models.CASCADE)
-    discounts = models.ManyToManyField(Discount, blank=True)
-    gift_cards = models.ManyToManyField(GiftCard, blank=True)
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
-    payment_session = models.OneToOneField(PaymentSession, on_delete=models.SET_NULL, blank=True, null=True, related_name='payment_session')
-    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, blank=True, null=True)
-    shipping_methods = models.ManyToManyField(ShippingMethod, blank=True, related_name='cart')
+    discounts = models.ManyToManyField(Discount, blank=True, related_name='+')
+    gift_cards = models.ManyToManyField(GiftCard, blank=True, related_name='+')
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
+    payment_session = models.OneToOneField(PaymentSession, on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
+    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
+    shipping_methods = models.ManyToManyField(ShippingMethod, blank=True, related_name='+')
     type = models.CharField(max_length=20, choices=CART_TYPE_CHOICES, default='default')
     completed_at = models.DateTimeField(blank=True, null=True)
     payment_authorized_at = models.DateTimeField(blank=True, null=True)
     idempotency_key = models.CharField(max_length=255, blank=True, null=True)
     context = models.JSONField(blank=True, null=True)
     metadata = models.JSONField() # [FIXME] do we even need this ? 
-    sales_channel = models.ForeignKey(SalesChannel, related_name='sales_channel', on_delete=models.SET_NULL, null=True)
+    sales_channel = models.ForeignKey(SalesChannel, related_name='+', on_delete=models.SET_NULL, null=True)
 
-
-class ClaimOrder(BaseModel):
-    claim_items = models.ForeignKey('ClaimItem', on_delete=models.CASCADE)
 
 class ClaimTag(BaseModel):
     value = models.CharField(max_length=255, unique=True)
@@ -306,65 +346,19 @@ class ClaimItem(BaseModel):
         ('other', 'Other'),
     )
     images = models.ManyToManyField('ClaimImage')
-    claim_order = models.ForeignKey("ClaimOrder", related_name="claim_items", on_delete=models.SET_NULL, null=True, blank=True)
+    claim_order = models.ForeignKey("ClaimOrder", related_name='+', on_delete=models.SET_NULL, null=True, blank=True)
     item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
     variant = models.ForeignKey("ProductVariant", on_delete=models.CASCADE)
     reason = models.CharField(max_length=255, choices=REASON_CHOICES)
     note = models.TextField(blank=True, null=True)
     quantity = models.IntegerField()
-    tags = models.ManyToManyField(ClaimTag)
+    tags = models.ManyToManyField(ClaimTag, related_name='+')
     metadata = models.JSONField(blank=True, null=True)
 
 class ClaimImage(BaseModel):
-    claim_item = models.ForeignKey(ClaimItem, on_delete=models.CASCADE, related_name='claim_images')
+    claim_item = models.ForeignKey(ClaimItem, on_delete=models.CASCADE, related_name='+')
     url = models.CharField(max_length=255)
     metadata = models.JSONField(null=True, blank=True)
-
-
-
-class Return(models.Model):
-    Return_Status = (
-        ("requested", "REQUESTED"),
-        ("received", "RECEIVED"),
-        ("requires_action", "REQUIRES_ACTION"),
-        ("canceled", "CANCELED"),
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=Return_Status,
-        default="REQUESTED",
-    )
-    # items = models.ManyToManyField(ReturnItem, related_name='returns', through='ReturnItem')
-    swap = models.OneToOneField("Swap", on_delete=models.SET_NULL, related_name='returns', null=True)
-    claim_order = models.OneToOneField(ClaimOrder, on_delete=models.SET_NULL, related_name='returns', null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='returns', null=True)
-    shipping_method = models.OneToOneField(ShippingMethod, on_delete=models.CASCADE, related_name='return_order')
-    # location_id = models.CharField(max_length=100, null=True)
-    shipping_data = models.JSONField(null=True)
-    refund_amount = models.FloatField()
-    received_at = models.DateTimeField(null=True)
-    no_notification = models.BooleanField()
-    metadata = models.JSONField(null=True)
-    idempotency_key = models.CharField(max_length=100, null=True)
-
-
-
-
-class Fulfillment(BaseModel):
-    claim_order = models.ForeignKey(ClaimOrder, on_delete=models.CASCADE, null=True, related_name='fulfillments')
-    swap = models.ForeignKey("Swap", on_delete=models.CASCADE, null=True, related_name='fulfillments')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='fulfillments')
-    no_notification = models.BooleanField(null=True)
-    provider = models.ForeignKey("FulfillmentProvider", on_delete=models.CASCADE)
-    location_id = models.CharField(max_length=255, null=True)
-    # items = models.OneToManyField("FulfillmentItem", on_delete=models.CASCADE, related_name='fulfillment')
-    # tracking_links = models.OneToManyField("TrackingLink", on_delete=models.CASCADE, related_name='fulfillment')
-    tracking_numbers = models.JSONField(default=[])
-    data = models.JSONField()
-    shipped_at = models.DateTimeField(null=True)
-    canceled_at = models.DateTimeField(null=True)
-    metadata = models.JSONField(null=True)
-    idempotency_key = models.CharField(max_length=255, null=True)
 
 
 class ClaimOrder(BaseModel):
@@ -401,11 +395,11 @@ class ClaimOrder(BaseModel):
     )
     claim_items = models.ManyToManyField(
         ClaimItem,
-        related_name='claim_orders',
+        related_name='+',
     )
     additional_items = models.ManyToManyField(
         LineItem,
-        related_name='claim_order',
+        related_name='+',
     )
     type = models.CharField(
         max_length=20,
@@ -414,29 +408,29 @@ class ClaimOrder(BaseModel):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name='claims',
+        related_name='+',
     )
     return_order = models.OneToOneField(
-        Return,
+        'Return',
         on_delete=models.CASCADE,
-        related_name='claim_order',
+        related_name='+',
         null=True,
         blank=True,
     )
     shipping_address = models.ForeignKey(
         Address,
         on_delete=models.CASCADE,
-        related_name='claim_order',
+        related_name='+',
         null=True,
         blank=True,
     )
     shipping_methods = models.ManyToManyField(
         ShippingMethod,
-        related_name='claim_order',
+        related_name='+',
     )
     fulfillments = models.ManyToManyField(
-        Fulfillment,
-        related_name='claim_order',
+        'Fulfillment',
+        related_name='+',
     )
     refund_amount = models.IntegerField(null=True, blank=True)
     canceled_at = models.DateTimeField(null=True, blank=True)
@@ -444,6 +438,53 @@ class ClaimOrder(BaseModel):
     no_notification = models.BooleanField(null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     idempotency_key = models.CharField(max_length=255, null=True, blank=True)
+
+
+
+class Return(BaseModel):
+    Return_Status = (
+        ("requested", "REQUESTED"),
+        ("received", "RECEIVED"),
+        ("requires_action", "REQUIRES_ACTION"),
+        ("canceled", "CANCELED"),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Return_Status,
+        default="REQUESTED",
+    )
+    # items = models.ManyToManyField(ReturnItem, related_name='+')
+    swap = models.OneToOneField("Swap", on_delete=models.SET_NULL, related_name='+', null=True)
+    claim_order = models.OneToOneField(ClaimOrder, on_delete=models.SET_NULL, related_name='+', null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='+', null=True)
+    shipping_method = models.OneToOneField(ShippingMethod, on_delete=models.CASCADE, related_name='+')
+    # location_id = models.CharField(max_length=100, null=True)
+    shipping_data = models.JSONField(null=True)
+    refund_amount = models.FloatField()
+    received_at = models.DateTimeField(null=True)
+    no_notification = models.BooleanField()
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(max_length=100, null=True)
+
+
+
+
+class Fulfillment(BaseModel):
+    claim_order = models.ForeignKey(ClaimOrder, on_delete=models.CASCADE, null=True, related_name='+')
+    swap = models.ForeignKey("Swap", on_delete=models.CASCADE, null=True, related_name='+')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='+')
+    no_notification = models.BooleanField(null=True)
+    provider = models.ForeignKey("FulfillmentProvider", on_delete=models.CASCADE)
+    location_id = models.CharField(max_length=255, null=True)
+    # items = models.OneToManyField("FulfillmentItem", on_delete=models.CASCADE, related_name='+')
+    # tracking_links = models.OneToManyField("TrackingLink", on_delete=models.CASCADE, related_name='+')
+    tracking_numbers = models.JSONField(default=dict)
+    data = models.JSONField()
+    shipped_at = models.DateTimeField(null=True)
+    canceled_at = models.DateTimeField(null=True)
+    metadata = models.JSONField(null=True)
+    idempotency_key = models.CharField(max_length=255, null=True)
+
 
 
 class Currency(BaseModel):
@@ -454,15 +495,15 @@ class Currency(BaseModel):
     includes_tax = models.BooleanField(default=False)
 
 
-class ShippingOption(models.Model):
+class ShippingOption(BaseModel):
     Shipping_Option_Price_Type = (
         ("flat_rate", "FLAT_RATE"),
         ("calculated", "CALCULATED")
     )
     name = models.CharField(max_length=255)
     region = models.ForeignKey("Region", on_delete=models.CASCADE)
-    profile = models.ForeignKey("ShippingProfile", on_delete=models.CASCADE, related_name="shipping_options")
-    provider = models.ForeignKey("FulfillmentProvider", on_delete=models.CASCADE, related_name="shipping_options")
+    profile = models.ForeignKey("ShippingProfile", on_delete=models.CASCADE, related_name='+')
+    provider = models.ForeignKey("FulfillmentProvider", on_delete=models.CASCADE, related_name='+')
     price_type = models.CharField(max_length=20, choices=Shipping_Option_Price_Type, default="FLAT_RATE")
     amount = models.PositiveIntegerField(null=True)
     is_return = models.BooleanField(default=False)
@@ -483,20 +524,20 @@ class CustomShippingOption(BaseModel):
         unique_together = (('shipping_option', 'cart'),)
 
 
-class PriceList(models.Model):
+class PriceList(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     type = models.CharField(max_length=255, default="sale")
     status = models.CharField(max_length=255, default="draft")
     starts_at = models.DateTimeField(null=True, blank=True)
     ends_at = models.DateTimeField(null=True, blank=True)
-    customer_groups = models.ManyToManyField('CustomerGroup', related_name='price_lists')
-    # prices = models.OneToManyField('MoneyAmount', related_name='price_list', on_delete=models.CASCADE)
+    customer_groups = models.ManyToManyField('CustomerGroup', related_name='+')
+    # prices = models.OneToManyField('MoneyAmount', related_name='+', on_delete=models.CASCADE)
     includes_tax = models.BooleanField(default=False)
 
 class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)
-    customers = models.ManyToManyField(Customer, related_name='customer_groups')
+    customers = models.ManyToManyField(Customer, related_name='+')
     price_lists = models.ManyToManyField(PriceList)
     metadata = models.JSONField(null=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -517,11 +558,9 @@ class DiscountConditionProductCollection(BaseModel):
     metadata = models.JSONField(null=True)
 
 
-class ProductTag(BaseModel):
-    pass
-class DiscountConditionProductTag(models.Model):
-    product_tag = models.ForeignKey(ProductTag, on_delete=models.CASCADE)
-    discount_condition = models.ForeignKey('DiscountCondition', on_delete=models.CASCADE, related_name='discount_condition_product_tags' )
+class DiscountConditionProductTag(BaseModel):
+    product_tag = models.ForeignKey('ProductTag', on_delete=models.CASCADE)
+    discount_condition = models.ForeignKey('DiscountCondition', on_delete=models.CASCADE, related_name='+' )
     metadata = models.JSONField(null=True, blank=True)
 
 
@@ -531,14 +570,18 @@ class ProductType(BaseModel):
 
 
 class DiscountConditionProductType(BaseModel):
-    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name='discount_condition_product_types')
-    discount_condition = models.ForeignKey('DiscountCondition', on_delete=models.CASCADE, related_name='discount_condition_product_types')
+    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name='+')
+    discount_condition = models.ForeignKey('DiscountCondition', on_delete=models.CASCADE, related_name='+')
     metadata = models.JSONField(null=True)
 
     class Meta:
         unique_together = (("product_type", "discount_condition"),)
+class ProductTag(BaseModel):
+    value = models.CharField(max_length=255, null=True, blank=True)
+    metadata = models.JSONField(null=True, blank=True)
 
-class Product(models.Model):
+
+class Product(BaseModel):
     Product_Status = (
         ('draft', 'DRAFT'),
         ('proposed', 'PROPOSED'),
@@ -551,9 +594,9 @@ class Product(models.Model):
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
     status = models.CharField(max_length=255, choices=Product_Status, default='draft')
-    images = models.ManyToManyField("Image", related_name='products')
+    images = models.ManyToManyField("Image", related_name='+')
     thumbnail = models.TextField(null=True, blank=True)
-    profile = models.ForeignKey('ShippingProfile', on_delete=models.CASCADE, related_name='products')
+    profile = models.ForeignKey('ShippingProfile', on_delete=models.CASCADE, related_name='+')
     weight = models.PositiveIntegerField(null=True, blank=True)
     length = models.PositiveIntegerField(null=True, blank=True)
     height = models.PositiveIntegerField(null=True, blank=True)
@@ -562,20 +605,20 @@ class Product(models.Model):
     origin_country = models.TextField(null=True, blank=True)
     mid_code = models.TextField(null=True, blank=True)
     material = models.TextField(null=True, blank=True)
-    collection = models.ForeignKey("ProductCollection", on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-    type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-    tags = models.ManyToManyField(ProductTag, related_name='products')
+    collection = models.ForeignKey("ProductCollection", on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+    type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+    tags = models.ManyToManyField(ProductTag, related_name='+')
     discountable = models.BooleanField(default=True)
     external_id = models.TextField(null=True, blank=True)
-    sales_channels = models.ManyToManyField(SalesChannel, related_name='products')
+    sales_channels = models.ManyToManyField(SalesChannel, related_name='+')
     # deleted_at = models.DateTimeField(null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
 
 
 
 class DiscountConditionProduct(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="discount_condition_products")
-    discount_condition = models.ForeignKey('DiscountCondition', on_delete=models.CASCADE, related_name="discount_condition_products")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='+')
+    discount_condition = models.ForeignKey('DiscountCondition', on_delete=models.CASCADE, related_name='+')
     metadata = models.JSONField(null=True)
 
     class Meta:
@@ -583,7 +626,7 @@ class DiscountConditionProduct(BaseModel):
 
 
 
-class DiscountCondition(models.Model):
+class DiscountCondition(BaseModel):
     Discount_Condition_Type = (
         ("products", "PRODUCTS"),
         ("product_types", "PRODUCT_TYPES"),
@@ -607,7 +650,7 @@ class DiscountCondition(models.Model):
     discount_rule = models.ForeignKey(
         'DiscountRule',
         on_delete=models.CASCADE,
-        related_name="discount_conditions"
+        related_name='+'
         )
     products = models.ManyToManyField(
         Product,
@@ -647,7 +690,7 @@ class DiscountRule(BaseModel):
     type = models.CharField(choices=Discount_Rule_Type, max_length=20)
     value = models.FloatField()
     allocation = models.CharField(choices=Allocation_Type, max_length=20, null=True)
-    conditions = models.ManyToManyField('DiscountCondition', related_name='discount_rules')
+    conditions = models.ManyToManyField('DiscountCondition', related_name='+')
     metadata = models.JSONField(null=True)
 
 
@@ -657,14 +700,17 @@ class DraftOrder(BaseModel):
         ("completed", "COMPLETED"),
     )
     status = models.CharField(max_length=10,choices=Draft_Order_Status, default="OPEN")
-    display_id = models.AutoField(primary_key=True)
-    cart = models.OneToOneField(Cart, on_delete=models.CASCADE, null=True, related_name='draft_order')
+    cart = models.OneToOneField(Cart, on_delete=models.CASCADE, null=True, related_name='+')
     order = models.OneToOneField(Order, on_delete=models.SET_NULL, null=True)
     canceled_at = models.DateTimeField(null=True)
     completed_at = models.DateTimeField(null=True)
     no_notification_order = models.BooleanField(null=True)
     metadata = models.JSONField(null=True)
     idempotency_key = models.CharField(max_length=255, null=True)
+
+    @property
+    def display_id(self):
+        return self.id
 
 
 class FulfillmentItem(BaseModel):
@@ -679,8 +725,8 @@ class FulfillmentProvider(BaseModel):
 
 
 class GiftCardTransaction(BaseModel):
-    gift_card = models.ForeignKey(GiftCard, on_delete=models.CASCADE, related_name='gift_card_transactions')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order')
+    gift_card = models.ForeignKey(GiftCard, on_delete=models.CASCADE, related_name='+')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='+')
     amount = models.IntegerField()
     is_taxable = models.BooleanField(null=True, blank=True)
     tax_rate = models.FloatField(null=True, blank=True)
@@ -706,7 +752,7 @@ class Image(BaseModel):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
 
-class Invite(models.Model):
+class Invite(BaseModel):
     User_Roles = (
         ("admin", "ADMIN"),
         ("member", "MEMBER"),
@@ -722,15 +768,7 @@ class Invite(models.Model):
 
 
 class LineItemAdjustment(BaseModel):
-    item = models.ForeignKey(LineItem, on_delete=models.CASCADE, related_name="line_item_adjustments")
-    description = models.CharField(max_length=255, null=True, blank=True)
-    discount = models.ManyToManyField(Discount)
-    amount = models.IntegerField(null=True, blank=True)
-    metadata = models.JSONField(null=True, blank=True)
-
-
-class LineItemAdjustment(models.Model):
-    item = models.ForeignKey(LineItem, on_delete=models.CASCADE, related_name="line_item_adjustments")
+    item = models.ForeignKey(LineItem, on_delete=models.CASCADE, related_name='+')
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True)
     description = models.CharField(max_length=255)
     amount = models.IntegerField()
@@ -746,50 +784,50 @@ class TaxLine(BaseModel):
 
 
 
-class LineItemTaxLine(models.Model):
+class LineItemTaxLine(BaseModel):
     item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
     code = models.CharField(max_length=255, unique=True)
 
 
-class MoneyAmount(models.Model):
+class MoneyAmount(BaseModel):
     # do we need this ? 
     # currency_code = models.CharField(max_length=255, null=True, blank=True)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='money_amounts')
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='+')
     amount = models.FloatField()
     min_quantity = models.IntegerField(null=True)
     max_quantity = models.IntegerField(null=True)
-    price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE, null=True, related_name='money_amounts')
-    variant = models.ForeignKey("ProductVariant", on_delete=models.CASCADE, related_name='money_amounts')
-    region = models.ForeignKey("Region", on_delete=models.CASCADE, null=True, related_name='money_amounts')
+    price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE, null=True, related_name='+')
+    variant = models.ForeignKey("ProductVariant", on_delete=models.CASCADE, related_name='+')
+    region = models.ForeignKey("Region", on_delete=models.CASCADE, null=True, related_name='+')
 
 
-class Note(models.Model):
+class Note(BaseModel):
     value = models.TextField()
     resource_type = models.CharField(max_length=255, null=True, blank=True)
     resource_id = models.CharField(max_length=255, null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     metadata = models.JSONField(null=True)
 
 
 
-class NotificationProvider(models.Model):
+class NotificationProvider(BaseModel):
     is_installed = models.BooleanField(default=True)
 
 
 
-class Notification(models.Model):
+class Notification(BaseModel):
     event_name = models.CharField(max_length=255, null=True)
     resource_type = models.CharField(max_length=255)
     resource_id = models.CharField(max_length=255)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='notifications')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='+')
     to = models.CharField(max_length=255)
     data = models.JSONField()
-    parent_notification = models.ForeignKey('self', on_delete=models.CASCADE, related_name='notifications', null=True)
-    provider = models.ForeignKey(NotificationProvider, on_delete=models.CASCADE, related_name='notifications')
+    parent_notification = models.ForeignKey('self', on_delete=models.CASCADE, related_name='+', null=True)
+    provider = models.ForeignKey(NotificationProvider, on_delete=models.CASCADE, related_name='+')
     
 
 
-class Oauth(models.Model):
+class Oauth(BaseModel):
     display_name = models.CharField(max_length=255)
     application_name = models.CharField(max_length=255, unique=True)
     install_url = models.CharField(max_length=255, null=True)
@@ -797,7 +835,7 @@ class Oauth(models.Model):
     data = models.JSONField(null=True)
     
 
-class OrderEdit(models.Model):
+class OrderEdit(BaseModel):
     Order_Edit_Status = (
         ("confirmed", "CONFIRMED"),
         ("declined", "DECLINED"),
@@ -805,8 +843,8 @@ class OrderEdit(models.Model):
         ("created", "CREATED"),
         ("canceled", "CANCELED"),
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="edits")
-    changes = models.ManyToManyField("OrderItemChange", related_name="order_edit")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='+')
+    changes = models.ManyToManyField("OrderItemChange", related_name='+')
     internal_note = models.TextField(null=True)
     created_by = models.CharField(max_length=255)
     requested_by = models.CharField(max_length=255, null=True)
@@ -818,7 +856,7 @@ class OrderEdit(models.Model):
     declined_at = models.DateTimeField(null=True)
     canceled_by = models.CharField(max_length=255, null=True)
     canceled_at = models.DateTimeField(null=True)
-    items = models.ManyToManyField(LineItem, related_name="order_edits")
+    items = models.ManyToManyField(LineItem, related_name='+')
     payment_collection = models.OneToOneField("PaymentCollection", on_delete=models.SET_NULL, null=True)
     shipping_total = models.IntegerField()
     discount_total = models.FloatField()
@@ -831,7 +869,7 @@ class OrderEdit(models.Model):
     status = models.CharField(choices=Order_Edit_Status, max_length=20, default="CREATED")
 
 
-class OrderItemChange(models.Model):
+class OrderItemChange(BaseModel):
     Order_Edit_Item_Change_Type = (
         ("item_add", "ITEM_ADD"),
         ("item_remove", "ITEM_REMOVE"),
@@ -844,19 +882,19 @@ class OrderItemChange(models.Model):
     order_edit = models.ForeignKey(
         OrderEdit,
         on_delete=models.CASCADE,
-        related_name='order_item_changes'
+        related_name='+'
     )
     original_line_item = models.ForeignKey(
         LineItem,
         on_delete=models.SET_NULL,
-        related_name='order_item_changes',
+        related_name='+',
         null=True,
         blank=True,
     )
     line_item = models.OneToOneField(
         LineItem,
         on_delete=models.SET_NULL,
-        related_name='order_item_changes',
+        related_name='+',
         null=True,
         blank=True,
     )
@@ -873,7 +911,7 @@ class PaymentCollectionStatus(models.TextChoices):
 class PaymentCollectionType(models.TextChoices):
     ORDER_EDIT = 'order_edit'
 
-class PaymentCollection(models.Model):
+class PaymentCollection(BaseModel):
     Payment_Collection_Status = (
         ("not_paid", "NOT_PAID"),
         ("awaiting", "AWAITING"),
@@ -902,42 +940,8 @@ class PaymentProvider(BaseModel):
     is_installed = models.BooleanField(default=True)
 
 
-class PaymentSession(models.Model):
-    Payment_Session_Status = (
-        ("authorized", "AUTHORIZED"),
-        ("pending", "PENDING"),
-        ("requires_more", "REQUIRES_MORE"),
-        ("error", "ERROR"),
-        ("canceled", "CANCELED"),
-    )
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='payment_sessions', null=True)
-    provider_id = models.CharField(max_length=100)
-    is_selected = models.BooleanField(null=True)
-    is_initiated = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, choices=Payment_Session_Status)
-    data = models.JSONField()
-    idempotency_key = models.CharField(max_length=100, null=True)
-    amount = models.FloatField(null=True)
-    payment_authorized_at = models.DateTimeField(null=True)
 
-
-class Payment(models.Model):
-    swap = models.OneToOneField("Swap", on_delete=models.SET_NULL, null=True)
-    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, related_name='payment', null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='payments', null=True)
-    amount = models.FloatField()
-    # currency_code = models.CharField(max_length=3)
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, related_name='payments', null=True)
-    amount_refunded = models.FloatField(default=0)
-    provider_id = models.CharField(max_length=255)
-    data = models.JSONField()
-    captured_at = models.DateTimeField(null=True)
-    canceled_at = models.DateTimeField(null=True)
-    metadata = models.JSONField(null=True)
-    idempotency_key = models.CharField(max_length=255, null=True)
-
-
-class ProductCategory(models.Model):
+class ProductCategory(BaseModel):
     name = models.CharField(max_length=255)
     handle = models.CharField(max_length=255, unique=True, null=False)
     is_active = models.BooleanField(default=False)
@@ -946,54 +950,43 @@ class ProductCategory(models.Model):
 
 
 class ProductCollection(BaseModel):
-    title = models.CharField(max_length=255, null=True, blank=True)
-    handle = models.CharField(max_length=255, null=True, blank=True)
-    # products = models.ManyToManyField(Product, related_name='collections')
-    metadata = models.JSONField(null=True, blank=True)
-
-
-class ProductCollection(BaseModel):
     title = models.CharField(max_length=255)
     handle = models.CharField(max_length=255, unique=True, null=True)
-    products = models.ManyToManyField(Product, related_name='collections')
+    products = models.ManyToManyField(Product, related_name='+')
     metadata = models.JSONField(null=True)
 
 
 
-class ProductOptionValue(models.Model):
+class ProductOptionValue(BaseModel):
     value = models.CharField(max_length=255)
-    option = models.ForeignKey("ProductOption", on_delete=models.CASCADE, related_name='product_option_values')
-    variant = models.ForeignKey("ProductVariant", on_delete=models.CASCADE, related_name='product_option_values')
+    option = models.ForeignKey("ProductOption", on_delete=models.CASCADE, related_name='+')
+    variant = models.ForeignKey("ProductVariant", on_delete=models.CASCADE, related_name='+')
     metadata = models.JSONField(null=True)
 
 
 
-class ProductOption(models.Model):
+class ProductOption(BaseModel):
     title = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='options')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='+')
     metadata = models.JSONField(null=True)
 
 
-class ProductTag(BaseModel):
-    value = models.CharField(max_length=255, null=True, blank=True)
-    metadata = models.JSONField(null=True, blank=True)
 
 
-class ProductTaxRate(models.Model):
-    rate_id = models.CharField(max_length=255, primary_key=True)
+class ProductTaxRate(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     tax_rate = models.ForeignKey("TaxRate", on_delete=models.CASCADE)
     metadata = models.JSONField(null=True)
 
 
 
-class ProductTypeTaxRate(models.Model):
+class ProductTypeTaxRate(BaseModel):
     product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     tax_rate = models.ForeignKey("TaxRate", on_delete=models.CASCADE)
     metadata = models.JSONField(blank=True, null=True)
 
 
-class ProductVariantInventoryItem(models.Model):
+class ProductVariantInventoryItem(BaseModel):
     inventory_item_id = models.TextField(unique=True)
     variant_id = models.TextField(unique=True)
     required_quantity = models.PositiveIntegerField(default=1)
@@ -1003,9 +996,9 @@ class ProductVariantInventoryItem(models.Model):
 
 
 
-class ProductVariant(models.Model):
+class ProductVariant(BaseModel):
     title = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='+')
     sku = models.CharField(max_length=255,null=True, unique=True)
     barcode = models.CharField(max_length=255,null=True, unique=True)
     ean = models.CharField(max_length=255,null=True, unique=True)
@@ -1028,18 +1021,18 @@ class ProductVariant(models.Model):
         unique_together = (("sku", "barcode", "ean", "upc"),)
 
 
-class PublishableApiKeySalesChannel(models.Model):
-    sales_channel_id = models.CharField(max_length=100, primary_key=True)
-    publishable_key_id = models.CharField(max_length=100, primary_key=True)
+class PublishableApiKeySalesChannel(BaseModel):
+    sales_channel_id = models.CharField(max_length=100, unique=True)
+    publishable_key_id = models.CharField(max_length=100, unique=True)
 
-class PublishableApiKey(models.Model):
+class PublishableApiKey(BaseModel):
     created_by = models.CharField(max_length=100, null=True)
     revoked_by = models.CharField(max_length=100, null=True)
     revoked_at = models.DateTimeField(null=True)
     title = models.CharField(max_length=100)
 
 
-class Refund(models.Model):
+class Refund(BaseModel):
     Refund_Reason = (
         ("discount", "DISCOUNT"), 
         ("return", "RETURN"), 
@@ -1047,49 +1040,48 @@ class Refund(models.Model):
         ("claim", "CLAIM"), 
         ("other", "OTHER"), 
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='refunds')
-    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True, related_name='refunds')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='+')
+    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True, related_name='+')
     amount = models.IntegerField()
     note = models.TextField(null=True)
     reason = models.CharField(choices=Refund_Reason, max_length=16)
 
     metadata = models.JSONField(null=True)
-    idempotency_key = models.CharField(null=True)
+    idempotency_key = models.CharField(null=True, max_length=255)
 
 
-class Region(models.Model):
+class Region(BaseModel):
     name = models.CharField(max_length=100)
-    # currency_code = models.CharField(max_length=100)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='regions')
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='+')
     tax_rate = models.FloatField()
-    tax_rates = models.ForeignKey('TaxRate', on_delete=models.SET_NULL, related_name='regions', null=True, blank=True)
+    tax_rates = models.ForeignKey('TaxRate', on_delete=models.SET_NULL, related_name='+', null=True, blank=True)
     tax_code = models.CharField(max_length=100, null=True)
     gift_cards_taxable = models.BooleanField(default=True)
     automatic_taxes = models.BooleanField(default=True)
-    countries = models.ManyToManyField(Country, related_name='regions')
+    countries = models.ManyToManyField(Country, related_name='+')
     tax_provider = models.ForeignKey('TaxProvider', on_delete=models.SET_NULL, null=True)
-    payment_providers = models.ManyToManyField(PaymentProvider, related_name='regions')
-    fulfillment_providers = models.ManyToManyField(FulfillmentProvider, related_name='regions')
+    payment_providers = models.ManyToManyField(PaymentProvider, related_name='+')
+    fulfillment_providers = models.ManyToManyField(FulfillmentProvider, related_name='+')
     metadata = models.JSONField(null=True)
     includes_tax = models.BooleanField(default=False)
 
 
 
-class ReturnItem(models.Model):
+class ReturnItem(BaseModel):
     return_order = models.ForeignKey(Return, on_delete=models.CASCADE, related_name = "return_items", null=True, blank=True)
     item = models.ForeignKey(LineItem,on_delete=models.CASCADE, related_name = "return_items", null=True, blank=True)
     quantity = models.IntegerField()
     is_requested = models.BooleanField(default=True)
     requested_quantity = models.IntegerField(null=True)
     received_quantity = models.IntegerField(null=True)
-    reason = models.ForeignKey("ReturnReason", on_delete=models.SET_NULL, related_name='reason', null=True)
+    reason = models.ForeignKey("ReturnReason", on_delete=models.SET_NULL, related_name='+', null=True)
     note = models.TextField(null=True)
     metadata = models.JSONField(null=True)
 
 
 from django.db import models
 
-class ReturnReason(models.Model):
+class ReturnReason(BaseModel):
     value = models.CharField(max_length=255, unique=True)
     label = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
@@ -1109,14 +1101,14 @@ class ReturnStatus(models.TextChoices):
     CANCELED = "canceled"
 
 
-class SalesChannelLocation(models.Model):
+class SalesChannelLocation(BaseModel):
     sales_channel_id = models.CharField(max_length=255)
     location_id = models.CharField(max_length=255)
 
 
-class ShippingMethodTaxLine(models.Model):
-    shipping_method = models.ForeignKey(ShippingMethod, on_delete=models.CASCADE, related_name='shipping_method_tax_lines')
-    # code = models.CharField(max_length=255, unique=True)
+class ShippingMethodTaxLine(BaseModel):
+    shipping_method = models.ForeignKey(ShippingMethod, on_delete=models.CASCADE, related_name='+')
+    code = models.CharField(max_length=255, unique=True)
 
     class Meta:
         unique_together = ('shipping_method', 'code')
@@ -1124,12 +1116,12 @@ class ShippingMethodTaxLine(models.Model):
 
 
 
-class ShippingOptionRequirement(models.Model):
+class ShippingOptionRequirement(BaseModel):
     Requirement_Type = (
         ("min_subtotal", "MIN_SUBTOTAL"),
         ("max_subtotal", "MAX_SUBTOTAL"),
     )
-    shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE, related_name='requirements')
+    shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE, related_name='+')
     type = models.CharField(choices=Requirement_Type, max_length=32)
     amount = models.IntegerField()
     deleted_at = models.DateTimeField(null=True)
@@ -1141,7 +1133,7 @@ class ShippingProfileType(models.TextChoices):
     GIFT_CARD = 'gift_card'
     CUSTOM = 'custom'
 
-class ShippingProfile(models.Model):
+class ShippingProfile(BaseModel):
     Shipping_Profile_Type = (
         ("default", "DEFAULT"),
         ("gift_card", "GIFT_CARD"),
@@ -1152,11 +1144,11 @@ class ShippingProfile(models.Model):
     metadata = models.JSONField(null=True)
 
 
-class TaxRate(models.Model):
+class TaxRate(BaseModel):
     rate = models.FloatField(null=True)
     code = models.CharField(max_length=255, null=True)
     name = models.CharField(max_length=255)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name='tax_rates')
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name='+')
     metadata = models.JSONField(null=True)
     products = models.ManyToManyField(Product, through='ProductTaxRate')
     product_types = models.ManyToManyField(ProductType, through='ProductTypeTaxRate')
@@ -1165,18 +1157,18 @@ class TaxRate(models.Model):
     product_type_count = models.IntegerField(null=True, blank=True)
     shipping_option_count = models.IntegerField(null=True, blank=True)
 
-class ShippingTaxRate(models.Model):
-    shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE, related_name='shipping_tax_rates')
-    tax_rate = models.ForeignKey(TaxRate, on_delete=models.CASCADE, related_name='shipping_tax_rates')
+class ShippingTaxRate(BaseModel):
+    shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE, related_name='+')
+    tax_rate = models.ForeignKey(TaxRate, on_delete=models.CASCADE, related_name='+')
     metadata = models.JSONField(null=True)
 
-class StagedJob(models.Model):
+class StagedJob(BaseModel):
     event_name = models.CharField(max_length=255)
     data = models.JSONField()
     options = models.JSONField(default=dict)
 
 
-class Store(models.Model):
+class Store(BaseModel):
     name = models.CharField(max_length=255)
     default_currency_code = models.CharField(default="usd", max_length=255)
     # currencies = models.ManyToManyField( Currency, on_delete=models.CASCADE)
@@ -1188,7 +1180,7 @@ class Store(models.Model):
     default_sales_channel = models.OneToOneField(SalesChannel,null=True, blank=True, on_delete=models.SET_NULL)
 
 
-class Swap(models.Model):
+class Swap(BaseModel):
     Swap_Fulfillment_Status = (
         ("not_fulfilled", "NOT_FULFILLED"),
         ("fulfilled", "FULFILLED"),
@@ -1219,12 +1211,12 @@ class Swap(models.Model):
         choices=Swap_Payment_Status,
         default="NOT_PAID"
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="swaps")
-    return_order = models.OneToOneField(Return, on_delete=models.CASCADE, related_name="swap")
-    payment = models.OneToOneField(Payment, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='+')
+    return_order = models.OneToOneField(Return, on_delete=models.CASCADE, related_name='+')
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE,  related_name='+')
     difference_due = models.IntegerField(null=True)
-    shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
+    shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE,  related_name='+')
+    cart = models.OneToOneField(Cart, on_delete=models.CASCADE,  related_name='+')
     confirmed_at = models.DateTimeField(null=True)
     canceled_at = models.DateTimeField(null=True)
     no_notification = models.BooleanField(null=True)
@@ -1238,30 +1230,9 @@ class TaxProvider(BaseModel):
     is_installed = models.BooleanField(default= True)
 
 
-class TrackingLink(models.Model):
+class TrackingLink(BaseModel):
     url = models.URLField(blank=True, null=True)
     tracking_number = models.CharField(max_length=255)
-    fulfillment = models.ForeignKey(Fulfillment, related_name='tracking_links', on_delete=models.CASCADE)
+    fulfillment = models.ForeignKey(Fulfillment, related_name='+', on_delete=models.CASCADE)
     idempotency_key = models.CharField(max_length=255, blank=True, null=True)
     metadata = models.JSONField(blank=True, null=True)
-
-
-class User(models.Model):
-    User_Roles = (
-        ("admin", "ADMIN"),
-        ("member", "MEMBER"),
-        ("developer", "DEVELOPER"),
-    )
-    role = models.CharField(
-        max_length=12,
-        choices= User_Roles,
-        default="MEMBER",
-        null=True
-    )
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30, null=True)
-    last_name = models.CharField(max_length=150, null=True)
-    password_hash = models.CharField(max_length=128, null=True, blank=True)
-    api_token = models.CharField(max_length=255, null=True)
-    metadata = models.JSONField(null=True, blank=True)
-    
