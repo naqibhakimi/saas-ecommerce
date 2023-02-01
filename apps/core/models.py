@@ -11,12 +11,13 @@ class BaseModel(models.Model):
         abstract = True
 
 
-def collect_class():
-    for sub in BaseModel.__subclasses__():
-        print(f"""class {sub.__name__}Query:
-        {re.sub(r'(?<!^)(?=[A-Z])', '_', sub.__name__).lower()}s = DjangoConnectionField({sub.__name__}Node)
-        {re.sub(r'(?<!^)(?=[A-Z])', '_', sub.__name__).lower()} = graphene.Field({sub.__name__}Node, id=graphene.ID())
-        """)
+#crate automatically Query
+# def collect_class():
+#     for sub in BaseModel.__subclasses__():
+#         print(f"""class {sub.__name__}Query:
+#         {re.sub(r'(?<!^)(?=[A-Z])', '_', sub.__name__).lower()}s = DjangoConnectionField({sub.__name__}Node)
+#         {re.sub(r'(?<!^)(?=[A-Z])', '_', sub.__name__).lower()} = graphene.Field({sub.__name__}Node, id=graphene.ID())
+#         """)
         
 
 
