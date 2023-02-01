@@ -88,12 +88,6 @@ from .models import (
     TrackingLink,
 )
 
-class AddressFilter(django_filters.FilterSet):
-    class Meta:
-        model = Address
-        fields = '__all__'
-
-
 class OrderDiscountFilter(django_filters.FilterSet):
     class Meta:
         model = OrderDiscount
@@ -109,13 +103,13 @@ class OrderGiftCardFilter(django_filters.FilterSet):
 class OrderFilter(django_filters.FilterSet):
     class Meta:
         model = Order
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class CustomerFilter(django_filters.FilterSet):
     class Meta:
         model = Customer
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class CountryFilter(django_filters.FilterSet):
@@ -127,7 +121,7 @@ class CountryFilter(django_filters.FilterSet):
 class AddressFilter(django_filters.FilterSet):
     class Meta:
         model = Address
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class AnalyticsConfigFilter(django_filters.FilterSet):
@@ -139,43 +133,43 @@ class AnalyticsConfigFilter(django_filters.FilterSet):
 class BatchJobFilter(django_filters.FilterSet):
     class Meta:
         model = BatchJob
-        fields = '__all__'
+        exclude = ('context', 'result')
 
 
 class DiscountFilter(django_filters.FilterSet):
     class Meta:
         model = Discount
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class GiftCardFilter(django_filters.FilterSet):
     class Meta:
         model = GiftCard
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class LineItemFilter(django_filters.FilterSet):
     class Meta:
         model = LineItem
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class PaymentFilter(django_filters.FilterSet):
     class Meta:
         model = Payment
-        fields = '__all__'
+        exclude = ('metadata', 'data')
 
 
 class PaymentSessionFilter(django_filters.FilterSet):
     class Meta:
         model = PaymentSession
-        fields = '__all__'
+        exclude = ('data')
 
 
 class ShippingMethodFilter(django_filters.FilterSet):
     class Meta:
         model = ShippingMethod
-        fields = '__all__'
+        exclude = ('data')
 
 
 class SalesChannelFilter(django_filters.FilterSet):
@@ -187,43 +181,43 @@ class SalesChannelFilter(django_filters.FilterSet):
 class CartFilter(django_filters.FilterSet):
     class Meta:
         model = Cart
-        fields = '__all__'
+        exclude = ('context', 'metadata')
 
 
 class ClaimTagFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimTag
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ClaimItemFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimItem
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ClaimImageFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimImage
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ClaimOrderFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimOrder
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ReturnFilter(django_filters.FilterSet):
     class Meta:
         model = Return
-        fields = '__all__'
+        exclude = ('metadata', 'shipping_data')
 
 
 class FulfillmentFilter(django_filters.FilterSet):
     class Meta:
         model = Fulfillment
-        fields = '__all__'
+        exclude = ('tracking_numbers', 'data', 'metadata')
 
 
 class CurrencyFilter(django_filters.FilterSet):
@@ -235,13 +229,13 @@ class CurrencyFilter(django_filters.FilterSet):
 class ShippingOptionFilter(django_filters.FilterSet):
     class Meta:
         model = ShippingOption
-        fields = '__all__'
+        exclude = ('data', 'metadata')
 
 
 class CustomShippingOptionFilter(django_filters.FilterSet):
     class Meta:
         model = CustomShippingOption
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class PriceListFilter(django_filters.FilterSet):
@@ -253,353 +247,327 @@ class PriceListFilter(django_filters.FilterSet):
 class CustomerGroupFilter(django_filters.FilterSet):
     class Meta:
         model = CustomerGroup
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DiscountConditionCustomerGroupFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionCustomerGroup
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DiscountConditionProductCollectionFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProductCollection
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DiscountConditionProductTagFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProductTag
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductTypeFilter(django_filters.FilterSet):
     class Meta:
         model = ProductType
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DiscountConditionProductTypeFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProductType
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductTagFilter(django_filters.FilterSet):
     class Meta:
         model = ProductTag
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DiscountConditionProductFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProduct
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DiscountConditionFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountCondition
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DiscountRuleFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountRule
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class DraftOrderFilter(django_filters.FilterSet):
     class Meta:
         model = DraftOrder
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class FulfillmentItemFilter(django_filters.FilterSet):
     class Meta:
         model = FulfillmentItem
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class FulfillmentProviderFilter(django_filters.FilterSet):
     class Meta:
         model = FulfillmentProvider
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class GiftCardTransactionFilter(django_filters.FilterSet):
     class Meta:
         model = GiftCardTransaction
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class IdempotencyKeyFilter(django_filters.FilterSet):
     class Meta:
         model = IdempotencyKey
-        fields = '__all__'
+        exclude = ('metadata', 'request_params', 'response_body')
 
 
 class ImageFilter(django_filters.FilterSet):
     class Meta:
         model = Image
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class InviteFilter(django_filters.FilterSet):
     class Meta:
         model = Invite
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class LineItemAdjustmentFilter(django_filters.FilterSet):
     class Meta:
         model = LineItemAdjustment
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class TaxLineFilter(django_filters.FilterSet):
     class Meta:
         model = TaxLine
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class LineItemTaxLineFilter(django_filters.FilterSet):
     class Meta:
         model = LineItemTaxLine
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class MoneyAmountFilter(django_filters.FilterSet):
     class Meta:
         model = MoneyAmount
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class NoteFilter(django_filters.FilterSet):
     class Meta:
         model = Note
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class NotificationProviderFilter(django_filters.FilterSet):
     class Meta:
         model = NotificationProvider
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class NotificationFilter(django_filters.FilterSet):
     class Meta:
         model = Notification
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class OauthFilter(django_filters.FilterSet):
     class Meta:
         model = Oauth
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class OrderEditFilter(django_filters.FilterSet):
     class Meta:
         model = OrderEdit
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class OrderItemChangeFilter(django_filters.FilterSet):
     class Meta:
         model = OrderItemChange
-        fields = '__all__'
-
-
-class PaymentCollectionStatusFilter(django_filters.FilterSet):
-    class Meta:
-        model = PaymentCollectionStatus
-        fields = '__all__'
-
-
-class PaymentCollectionTypeFilter(django_filters.FilterSet):
-    class Meta:
-        model = PaymentCollectionType
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class PaymentCollectionFilter(django_filters.FilterSet):
     class Meta:
         model = PaymentCollection
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class PaymentProviderFilter(django_filters.FilterSet):
     class Meta:
         model = PaymentProvider
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductCategoryFilter(django_filters.FilterSet):
     class Meta:
         model = ProductCategory
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductCollectionFilter(django_filters.FilterSet):
     class Meta:
         model = ProductCollection
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductOptionValueFilter(django_filters.FilterSet):
     class Meta:
         model = ProductOptionValue
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductOptionFilter(django_filters.FilterSet):
     class Meta:
         model = ProductOption
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductTaxRateFilter(django_filters.FilterSet):
     class Meta:
         model = ProductTaxRate
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductTypeTaxRateFilter(django_filters.FilterSet):
     class Meta:
         model = ProductTypeTaxRate
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductVariantInventoryItemFilter(django_filters.FilterSet):
     class Meta:
         model = ProductVariantInventoryItem
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ProductVariantFilter(django_filters.FilterSet):
     class Meta:
         model = ProductVariant
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class PublishableApiKeySalesChannelFilter(django_filters.FilterSet):
     class Meta:
         model = PublishableApiKeySalesChannel
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class PublishableApiKeyFilter(django_filters.FilterSet):
     class Meta:
         model = PublishableApiKey
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class RefundFilter(django_filters.FilterSet):
     class Meta:
         model = Refund
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class RegionFilter(django_filters.FilterSet):
     class Meta:
         model = Region
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ReturnItemFilter(django_filters.FilterSet):
     class Meta:
         model = ReturnItem
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ReturnReasonFilter(django_filters.FilterSet):
     class Meta:
         model = ReturnReason
-        fields = '__all__'
-
-
-class ReturnStatusFilter(django_filters.FilterSet):
-    class Meta:
-        model = ReturnStatus
-        fields = '__all__'
-
+        exclude = ('metadata')
 
 class SalesChannelLocationFilter(django_filters.FilterSet):
     class Meta:
         model = SalesChannelLocation
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ShippingMethodTaxLineFilter(django_filters.FilterSet):
     class Meta:
         model = ShippingMethodTaxLine
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ShippingOptionRequirementFilter(django_filters.FilterSet):
     class Meta:
         model = ShippingOptionRequirement
-        fields = '__all__'
-
-
-class ShippingProfileTypeFilter(django_filters.FilterSet):
-    class Meta:
-        model = ShippingProfileType
-        fields = '__all__'
-
+        exclude = ('metadata')
 
 class ShippingProfileFilter(django_filters.FilterSet):
     class Meta:
         model = ShippingProfile
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class TaxRateFilter(django_filters.FilterSet):
     class Meta:
         model = TaxRate
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class ShippingTaxRateFilter(django_filters.FilterSet):
     class Meta:
         model = ShippingTaxRate
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class StagedJobFilter(django_filters.FilterSet):
     class Meta:
         model = StagedJob
-        fields = '__all__'
+        exclude = ('metadata', 'options', 'data')
 
 
 class StoreFilter(django_filters.FilterSet):
     class Meta:
         model = Store
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class SwapFilter(django_filters.FilterSet):
     class Meta:
         model = Swap
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class TaxProviderFilter(django_filters.FilterSet):
     class Meta:
         model = TaxProvider
-        fields = '__all__'
+        exclude = ('metadata')
 
 
 class TrackingLinkFilter(django_filters.FilterSet):
     class Meta:
         model = TrackingLink
-        fields = '__all__'
+        exclude = ('metadata')
 

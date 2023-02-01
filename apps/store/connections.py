@@ -7,345 +7,431 @@ class BaseConnection(graphene.Connection):
         abstract = True
 
 class OrderDiscountConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True
 
 
 class OrderGiftCardConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class OrderConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class CustomerConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class CountryConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class AddressConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class AnalyticsConfigConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class BatchJobStatusConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class BatchJobConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class GiftCardConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class LineItemConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PaymentConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PaymentSessionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ShippingMethodConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class SalesChannelConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class CartConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ClaimTagConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ClaimItemConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ClaimImageConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ClaimOrderConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ReturnConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class FulfillmentConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class CurrencyConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ShippingOptionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class CustomShippingOptionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PriceListConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class CustomerGroupConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountConditionCustomerGroupConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountConditionProductCollectionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountConditionProductTagConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductTypeConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountConditionProductTypeConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductTagConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountConditionProductConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountConditionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DiscountRuleConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class DraftOrderConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class FulfillmentItemConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class FulfillmentProviderConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class GiftCardTransactionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class IdempotencyKeyConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ImageConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class InviteConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class LineItemAdjustmentConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class TaxLineConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class LineItemTaxLineConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class MoneyAmountConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class NoteConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class NotificationProviderConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class NotificationConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class OauthConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class OrderEditConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class OrderItemChangeConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PaymentCollectionStatusConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PaymentCollectionTypeConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PaymentCollectionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PaymentProviderConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductCategoryConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductCollectionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductOptionValueConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductOptionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductTaxRateConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductTypeTaxRateConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductVariantInventoryItemConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ProductVariantConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PublishableApiKeySalesChannelConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class PublishableApiKeyConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class RefundConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class RegionConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ReturnItemConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ReturnReasonConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ReturnStatusConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class SalesChannelLocationConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ShippingMethodTaxLineConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ShippingOptionRequirementConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ShippingProfileTypeConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ShippingProfileConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class TaxRateConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class ShippingTaxRateConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class StagedJobConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class StoreConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class SwapConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class TaxProviderConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 
 
 class TrackingLinkConnection(BaseConnection):
-    pass 
+    class Meta:
+        abstract = True  
 

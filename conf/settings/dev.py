@@ -130,9 +130,8 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Grphene settings
-
 GRAPHENE = {
-    "SCHEMA": "graph_ql.schema.schema",
+    "SCHEMA": "apps.core.schema.schema",
     "SCHEMA_OUTPUT": "schema.json",
     "SCHEMA_INDENT": 2,
     "MIDDLEWARE": [
@@ -144,18 +143,18 @@ GRAPHENE = {
 # DEFAULT_AUTO_FIELD = "django.db.models.UUIDAutoField"
 
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"
-#     }
-# }
-
-
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
+
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }

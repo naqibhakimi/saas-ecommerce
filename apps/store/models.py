@@ -148,6 +148,14 @@ class AnalyticsConfig(BaseModel):
     opt_out = models.BooleanField(default=False)
     anonymize = models.BooleanField(default=False)
 
+class BatchJobStatus(models.TextChoices):
+    PRE_PROCESSED='PRE_PROCESSED'
+    CONFIRMED='CONFIRMED'
+    PROCESSING='PROCESSING'
+    COMPLETED='COMPLETED'
+    CANCELED='CANCELED'
+    FAILED='FAILED'
+    CREATED='CREATED'
 
 class BatchJob(BaseModel):
     type = models.CharField(max_length=255, null=True, blank=True )
@@ -1077,8 +1085,6 @@ class ReturnItem(BaseModel):
     metadata = models.JSONField(null=True)
 
 
-from django.db import models
-
 class ReturnReason(BaseModel):
     value = models.CharField(max_length=255, unique=True)
     label = models.CharField(max_length=255)
@@ -1090,7 +1096,7 @@ class ReturnReason(BaseModel):
 
 
 
-from django.db import models
+
 
 class ReturnStatus(models.TextChoices):
     REQUESTED = "requested"

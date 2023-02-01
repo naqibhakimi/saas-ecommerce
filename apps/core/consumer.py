@@ -51,5 +51,5 @@ class GraphQLSubscriptionConsumer(AsyncJsonWebsocketConsumer):
             else:
                 await self.send_json(content=self.build_message(
                         content.get('id'),
-                        'data',
+                        GQL_DATA,
                         single_result.data))

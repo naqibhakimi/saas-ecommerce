@@ -9,7 +9,6 @@ from .types import (
     CountryNode,
     AddressNode,
     AnalyticsConfigNode,
-    BatchJobStatusNode,
     BatchJobNode,
     DiscountNode,
     GiftCardNode,
@@ -57,8 +56,6 @@ from .types import (
     OauthNode,
     OrderEditNode,
     OrderItemChangeNode,
-    PaymentCollectionStatusNode,
-    PaymentCollectionTypeNode,
     PaymentCollectionNode,
     PaymentProviderNode,
     ProductCategoryNode,
@@ -75,11 +72,9 @@ from .types import (
     RegionNode,
     ReturnItemNode,
     ReturnReasonNode,
-    ReturnStatusNode,
     SalesChannelLocationNode,
     ShippingMethodTaxLineNode,
     ShippingOptionRequirementNode,
-    ShippingProfileTypeNode,
     ShippingProfileNode,
     TaxRateNode,
     ShippingTaxRateNode,
@@ -172,7 +167,7 @@ class ClaimOrderQuery:
         
 class ReturnQuery:
         returns = DjangoConnectionField(ReturnNode)
-        return = graphene.Field(ReturnNode, id=graphene.ID())
+        return_ = graphene.Field(ReturnNode, id=graphene.ID())
         
 class FulfillmentQuery:
         fulfillments = DjangoConnectionField(FulfillmentNode)
