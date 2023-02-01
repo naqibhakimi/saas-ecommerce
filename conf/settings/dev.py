@@ -39,8 +39,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'apps.ecommerce',
+    'apps.account',
+    'apps.auth',
+    'apps.channel',
+    'apps.checkout',
     'apps.core',
+    'apps.discount',
+    'apps.giftcard',
+    'apps.inventory',
+    'apps.invoice',
+    'apps.order',
+    'apps.payment',
+    'apps.permission',
+    'apps.product',
+    'apps.shipping',
+    'apps.store',
+    'apps.tax',
 ]
 
 MIDDLEWARE = [
