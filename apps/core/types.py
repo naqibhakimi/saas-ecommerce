@@ -1,4 +1,5 @@
-from django.utils import camelize
+import graphene
+from graphene_django.utils import camelize
 
 from apps.core.exceptions import WrongUsage
 

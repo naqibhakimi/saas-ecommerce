@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,8 +39,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'apps.ecommerce',
+    'apps.account',
+    'apps.auth',
+    'apps.channel',
+    'apps.checkout',
     'apps.core',
+    'apps.discount',
+    'apps.giftcard',
+    'apps.inventory',
+    'apps.invoice',
+    'apps.order',
+    'apps.payment',
+    'apps.permission',
+    'apps.product',
+    'apps.shipping',
+    'apps.store',
+    'apps.tax',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +86,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'conf.wsgi.application'
+ASGI_APPLICATION = "conf.asgi.application"
 
 
 # Database
@@ -128,9 +144,8 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Grphene settings
-
 GRAPHENE = {
-    "SCHEMA": "graph_ql.schema.schema",
+    "SCHEMA": "apps.core.schema.schema",
     "SCHEMA_OUTPUT": "schema.json",
     "SCHEMA_INDENT": 2,
     "MIDDLEWARE": [
@@ -138,3 +153,22 @@ GRAPHENE = {
         # "graphql_jwt.middleware.JSONWebTokenMiddleware",
     ],
 }
+
+# DEFAULT_AUTO_FIELD = "django.db.models.UUIDAutoField"
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
