@@ -4,7 +4,11 @@ from apps.core.models import BaseModel
 from apps.giftcard.models import GiftCard
 from apps.shipping.models import ShippingMethod
 
+from django.contrib.contenttypes.models import ContentType
 
+from django.contrib.contenttypes.fields import GenericForeignKey
+
+from django.utils import timezone
 
 
 class SalesChannel(BaseModel):
@@ -79,17 +83,185 @@ class NotificationProvider(BaseModel):
 
 
 
-class Notification(BaseModel):
-    event_name = models.CharField(max_length=255, null=True)
-    resource_type = models.CharField(max_length=255)
-    resource_id = models.CharField(max_length=255)
-    customer = models.ForeignKey('customer.Customer', on_delete=models.CASCADE, related_name='+')
-    to = models.CharField(max_length=255)
-    data = models.JSONField()
-    parent_notification = models.ForeignKey('self', on_delete=models.CASCADE, related_name='+', null=True)
-    provider = models.ForeignKey(NotificationProvider, on_delete=models.CASCADE, related_name='+')
-    
+class NotificationQuerySet(models.query.QuerySet):
+    """Notification QuerySet"""
 
+    def unsent(self):
+        return self.filter(emailed=False)
+
+    def sent(self):
+        return self.filter(emailed=True)
+
+    def unread(self, include_deleted=False):
+        return self.filter(unread=True, deleted=False)
+
+    def read(self, include_deleted=False):
+        return self.filter(unread=False)
+
+    def mark_all_as_read(self, recipient=None):
+        qset = self.unread(True)
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+
+        return qset.update(unread=False)
+
+    def mark_all_as_unread(self, recipient=None):
+        qset = self.read(True)
+
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+
+        return qset.update(unread=True)
+
+    def deleted(self):
+        return self.filter(deleted=True)
+
+    def active(self):
+        return self.filter(deleted=False)
+
+    def mark_all_as_deleted(self, recipient=None):
+        qset = self.active()
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+
+        return qset.update(deleted=True)
+
+    def mark_all_as_active(self, recipient=None):
+        qset = self.deleted()
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+
+        return qset.update(deleted=False)
+
+    def mark_as_unsent(self, recipient=None):
+        qset = self.sent()
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+        return qset.update(emailed=False)
+
+    def mark_as_sent(self, recipient=None):
+        qset = self.unsent()
+        if recipient:
+            qset = qset.filter(recipient=recipient)
+        return qset.update(emailed=True)
+
+class LevelChoices(models.Choices):
+    INFO="info"
+    WARNING='warning'
+    DANGER="danger"
+    SUCCESS = 'success'
+
+
+class Notification(BaseModel):
+   
+    level = models.CharField(choices=LevelChoices.choices, default=LevelChoices.SUCCESS, max_length=20)
+
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=False,
+        related_name="notifications",
+        on_delete=models.CASCADE,
+    )
+
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=False,
+        null=True,
+        related_name="zenpro_notifications_actor",
+        on_delete=models.CASCADE,
+    )
+
+    unread = models.BooleanField(default=True, blank=False, db_index=True)
+    verb = models.TextField()
+    description = models.TextField(blank=True, null=True)
+
+    target_content_type = models.ForeignKey(
+        ContentType,
+        related_name="notify_target",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+    )
+    target_object_id = models.CharField(max_length=255, blank=True, null=True)
+    target = GenericForeignKey("target_content_type", "target_object_id")
+
+    action_object_content_type = models.ForeignKey(
+        ContentType,
+        blank=True,
+        null=True,
+        related_name="notify_action_object",
+        on_delete=models.CASCADE,
+    )
+    action_object_object_id = models.CharField(max_length=255, blank=True, null=True)
+    action_object = GenericForeignKey(
+        "action_object_content_type", "action_object_object_id"
+    )
+
+    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
+
+    public = models.BooleanField(default=True, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
+    emailed = models.BooleanField(default=False, db_index=True)
+
+    data = models.JSONField(blank=True, null=True)
+
+    @property
+    def get_target(self):
+        ct = ContentType.objects.get_for_id(self.target_content_type.id)
+        obj = ct.get_object_for_this_type(pk=self.target_object_id)
+        return obj
+
+    @property
+    def get_action(self):
+        ct = ContentType.objects.get_for_id(self.action_object_content_type.id)
+        obj = ct.get_object_for_this_type(pk=self.action_object_object_id)
+        return obj
+
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ("-timestamp",)
+        index_together = ("recipient", "unread")
+
+    def __str__(self):
+        ctx = {
+            "actor": self.actor,
+            "verb": self.verb,
+            "action_object": self.action_object,
+            "target": self.target,
+            "timesince": self.timesince,
+        }
+        if self.target:
+            if self.action_object:
+                return (
+                    "%(actor)s %(verb)s %(action_object)s on %(target)s %(timesince)s ago"
+                    % ctx
+                )
+            return "%(actor)s %(verb)s %(target)s %(timesince)s ago" % ctx
+        if self.action_object:
+            return "%(actor)s %(verb)s %(action_object)s %(timesince)s ago" % ctx
+        return "%(actor)s %(verb)s %(timesince)s ago" % ctx
+
+    @property
+    def timesince(self, now=None):
+        """
+        Shortcut for the ``django.utils.timesince.timesince`` function of the
+        current timestamp.
+        """
+        from django.utils.timesince import timesince as timesince_
+
+        return timesince_(self.timestamp, now).split(",")[0]
+
+    def mark_as_read(self):
+        if self.unread:
+            self.unread = False
+            self.save()
+
+    def mark_as_unread(self):
+        if not self.unread:
+            self.unread = True
+            self.save()
 
 class StagedJob(BaseModel):
     event_name = models.CharField(max_length=255)
