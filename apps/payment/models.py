@@ -63,18 +63,6 @@ class PaymentSession(BaseModel):
     payment_authorized_at = models.DateTimeField(null=True)
 
 
-
-
-class PaymentCollectionStatus(models.TextChoices):
-    NOT_PAID = 'not_paid'
-    AWAITING = 'awaiting'
-    AUTHORIZED = 'authorized'
-    PARTIALLY_AUTHORIZED = 'partially_authorized'
-    CANCELED = 'canceled'
-
-class PaymentCollectionType(models.TextChoices):
-    ORDER_EDIT = 'order_edit'
-
 class PaymentCollection(BaseModel):
     Payment_Collection_Status = (
         ("not_paid", "NOT_PAID"),
