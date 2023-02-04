@@ -4,9 +4,6 @@ from apps.core.models import BaseModel
 
 from apps.core.models import BaseModel
 from apps.core.models import BaseModel
-from apps.customer.models import  Region, CustomerGroup
-from apps.order.models import  ShippingProfile
-from apps.payment.models import Currency
 from apps.store.models import SalesChannel
 from apps.tax.models import TaxRate
 
@@ -18,7 +15,7 @@ class PriceList(BaseModel):
     status = models.CharField(max_length=255, default="draft")
     starts_at = models.DateTimeField(null=True, blank=True)
     ends_at = models.DateTimeField(null=True, blank=True)
-    customer_groups = models.ManyToManyField(CustomerGroup, related_name='+')
+    customer_groups = models.ManyToManyField('customer.CustomerGroup', related_name='+')
     # prices = models.OneToManyField('MoneyAmount', related_name='+', on_delete=models.CASCADE)
     includes_tax = models.BooleanField(default=False)
 
@@ -26,13 +23,13 @@ class PriceList(BaseModel):
 class MoneyAmount(BaseModel):
     # do we need this ? 
     # currency_code = models.CharField(max_length=255, null=True, blank=True)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='+')
+    currency = models.ForeignKey('payment.Currency', on_delete=models.CASCADE, related_name='+')
     amount = models.FloatField()
     min_quantity = models.IntegerField(null=True)
     max_quantity = models.IntegerField(null=True)
     price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE, null=True, related_name='+')
     variant = models.ForeignKey('ProductVariant', on_delete=models.CASCADE, related_name='+')
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True, related_name='+')
+    region = models.ForeignKey('customer.Region', on_delete=models.CASCADE, null=True, related_name='+')
 
 
 class ProductType(BaseModel):
@@ -66,7 +63,7 @@ class Product(BaseModel):
     status = models.CharField(max_length=255, choices=Product_Status, default='draft')
     images = models.ManyToManyField(Image, related_name='+')
     thumbnail = models.TextField(null=True, blank=True)
-    profile = models.ForeignKey(ShippingProfile, on_delete=models.CASCADE, related_name='+')
+    profile = models.ForeignKey('shipping.ShippingProfile', on_delete=models.CASCADE, related_name='+')
     weight = models.PositiveIntegerField(null=True, blank=True)
     length = models.PositiveIntegerField(null=True, blank=True)
     height = models.PositiveIntegerField(null=True, blank=True)

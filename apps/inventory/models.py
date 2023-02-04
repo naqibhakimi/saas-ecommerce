@@ -1,9 +1,6 @@
 from django.db import models
 from apps.core.models import BaseModel
 from django.conf import settings
-from apps.order import Order, ClaimOrder
-from apps.invoice.models import LineItem, FulfillmentProvider
-from apps.store.models import Swap
 
 
     
@@ -53,11 +50,11 @@ class BatchJob(BaseModel):
 
 
 class Fulfillment(BaseModel):
-    claim_order = models.ForeignKey(ClaimOrder, on_delete=models.CASCADE, null=True, related_name='+')
-    swap = models.ForeignKey(Swap, on_delete=models.CASCADE, null=True, related_name='+')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='+')
+    claim_order = models.ForeignKey('order.ClaimOrder', on_delete=models.CASCADE, null=True, related_name='+')
+    swap = models.ForeignKey('store.Swap', on_delete=models.CASCADE, null=True, related_name='+')
+    order = models.ForeignKey('order.Order', on_delete=models.CASCADE, null=True, related_name='+')
     no_notification = models.BooleanField(null=True)
-    provider = models.ForeignKey(FulfillmentProvider, on_delete=models.CASCADE)
+    provider = models.ForeignKey('inventory.FulfillmentProvider', on_delete=models.CASCADE)
     location_id = models.CharField(max_length=255, null=True)
     # items = models.OneToManyField("FulfillmentItem", on_delete=models.CASCADE, related_name='+')
     # tracking_links = models.OneToManyField("TrackingLink", on_delete=models.CASCADE, related_name='+')
@@ -73,7 +70,7 @@ class Fulfillment(BaseModel):
 
 class FulfillmentItem(BaseModel):
     fulfillment = models.ForeignKey(Fulfillment, on_delete=models.CASCADE)
-    item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
+    item = models.ForeignKey('invoice.LineItem', on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
 

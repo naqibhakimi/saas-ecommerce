@@ -1,10 +1,6 @@
 from django.db import models
 from apps.core.models import BaseModel
 from django.core.validators import EmailValidator
-
-from apps.order.models import Order
-from apps.customer.models import Address, CustomerGroup, Region
-from apps.product.models import PriceList
 from apps.payment.models import PaymentProvider, Currency
 from apps.tax.models import TaxRate, TaxProvider
 from apps.inventory.models import FulfillmentProvider
@@ -17,22 +13,22 @@ class Customer(BaseModel):
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
     billing_address = models.OneToOneField(
-        Address, on_delete=models.SET_NULL, null=True, blank=True, related_name='+'
+        'Address', on_delete=models.SET_NULL, null=True, blank=True, related_name='+'
     )
     phone = models.CharField(max_length=255, blank=True, null=True)
     has_account = models.BooleanField(default=False)
     password_hash = models.CharField(max_length=255, blank=True, null=True)
     orders = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name='+'
+        'order.Order', on_delete=models.CASCADE, related_name='+'
     )
-    groups = models.ManyToManyField(CustomerGroup, related_name='+')
+    groups = models.ManyToManyField('CustomerGroup', related_name='+')
     metadata = models.JSONField(blank=True, null=True)
 
 
 class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     customers = models.ManyToManyField(Customer, related_name='+')
-    price_lists = models.ManyToManyField(PriceList)
+    price_lists = models.ManyToManyField('product.PriceList')
     metadata = models.JSONField(null=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
@@ -43,7 +39,7 @@ class Country(BaseModel):
     num_code = models.IntegerField()
     name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True,  related_name='+')
+    region = models.ForeignKey('Region', on_delete=models.SET_NULL, null=True, blank=True,  related_name='+')
 
 
 class Address(BaseModel):

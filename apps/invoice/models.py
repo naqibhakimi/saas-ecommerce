@@ -1,23 +1,19 @@
 from django.db import models
-
-from apps.order.models import Order
 from apps.core.models import BaseModel
-from apps.invoice.models import LineItem
 from apps.discount.models import Discount
 from apps.store.models import Cart, Swap
 from apps.core.models import BaseModel
-from apps.order.models import ClaimOrder, OrderEdit
 from apps.product.models import ProductVariant
 
 
 
 class LineItem(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, related_name='+')
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name='+')
+    order = models.ForeignKey('order.Order', on_delete=models.SET_NULL, null=True, related_name='+')
     swap = models.ForeignKey(Swap, on_delete=models.SET_NULL, null=True, related_name='+')
-    claim_order = models.ForeignKey(ClaimOrder, on_delete=models.SET_NULL, null=True, related_name='+')
+    claim_order = models.ForeignKey('order.ClaimOrder', on_delete=models.SET_NULL, null=True, related_name='+')
     original_item = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='+')
-    order_edit = models.ForeignKey(OrderEdit, on_delete=models.SET_NULL, null=True, related_name='+')
+    order_edit = models.ForeignKey('order.OrderEdit', on_delete=models.SET_NULL, null=True, related_name='+')
     variant = models.ForeignKey(ProductVariant, on_delete=models.SET_NULL, null=True, related_name='+')
     title = models.CharField(max_length=100)
     description = models.TextField(null=True)

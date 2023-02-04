@@ -1,11 +1,7 @@
 from django.db import models
 from apps.core.models import BaseModel
-from apps.order.models import Order
 from apps.core.models import BaseModel
-from apps.customer.models import  Region
 from apps.inventory.models import  FulfillmentProvider
-from apps.order.models import ShippingMethod, Return, ClaimOrder
-from apps.store.models import Cart, Swap
 from apps.tax.models import TaxRate
 
 
@@ -32,7 +28,7 @@ class ShippingOption(BaseModel):
         ("calculated", "CALCULATED")
     )
     name = models.CharField(max_length=255)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    region = models.ForeignKey('customer.Region', on_delete=models.CASCADE)
     profile = models.ForeignKey(ShippingProfile, on_delete=models.CASCADE, related_name='+')
     provider = models.ForeignKey(FulfillmentProvider, on_delete=models.CASCADE, related_name='+')
     price_type = models.CharField(max_length=20, choices=Shipping_Option_Price_Type, default="FLAT_RATE")
@@ -52,18 +48,12 @@ class ShippingMethod(BaseModel):
     subtotal = models.PositiveIntegerField(null=True)
     total = models.PositiveIntegerField(null=True)
     tax_total = models.PositiveIntegerField(null=True)
-    cart = models.ForeignKey(Cart, null=True, on_delete=models.CASCADE, related_name='shipping_methods')
-    claim_order = models.ForeignKey(ClaimOrder, null=True, on_delete=models.CASCADE, related_name='shipping_methods')
-    order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE, related_name='shipping_methods')
-    return_order = models.OneToOneField(Return, null=True, on_delete=models.CASCADE, related_name='shipping_method')
     shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE, related_name='shipping_methods')
-    swap = models.ForeignKey(Swap, null=True, on_delete=models.CASCADE, related_name='shipping_methods')
-
 
 class CustomShippingOption(BaseModel):
     price = models.IntegerField()
     shipping_option = models.ForeignKey(ShippingOption, on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True)
+    cart = models.ForeignKey('store.Cart', on_delete=models.SET_NULL, null=True)
     metadata = models.JSONField(null=True)
 
     class Meta:

@@ -1,10 +1,7 @@
 from django.db import models
-from apps.order import Order
-
+from apps.order.models import Order
 from apps.core.models import BaseModel
 from apps.core.models import BaseModel
-from apps.customer.models import  Region
-from apps.payment.models import Currency
 from apps.store.models import Cart, Swap
 from apps.order.models import Order
 
@@ -80,7 +77,7 @@ class PaymentCollection(BaseModel):
     description = models.CharField(max_length=255, null=True, blank=True)
     amount = models.FloatField()
     authorized_amount = models.FloatField(null=True, blank=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    region = models.ForeignKey('customer.Region', on_delete=models.CASCADE)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
     payment_sessions = models.ManyToManyField(PaymentSession)
     payments = models.ManyToManyField(Payment)

@@ -1,8 +1,6 @@
 from django.db import models
 from apps.core.models import BaseModel
-from apps.customer.models import  Region
 from apps.product.models import Product, ProductType, ProductTag, ProductCollection
-from apps.customer.models import CustomerGroup
 
 
 class DiscountCondition(BaseModel):
@@ -44,11 +42,11 @@ class DiscountCondition(BaseModel):
         through='DiscountConditionProductTag',
         )
     product_collections = models.ManyToManyField(
-        "ProductCollection",
+        "product.ProductCollection",
         through='DiscountConditionProductCollection',
         )
     customer_groups = models.ManyToManyField(
-        CustomerGroup,
+        'customer.CustomerGroup',
         through='DiscountConditionCustomerGroup',
         )
     metadata = models.JSONField(null=True)
@@ -82,7 +80,7 @@ class Discount(BaseModel):
     starts_at = models.DateTimeField(auto_now_add=True)
     ends_at = models.DateTimeField(null=True, blank=True)
     valid_duration = models.CharField(max_length=255, null=True, blank=True)
-    regions = models.ManyToManyField(Region, related_name='+')
+    regions = models.ManyToManyField('customer.Region', related_name='+')
     usage_limit = models.IntegerField(null=True, blank=True)
     usage_count = models.IntegerField(default=0)
     metadata = models.JSONField(null=True, blank=True)
@@ -90,7 +88,7 @@ class Discount(BaseModel):
 
 
 class DiscountConditionCustomerGroup(BaseModel):
-    customer_group = models.ForeignKey(CustomerGroup, on_delete=models.CASCADE)
+    customer_group = models.ForeignKey('customer.CustomerGroup', on_delete=models.CASCADE)
     discount_condition = models.ForeignKey(DiscountCondition, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

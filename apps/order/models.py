@@ -1,14 +1,10 @@
 from django.db import models
 from apps.core.models import BaseModel
-from apps.order.models import Order, DraftOrder, OrderItemChange, ClaimItem, ClaimImage, ReturnReason
 from apps.core.models import BaseModel
-from apps.customer.models import Address, Customer, Region
 from apps.invoice.models import LineItem
 from apps.inventory.models import Fulfillment
 from apps.discount.models import Discount
 from apps.giftcard.models import GiftCard
-from apps.order.models import ShippingMethod, Return
-from apps.payment.models import Currency, PaymentCollection
 from apps.store.models import Cart, SalesChannel, Swap
 from apps.product.models import ProductVariant
 
@@ -16,11 +12,11 @@ from apps.product.models import ProductVariant
 # Create your models here.
 class OrderDiscount(BaseModel):
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE, related_name="+")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="+")
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name="+")
 
 class OrderGiftCard(BaseModel):
     gift_card = models.ForeignKey(GiftCard, on_delete=models.CASCADE, related_name="+")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="+")
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name="+")
 
 
 
@@ -72,11 +68,11 @@ class Order(BaseModel):
     )
     # display_id = models.AutoField(primary_key=True)
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE, null=True,  related_name='+')
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE,  related_name='+')
+    customer = models.ForeignKey('customer.Customer', on_delete=models.CASCADE,  related_name='+')
     email = models.EmailField()
-    billing_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='+', null=True)
-    shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='+', null=True)
-    region = models.ForeignKey(Region, on_delete = models.CASCADE,  related_name='+')
+    billing_address = models.ForeignKey('customer.Address', on_delete=models.CASCADE, related_name='+', null=True)
+    shipping_address = models.ForeignKey('customer.Address', on_delete=models.CASCADE, related_name='+', null=True)
+    region = models.ForeignKey('customer.Region', on_delete = models.CASCADE,  related_name='+')
     order_number = models.CharField(max_length=255, unique=True)
     order_date = models.DateTimeField(auto_now_add=True)
     subtotal_price = models.DecimalField(max_digits=20, decimal_places=2)
@@ -84,11 +80,11 @@ class Order(BaseModel):
 
 
     # currency_code = models.CharField(max_length=10)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE,  related_name='+')
+    currency = models.ForeignKey('payment.Currency', on_delete=models.CASCADE,  related_name='+')
     tax_rate = models.FloatField(null=True)
     discounts = models.ManyToManyField(Discount, through='OrderDiscount' ,  related_name='+')
     gift_cards = models.ManyToManyField(GiftCard, through='OrderGiftCard',  related_name='+')
-    draft_order = models.OneToOneField(DraftOrder, on_delete=models.CASCADE, related_name='+', null=True)
+    draft_order = models.OneToOneField('DraftOrder', on_delete=models.CASCADE, related_name='+', null=True)
     canceled_at = models.DateField(null=True)
     metadata = models.JSONField(null=True)
     no_notification = models.BooleanField(null=True)
@@ -120,7 +116,7 @@ class OrderEdit(BaseModel):
         ("canceled", "CANCELED"),
     )
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='+')
-    changes = models.ManyToManyField(OrderItemChange, related_name='+')
+    changes = models.ManyToManyField('OrderItemChange', related_name='+')
     internal_note = models.TextField(null=True)
     created_by = models.CharField(max_length=255)
     requested_by = models.CharField(max_length=255, null=True)
@@ -133,7 +129,7 @@ class OrderEdit(BaseModel):
     canceled_by = models.CharField(max_length=255, null=True)
     canceled_at = models.DateTimeField(null=True)
     items = models.ManyToManyField(LineItem, related_name='+')
-    payment_collection = models.OneToOneField(PaymentCollection, on_delete=models.SET_NULL, null=True)
+    payment_collection = models.OneToOneField('payment.PaymentCollection', on_delete=models.SET_NULL, null=True)
     shipping_total = models.IntegerField()
     discount_total = models.FloatField()
     tax_total = models.FloatField(null=True)
@@ -229,7 +225,7 @@ class ClaimOrder(BaseModel):
         default='not_fulfilled',
     )
     claim_items = models.ManyToManyField(
-        ClaimItem,
+        'ClaimItem',
         related_name='+',
     )
     additional_items = models.ManyToManyField(
@@ -246,21 +242,21 @@ class ClaimOrder(BaseModel):
         related_name='+',
     )
     return_order = models.OneToOneField(
-        Return,
+        'order.Return',
         on_delete=models.CASCADE,
         related_name='+',
         null=True,
         blank=True,
     )
     shipping_address = models.ForeignKey(
-        Address,
+        'customer.Address',
         on_delete=models.CASCADE,
         related_name='+',
         null=True,
         blank=True,
     )
     shipping_methods = models.ManyToManyField(
-        ShippingMethod,
+        'shipping.ShippingMethod',
         related_name='+',
     )
     fulfillments = models.ManyToManyField(
@@ -290,7 +286,7 @@ class ClaimItem(BaseModel):
         ('production_failure', 'Production Failure'),
         ('other', 'Other'),
     )
-    images = models.ManyToManyField(ClaimImage)
+    images = models.ManyToManyField('ClaimImage')
     claim_order = models.ForeignKey(ClaimOrder, related_name='+', on_delete=models.SET_NULL, null=True, blank=True)
     item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
     variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
@@ -323,7 +319,7 @@ class Return(BaseModel):
     swap = models.OneToOneField(Swap, on_delete=models.SET_NULL, related_name='+', null=True)
     claim_order = models.OneToOneField(ClaimOrder, on_delete=models.SET_NULL, related_name='+', null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, related_name='+', null=True)
-    shipping_method = models.OneToOneField(ShippingMethod, on_delete=models.CASCADE, related_name='+')
+    shipping_method = models.OneToOneField('shipping.ShippingMethod', on_delete=models.CASCADE, related_name='+')
     # location_id = models.CharField(max_length=100, null=True)
     shipping_data = models.JSONField(null=True)
     refund_amount = models.FloatField()
@@ -341,7 +337,7 @@ class ReturnItem(BaseModel):
     is_requested = models.BooleanField(default=True)
     requested_quantity = models.IntegerField(null=True)
     received_quantity = models.IntegerField(null=True)
-    reason = models.ForeignKey(ReturnReason, on_delete=models.SET_NULL, related_name='+', null=True)
+    reason = models.ForeignKey('ReturnReason', on_delete=models.SET_NULL, related_name='+', null=True)
     note = models.TextField(null=True)
     metadata = models.JSONField(null=True)
 

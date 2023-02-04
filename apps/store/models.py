@@ -1,14 +1,7 @@
 from django.db import models
-
-from apps.order import Order
 from django.conf import settings
 from apps.core.models import BaseModel
-from apps.customer.models import Address, Customer, Region
-from apps.invoice.models import LineItem
-from apps.discount.models import Discount
 from apps.giftcard.models import GiftCard
-from apps.order.models import Return
-from apps.payment.models import PaymentSession, Payment
 from apps.shipping.models import ShippingMethod
 
 
@@ -35,15 +28,15 @@ class Cart(BaseModel):
         ("claim", "Claim"),
     )
     email = models.EmailField(blank=True, null=True)
-    billing_address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
-    shipping_address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
-    items = models.ManyToManyField(LineItem, blank=True, related_name='+')
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
-    discounts = models.ManyToManyField(Discount, blank=True, related_name='+')
+    billing_address = models.ForeignKey('customer.Address', on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
+    shipping_address = models.ForeignKey('customer.Address', on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
+    items = models.ManyToManyField('invoice.LineItem', blank=True, related_name='+')
+    region = models.ForeignKey('customer.Region', on_delete=models.CASCADE)
+    discounts = models.ManyToManyField('discount.Discount', blank=True, related_name='+')
     gift_cards = models.ManyToManyField(GiftCard, blank=True, related_name='+')
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
-    payment_session = models.OneToOneField(PaymentSession, on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
-    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
+    customer = models.ForeignKey('customer.Customer', on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
+    payment_session = models.OneToOneField('payment.PaymentSession', on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
+    payment = models.OneToOneField('payment.Payment', on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
     shipping_methods = models.ManyToManyField(ShippingMethod, blank=True, related_name='+')
     type = models.CharField(max_length=20, choices=CART_TYPE_CHOICES, default='default')
     completed_at = models.DateTimeField(blank=True, null=True)
@@ -90,7 +83,7 @@ class Notification(BaseModel):
     event_name = models.CharField(max_length=255, null=True)
     resource_type = models.CharField(max_length=255)
     resource_id = models.CharField(max_length=255)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='+')
+    customer = models.ForeignKey('customer.Customer', on_delete=models.CASCADE, related_name='+')
     to = models.CharField(max_length=255)
     data = models.JSONField()
     parent_notification = models.ForeignKey('self', on_delete=models.CASCADE, related_name='+', null=True)
@@ -154,11 +147,11 @@ class Swap(BaseModel):
         choices=Swap_Payment_Status,
         default="NOT_PAID"
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='+')
-    return_order = models.OneToOneField(Return, on_delete=models.CASCADE, related_name='+')
-    payment = models.OneToOneField(Payment, on_delete=models.CASCADE,  related_name='+')
+    order = models.ForeignKey('order.Order', on_delete=models.CASCADE, related_name='+')
+    return_order = models.OneToOneField('order.Return', on_delete=models.CASCADE, related_name='+')
+    payment = models.OneToOneField('payment.Payment', on_delete=models.CASCADE,  related_name='+')
     difference_due = models.IntegerField(null=True)
-    shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE,  related_name='+')
+    shipping_address = models.ForeignKey('customer.Address', on_delete=models.CASCADE,  related_name='+')
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE,  related_name='+')
     confirmed_at = models.DateTimeField(null=True)
     canceled_at = models.DateTimeField(null=True)
