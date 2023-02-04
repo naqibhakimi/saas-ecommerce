@@ -44,59 +44,79 @@ from .connections import (
 
 class SalesChannelNode(Node, DjangoObjectType):
     class Meta:
+        model =  SalesChannel
+        interfaces =  (graphene.Node,)
         filterset_class = SalesChannelFilter 
-        interfaces = SalesChannelConnection
+        connection_class = SalesChannelConnection
 
 
 class SalesChannelLocationNode(Node, DjangoObjectType):
     class Meta:
+        model =  SalesChannelLocation
+        interfaces =  (graphene.Node,)
         filterset_class = SalesChannelLocationFilter 
-        interfaces = SalesChannelLocationConnection
+        connection_class = SalesChannelLocationConnection
 
 
 class CartNode(Node, DjangoObjectType):
     class Meta:
+        model= Cart
+        interfaces= (graphene.Node,)
         filterset_class = CartFilter 
-        interfaces = CartConnection
+        connection_class = CartConnection
 
 
 class InviteNode(Node, DjangoObjectType):
     class Meta:
+        model= Invite
+        interfaces= (graphene.Node,)
         filterset_class = InviteFilter 
-        interfaces = InviteConnection
+        connection_class = InviteConnection
 
 
 class NoteNode(Node, DjangoObjectType):
     class Meta:
+        model= Note
+        interfaces= (graphene.Node,)
         filterset_class = NoteFilter 
-        interfaces = NoteConnection
+        connection_class = NoteConnection
 
 
 class NotificationProviderNode(Node, DjangoObjectType):
     class Meta:
-        filterset_class = NotificationProviderFilter 
-        interfaces = NotificationProviderConnection
+        model =  Notification
+        interfaces =  (graphene.Node,)
+        filterset_class = NotificationFilter 
+        connection_class = NotificationProviderConnection
 
 
 class NotificationNode(Node, DjangoObjectType):
     class Meta:
+        model =  Notification
+        interfaces =  (graphene.Node,)
         filterset_class = NotificationFilter 
-        interfaces = NotificationConnection
+        connection_class = NotificationConnection
 
 
 class StagedJobNode(Node, DjangoObjectType):
     class Meta:
+        model =  StagedJob
+        interfaces =  (graphene.Node,)
         filterset_class = StagedJobFilter 
-        interfaces = StagedJobConnection
+        connection_class = StagedJobConnection
 
 
 class StoreNode(Node, DjangoObjectType):
     class Meta:
+        model =  Store
+        interfaces =  (graphene.Node,)
         filterset_class = StoreFilter 
-        interfaces = StoreConnection
+        connection_class = StoreConnection
 
 
 class SwapNode(Node, DjangoObjectType):
     class Meta:
+        model =  Swap
+        interfaces =  (graphene.Node,)
         filterset_class = SwapFilter 
-        interfaces = SwapConnection
+        connection_class = SwapConnection

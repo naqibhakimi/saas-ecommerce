@@ -19,16 +19,6 @@ from .connections import (
     TaxProviderConnection,
 )
 
-
-
-class OrderDiscountNode(Node, DjangoObjectType):
-    class Meta:
-        model = OrderDiscount
-        filterset_class = OrderDiscountFilter
-        interfaces = (graphene.Node,)
-        connection_class = OrderDiscountConnection 
-
-
 class TaxLineNode(Node, DjangoObjectType):
     class Meta:
         model = TaxLine

@@ -28,7 +28,7 @@ class SalesChannelLocationFilter(django_filters.FilterSet):
 class CartFilter(django_filters.FilterSet):
     class Meta:
         model = Cart
-        exclude = ('metadata')
+        exclude = ('metadata', 'context')
 
 
 class InviteFilter(django_filters.FilterSet):
@@ -58,7 +58,7 @@ class NotificationFilter(django_filters.FilterSet):
 class StagedJobFilter(django_filters.FilterSet):
     class Meta:
         model = StagedJob
-        exclude = ('metadata')
+        exclude = ('data', 'options')
 
 
 class StoreFilter(django_filters.FilterSet):
