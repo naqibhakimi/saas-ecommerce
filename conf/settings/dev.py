@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.channel',
     'apps.checkout',
     'apps.core',
+    'apps.customer',
     'apps.discount',
     'apps.giftcard',
     'apps.inventory',
