@@ -6,24 +6,75 @@ from apps.tax.models import TaxRate, TaxProvider
 from apps.inventory.models import FulfillmentProvider
 
 
-# Create your models here.
 
 class Customer(BaseModel):
-    email = models.EmailField(validators=[EmailValidator()], unique=True)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
+    """
+    This class represents a customer in the store.
+    """
+    email = models.EmailField(
+        validators=[EmailValidator()],
+        unique=True,
+        help_text="Email of the customer, must be unique."
+    )
+    first_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="First name of the customer, not required."
+    )
+    last_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Last name of the customer, not required."
+    )
     billing_address = models.OneToOneField(
-        'Address', on_delete=models.SET_NULL, null=True, blank=True, related_name='+'
+        'Address',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='+',
+        help_text="Billing address of the customer, not required."
     )
-    phone = models.CharField(max_length=255, blank=True, null=True)
-    has_account = models.BooleanField(default=False)
-    password_hash = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Phone number of the customer, not required."
+    )
+    has_account = models.BooleanField(
+        default=False,
+        help_text="Indicates whether the customer has an account or not."
+    )
+    password_hash = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Hashed password of the customer, not required."
+    )
     orders = models.ForeignKey(
-        'order.Order', on_delete=models.CASCADE, related_name='+'
+        'order.Order',
+        on_delete=models.CASCADE,
+        related_name='+',
+        help_text="Orders placed by the customer."
     )
-    groups = models.ManyToManyField('CustomerGroup', related_name='+')
-    metadata = models.JSONField(blank=True, null=True)
+    groups = models.ManyToManyField(
+        'CustomerGroup',
+        related_name='+',
+        help_text="Groups the customer belongs to."
+    )
+    metadata = models.JSONField(
+        blank=True,
+        null=True,
+        help_text="Metadata related to the customer, not required."
+    )
 
+    def __str__(self):
+        """
+        Returns a string representation of the customer, in the format
+        '{first_name} {last_name} ({email})'.
+        """
+        return f"{self.first_name} {self.last_name} ({self.email})"
 
 class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)
@@ -72,3 +123,87 @@ class Region(BaseModel):
     metadata = models.JSONField(null=True)
     includes_tax = models.BooleanField(default=False)
 
+
+
+# {
+#   "$schema": "http://json-schema.org/draft-07/schema#",
+#   "title": "Customer",
+#   "type": "object",
+#   "properties": {
+#     "id": {
+#       "type": "integer",
+#       "description": "Primary key of the customer."
+#     },
+#     "email": {
+#       "type": "string",
+#       "format": "email",
+#       "description": "Email of the customer, must be unique."
+#     },
+#     "first_name": {
+#       "type": "string",
+#       "maxLength": 255,
+#       "description": "First name of the customer, not required."
+#     },
+#     "last_name": {
+#       "type": "string",
+#       "maxLength": 255,
+#       "description": "Last name of the customer, not required."
+#     },
+#     "billing_address": {
+#       "type": "integer",
+#       "description": "ID of the billing address of the customer, not required."
+#     },
+#     "phone": {
+#       "type": "string",
+#       "maxLength": 255,
+#       "description": "Phone number of the customer, not required."
+#     },
+#     "has_account": {
+#       "type": "boolean",
+#       "description": "Indicates whether the customer has an account or not."
+#     },
+#     "password_hash": {
+#       "type": "string",
+#       "maxLength": 255,
+#       "description": "Hashed password of the customer, not required."
+#     },
+#     "orders": {
+#       "type": "array",
+#       "items": {
+#         "type": "integer"
+#       },
+#       "description": "IDs of the orders placed by the customer."
+#     },
+#     "groups": {
+#       "type": "array",
+#       "items": {
+#         "type": "integer"
+#       },
+#       "description": "IDs of the groups the customer belongs to."
+#     },
+#     "metadata": {
+#       "type": "object",
+#       "description": "Metadata related to the customer, not required."
+#     }
+#   },
+#   "required": [
+#     "email",
+#     "has_account"
+#   ],
+#   "example": {
+#     "id": 1,
+#     "email": "johndoe@example.com",
+#     "first_name": "John",
+#     "last_name": "Doe",
+#     "billing_address": 2,
+#     "phone": "555-555-5555",
+#     "has_account": true,
+#     "password_hash": "hashed_password",
+#     "orders": [1, 2, 3],
+#     "groups": [1, 2],
+#     "metadata": {
+#       "favourite_products": [5, 6, 7],
+#       "preferred_payment_method": "Credit Card"
+#     }
+#   }
+# }
