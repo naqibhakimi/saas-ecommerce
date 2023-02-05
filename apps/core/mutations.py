@@ -1,5 +1,7 @@
 from apps.core.types import ExpectedErrorType
 import graphene
+from graphene_django.forms.mutation import DjangoModelFormMutation, ErrorType
+from graphql_relay.node.node import from_global_id
 
 class Output:
     """
@@ -78,3 +80,33 @@ class DynamicInputMixin:
                     {key: graphene.InputField(graphene.String, required=True)}
                 )
         return super().Field(*args, **kwargs)
+
+
+
+class AbstractMutation(DjangoModelFormMutation):
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        form = cls.get_form(root, info, **input)
+
+        if form.is_valid():
+            return cls.perform_mutate(form, info)
+        else:
+            errors = ErrorType.from_errors(form.errors)
+
+            return cls(errors=errors)
+
+    @classmethod
+    def get_form_kwargs(cls, root, info, **input):
+        kwargs = {"data": input}
+
+        pk = input.pop("id", None)
+        if pk:
+            _, pk = from_global_id(pk)
+            instance = cls._meta.model._default_manager.get(pk=pk)
+            kwargs["instance"] = instance
+
+        return kwargs
+
+    class Meta:
+        abstract = True

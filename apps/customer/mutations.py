@@ -1,9 +1,28 @@
 import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
-from .mixins import UpdateCustomerMixin
+
+
+from graphene_django.forms.mutation import DjangoModelFormMutation, ErrorType
+from apps.core.mutations import AbstractMutation
+
 from .types import CustomerNode
 
-from graphene_django.forms.mutation import DjangoModelDjangoFormMutationOptions, DjangoModelFormMutation
+from .forms import (
+    CreateCustomerForm,
+    # CreateCustomerGroupForm,
+    # CreateCountryForm,
+    # CreateAddressForm,
+    # CreateRegionForm,
+)
+
+
+
+class CreateCustomer(AbstractMutation):
+
+    class Meta:
+        form_class = CreateCustomerForm
+
+
 
 # class UpdateCustomer(UpdateCustomerMixin, RelayMutationMixin, DynamicInputMixin, graphene.ClientIDMutation):
 #     _inputs = {'customer': CustomerNode}
@@ -24,7 +43,8 @@ from graphene_django.forms.mutation import DjangoModelDjangoFormMutationOptions,
 # metadata
 
 
+class Query(object):
+    pass 
 
-class Mutation:
-    pass
-    # update_address = UpdateAddress.Field()
+class Mutation(object):
+    create_customer = CreateCustomer.Field()

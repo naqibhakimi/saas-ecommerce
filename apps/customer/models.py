@@ -43,7 +43,6 @@ class Country(BaseModel):
 
 
 class Address(BaseModel):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE,  related_name='+')
     company = models.CharField(max_length=255, null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
