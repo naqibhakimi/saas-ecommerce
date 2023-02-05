@@ -16,6 +16,10 @@ import graphene
 from asgiref.sync import async_to_sync
 
 
+from apps.customer.mutations import Mutation as CustomMutations
+
+
+
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 
@@ -39,7 +43,7 @@ class Query(
         async_to_sync(channel_layer.group_send)("new_message", {"data": name})
 
 
-class Mutatation(graphene.ObjectType):
+class Mutatation(CustomMutations, graphene.ObjectType):
     test_object = graphene.String()
 
 

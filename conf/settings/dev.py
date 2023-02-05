@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'graphene_django',
     'apps.account',
     'apps.auth',
     'apps.channel',
@@ -56,6 +55,9 @@ INSTALLED_APPS = [
     'apps.shipping',
     'apps.store',
     'apps.tax',
+    'graphene_django',
+    'django_filters',
+
 ]
 
 MIDDLEWARE = [
