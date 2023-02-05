@@ -1,5 +1,5 @@
 import graphene
-from graphene_django.fields import DjangoConnectionField
+from graphene_django.filter.fields import DjangoFilterConnectionField
 
 from .types import (
         TaxLineNode,
@@ -8,14 +8,14 @@ from .types import (
 )
 
 class TaxLineQuery:
-        tax_lines = DjangoConnectionField(TaxLineNode)
+        tax_lines = DjangoFilterConnectionField(TaxLineNode)
         tax_line = graphene.Field(TaxLineNode, id=graphene.ID())
        
 class TaxRateQuery:
-        tax_rates = DjangoConnectionField(TaxRateNode)
+        tax_rates = DjangoFilterConnectionField(TaxRateNode)
         tax_rate = graphene.Field(TaxRateNode, id=graphene.ID())
         
 class TaxProviderQuery:
-        tax_providers = DjangoConnectionField(TaxProviderNode)
+        tax_providers = DjangoFilterConnectionField(TaxProviderNode)
         tax_provider = graphene.Field(TaxProviderNode, id=graphene.ID())
         

@@ -74,7 +74,7 @@ class InviteNode(Node, DjangoObjectType):
         connection_class = InviteConnection
 
 
-class NoteNode(Node, DjangoObjectType):
+class NoteNode(DjangoObjectType):
     class Meta:
         model= Note
         interfaces= (graphene.Node,)

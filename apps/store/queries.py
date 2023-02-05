@@ -1,5 +1,5 @@
 import graphene
-from graphene_django.fields import DjangoConnectionField
+from graphene_django.filter.fields import DjangoFilterConnectionField
 
 from .types import (
         SalesChannelNode,
@@ -15,46 +15,46 @@ from .types import (
 )
 
 class SalesChannelQuery:
-        sales_channels = DjangoConnectionField(SalesChannelNode)
+        sales_channels = DjangoFilterConnectionField(SalesChannelNode)
         sales_channel = graphene.Field(SalesChannelNode, id=graphene.ID())
         
 class CartQuery:
-        carts = DjangoConnectionField(CartNode)
+        carts = DjangoFilterConnectionField(CartNode)
         cart = graphene.Field(CartNode, id=graphene.ID())
         
 
 class InviteQuery:
-        invites = DjangoConnectionField(InviteNode)
+        invites = DjangoFilterConnectionField(InviteNode)
         invite = graphene.Field(InviteNode, id=graphene.ID())
         
 
 class NoteQuery:
-        notes = DjangoConnectionField(NoteNode)
+        notes = DjangoFilterConnectionField(NoteNode)
         note = graphene.Field(NoteNode, id=graphene.ID())
         
 class NotificationProviderQuery:
-        notification_providers = DjangoConnectionField(NotificationProviderNode)
+        notification_providers = DjangoFilterConnectionField(NotificationProviderNode)
         notification_provider = graphene.Field(NotificationProviderNode, id=graphene.ID())
         
 class NotificationQuery:
-        notifications = DjangoConnectionField(NotificationNode)
+        notifications = DjangoFilterConnectionField(NotificationNode)
         notification = graphene.Field(NotificationNode, id=graphene.ID())
 
         
 class SalesChannelLocationQuery:
-        sales_channel_locations = DjangoConnectionField(SalesChannelLocationNode)
+        sales_channel_locations = DjangoFilterConnectionField(SalesChannelLocationNode)
         sales_channel_location = graphene.Field(SalesChannelLocationNode, id=graphene.ID())
         
 
 class StagedJobQuery:
-        staged_jobs = DjangoConnectionField(StagedJobNode)
+        staged_jobs = DjangoFilterConnectionField(StagedJobNode)
         staged_job = graphene.Field(StagedJobNode, id=graphene.ID())
         
 class StoreQuery:
-        stores = DjangoConnectionField(StoreNode)
+        stores = DjangoFilterConnectionField(StoreNode)
         store = graphene.Field(StoreNode, id=graphene.ID())
         
 class SwapQuery:
-        swaps = DjangoConnectionField(SwapNode)
+        swaps = DjangoFilterConnectionField(SwapNode)
         swap = graphene.Field(SwapNode, id=graphene.ID())
         

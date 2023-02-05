@@ -1,2 +1,2 @@
 import graphene
-from graphene_django.fields import DjangoConnectionField
+from graphene_django.filter.fields import DjangoFilterConnectionField

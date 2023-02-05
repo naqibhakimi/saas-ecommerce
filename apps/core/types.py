@@ -3,9 +3,10 @@ from graphene_django.utils import camelize
 
 from apps.core.exceptions import WrongUsage
 
+from graphql_relay.node.node import from_global_id
+
 class Node:
     pass
-
 
 class ExpectedErrorType(graphene.Scalar):
     class Meta:

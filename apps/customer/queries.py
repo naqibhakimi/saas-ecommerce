@@ -1,5 +1,5 @@
 import graphene
-from graphene_django.fields import DjangoConnectionField
+from graphene_django.filter.fields import DjangoFilterConnectionField
 
 from .types import (
     CustomerNode,
@@ -9,23 +9,23 @@ from .types import (
     RegionNode,
 )
 class CustomerQuery:
-        customers = DjangoConnectionField(CustomerNode)
+        customers = DjangoFilterConnectionField(CustomerNode)
         customer = graphene.Field(CustomerNode, id=graphene.ID())
         
 class CountryQuery:
-        countrys = DjangoConnectionField(CountryNode)
+        countrys = DjangoFilterConnectionField(CountryNode)
         country = graphene.Field(CountryNode, id=graphene.ID())
         
 class AddressQuery:
-        addresss = DjangoConnectionField(AddressNode)
+        addresss = DjangoFilterConnectionField(AddressNode)
         address = graphene.Field(AddressNode, id=graphene.ID())
         
 class CustomerGroupQuery:
-        customer_groups = DjangoConnectionField(CustomerGroupNode)
+        customer_groups = DjangoFilterConnectionField(CustomerGroupNode)
         customer_group = graphene.Field(CustomerGroupNode, id=graphene.ID())
        
         
 class RegionQuery:
-        regions = DjangoConnectionField(RegionNode)
+        regions = DjangoFilterConnectionField(RegionNode)
         region = graphene.Field(RegionNode, id=graphene.ID())
     
