@@ -14,5 +14,3 @@ class GiftCardConnection(BaseConnection):
 class GiftCardTransactionConnection(BaseConnection):
     class Meta:
         abstract = True 
-
-        

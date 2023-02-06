@@ -30,7 +30,7 @@ class InviteQuery:
 
 class NoteQuery:
         notes = DjangoFilterConnectionField(NoteNode)
-        note = graphene.Field(NoteNode, id=graphene.ID())
+        note = graphene.relay.Node.Field(NoteNode)
         
 class NotificationProviderQuery:
         notification_providers = DjangoFilterConnectionField(NotificationProviderNode)

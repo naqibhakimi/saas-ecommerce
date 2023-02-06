@@ -1,2 +1,2 @@
-from core.mutations import Output
+from apps.core.mutations import Output
 

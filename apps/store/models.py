@@ -10,6 +10,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 from django.utils import timezone
 
+from apps.store.querysets import NoteQuerSet
+
 
 class SalesChannel(BaseModel):
     name = models.CharField(max_length=255)
@@ -75,6 +77,7 @@ class Note(BaseModel):
     resource_id = models.CharField(max_length=255, null=True, blank=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     metadata = models.JSONField(null=True)
+    objects = NoteQuerSet.as_manager()
 
 
 

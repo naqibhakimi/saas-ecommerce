@@ -1,30 +1,23 @@
-from apps.store.queries import (
-    SalesChannelQuery,
-    CartQuery,
-    InviteQuery,
-    NoteQuery,
-    NotificationProviderQuery,
-    NotificationQuery,
-    SalesChannelLocationQuery,
-    StagedJobQuery,
-    StoreQuery,
-    SwapQuery,
-)
 import asyncio
 import datetime
+
 import graphene
 from asgiref.sync import async_to_sync
-
-
-from apps.customer.mutations import Mutation as CustomMutations
-
-
-
 from channels.layers import get_channel_layer
+
+from apps.auth.queries import Query as AuthQuery
+from apps.customer.mutations import Mutation as CustomMutations
+from apps.store.mutations import Mutation as StoreMutations
+from apps.store.queries import (CartQuery, InviteQuery, NoteQuery,
+                                NotificationProviderQuery, NotificationQuery,
+                                SalesChannelLocationQuery, SalesChannelQuery,
+                                StagedJobQuery, StoreQuery, SwapQuery)
+
 channel_layer = get_channel_layer()
 
 
 class Query(
+    AuthQuery,
     SalesChannelQuery,
     CartQuery,
     InviteQuery,
@@ -43,7 +36,10 @@ class Query(
         async_to_sync(channel_layer.group_send)("new_message", {"data": name})
 
 
-class Mutatation(CustomMutations, graphene.ObjectType):
+class Mutatation(
+    StoreMutations,
+    CustomMutations,
+    graphene.ObjectType):
     test_object = graphene.String()
 
 

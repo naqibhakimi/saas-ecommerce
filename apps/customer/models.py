@@ -1,10 +1,10 @@
-from django.db import models
-from apps.core.models import BaseModel
 from django.core.validators import EmailValidator
-from apps.payment.models import PaymentProvider, Currency
-from apps.tax.models import TaxRate, TaxProvider
-from apps.inventory.models import FulfillmentProvider
+from django.db import models
 
+from apps.core.models import BaseModel
+from apps.inventory.models import FulfillmentProvider
+from apps.payment.models import Currency, PaymentProvider
+from apps.tax.models import TaxProvider, TaxRate
 
 
 class Customer(BaseModel):

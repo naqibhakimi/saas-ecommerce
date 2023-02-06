@@ -157,7 +157,7 @@ GRAPHENE = {
     ],
 }
 
-# DEFAULT_AUTO_FIELD = "django.db.models.UUIDAutoField"
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
 CHANNEL_LAYERS = {

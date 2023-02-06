@@ -7,7 +7,6 @@ class GiftCard(BaseModel):
     value = models.IntegerField()
     balance = models.IntegerField()
     region = models.ForeignKey('customer.Region', on_delete=models.CASCADE)
-    order = models.ForeignKey('order.Order', on_delete=models.SET_NULL, null=True, blank=True)
     is_disabled = models.BooleanField(default=False)
     ends_at = models.DateTimeField(null=True, blank=True)
     tax_rate = models.FloatField(null=True, blank=True)

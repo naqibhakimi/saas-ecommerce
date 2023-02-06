@@ -1,5 +1,5 @@
 import graphene
-from core.mutations import RelayMutationMixin, DynamicInputMixin
+from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
 from .mixins import UpdateAddressMixin
 
 class UpdateAddress(UpdateAddressMixin, RelayMutationMixin, DynamicInputMixin, graphene.ClientIDMutation):
