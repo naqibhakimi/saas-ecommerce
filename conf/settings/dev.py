@@ -28,6 +28,16 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# import django.contrib.auth.backends
+
+# Auth Backends
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "app.auth.backends.GraphQLAuthBackend",
+    "django.contrib.auth.backends.ModelBackend"
+]
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -59,6 +69,8 @@ INSTALLED_APPS = [
     'django_filters',
 
 ]
+
+# from django.contrib.auth.middleware import AuthenticationMiddleware
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -165,6 +177,9 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
+
+
+AUTH_USER_MODEL = 'apps_auth.SEUser'
 
 
 # CHANNEL_LAYERS = {

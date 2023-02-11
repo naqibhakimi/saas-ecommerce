@@ -1,4 +1,4 @@
-from core.exceptions import GraphQLError
+from apps.core.exceptions import GraphQLError
 from django.utils.translation import gettext as _
 
 class RecordDoesNotExists(GraphQLError):

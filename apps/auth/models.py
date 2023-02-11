@@ -3,8 +3,6 @@ from apps.core.models import BaseModel
 from django.contrib.auth.models import AbstractUser
 import time
 from apps.core.interval_async_timer import RepeatingAsyncTimer
-from apps.core.saas_domain_manager import SaasDomainManager
-import dns.resolver
 from django.conf import settings as django_settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -17,7 +15,6 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from PIL import Image
 
 from apps.core.decorators.decorators import add_info
 
@@ -112,7 +109,7 @@ class UserManager(BaseUserManager):
 
 
 # class SEUser(AbstractBaseUser, PermissionsMixin):
-class SEUser(AbstractBaseUser):
+class SEUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
     email = models.EmailField(_("email address"), blank=True, unique=True)
@@ -348,153 +345,3 @@ class UserStatus(BaseModel):
         with transaction.atomic():
             self.secondary_email = None
             self.save(update_fields=["secondary_email"])
-
-    class Meta:
-        app_label = "secure_auth"
-
-
-def check_domain(*args, **kwargs):
-    # from subscription.models import Subscription
-    # company = kwargs.get('company')
-    # brand_domain = kwargs.get('domain')
-    
-    # domain_manager = SaasDomainManager(
-    #     settings.CLOUD_FLARE_ZONEID, settings.CLOUD_FLARE_KEY)
-
-    # if company.brand_domain != brand_domain:
-    #      domain_manager.delete(brand_domain)
-    # if Subscription.objects.filter(company_membership=company.companymembership, trial=False, company_membership__membership__level__gt=1).exists():
-    #     company.cname = domain_manager.check_cname(company.brand_domain)
-    #     company.save()
-    #     domain_manager.create(company.brand_domain)
-    pass
-
-
-# class Company(models.Model):
-#     owner = models.OneToOneField(
-#         SEUser, on_delete=models.CASCADE, blank=True, null=True, related_name="owner"
-#     )
-#     name = models.CharField(
-#         max_length=100,
-#         error_messages={
-#             "unique": "This company has already been registered.",
-#             "required": "Company name must not be empty.",
-#             "blank": "Company name must not be empty.",
-#             "null": "Company name must not be empty.",
-#         },
-#     )
-
-#     header_text = models.CharField(
-#         max_length=100, blank=True, null=True, default="Company header")
-
-#     user_emp = models.ManyToManyField(
-#         SEUser, blank=True, related_name="employee")
-#     company_logo = models.ImageField(null=True, blank=True)
-#     company_header_color = models.CharField(
-#         max_length=10, blank=True, null=True, default="#FFFFFF"
-#     )
-#     company_text_color = models.CharField(
-#         max_length=10, blank=True, null=True, default="#000000"
-#     )
-#     active = models.BooleanField(default=True)
-
-#     domain = models.CharField(
-#         max_length=100, blank=True, null=True, unique=True)
-#     cname = models.CharField(max_length=100, blank=True, null=True, default="")
-#     brand_domain = models.CharField(
-#         max_length=100, blank=True, null=True, unique=True)
-
-#     # TODO(naqib): remove port number when we are using production
-#     @property
-#     def company_logo_url(self):
-#         if self.company_logo:
-#             return f'{self.company_logo.url}'
-#         else:
-#             return ''
-
-#     class Meta:
-#         verbose_name = "Company"
-#         verbose_name_plural = "Companies"
-
-#     def __str__(self):
-#         return f'{self.name}: {self.brand_domain}: {self.domain}'
-
-#     def clean_name(self):
-#         return self.name.replace(' ', '').lower()
-
-#     def save(self, *args, **kwargs):
-#         print('saveing model ----------------------------')
-#         import random
-#         if not self.pk:
-#             self.domain = f'{self.clean_name()}'
-#             if Company.objects.filter(domain=self.domain).exists():
-#                 self.domain = f'{self.clean_name()}{random.randint(1000, 9999)}'
-#                 self.brand_domain = f'secure.{self.domain}.com'
-#             else:
-#                 self.brand_domain = f'secure.{self.domain}.com'
-
-#         if self.companymembership.membership.level < 2:
-#             self.brand_domain = f'secure.{self.domain}.com'
-
-#         if self.company_logo:
-#             try:
-#                 self.company_logo = self.compressImage(self.company_logo)
-#             except:
-#                 pass
-#         super(Company, self).save(*args, **kwargs)
-
-#     def compressImage(self, uploadedImage):
-#         imageTemproary = Image.open(uploadedImage)
-#         outputIoStream = BytesIO()
-#         imageTemproaryResized = imageTemproary.thumbnail((100, 100))
-#         imageTemproary.save(outputIoStream, format="PNG", quality=60)
-#         outputIoStream.seek(0)
-#         uploadedImage = InMemoryUploadedFile(
-#             outputIoStream,
-#             "ImageField",
-#             "%s.png" % uploadedImage.name.split(".")[0],
-#             "image/png",
-#             sys.getsizeof(outputIoStream),
-#             None,
-#         )
-#         return uploadedImage
-
-
-# class Profile(models.Model):
-#     EmpRole = (
-#         ("admin", "Admin"),
-#         ("user", "User"),
-#     )
-#     user = models.OneToOneField(SEUser, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=100, blank=True, null=True)
-#     company = models.ForeignKey(
-#         Company, on_delete=models.SET_NULL, blank=True, null=True
-#     )
-#     role = models.CharField(
-#         max_length=20, choices=EmpRole, blank=True, null=True)
-#     active = models.BooleanField(default=False)
-
-#     date_joined = models.DateTimeField(auto_now_add=True)
-
-#     class Meta:
-#         verbose_name = "Profile"
-#         verbose_name_plural = "Profiles"
-
-#     def __str__(self):
-#         return self.user.email
-
-
-class LogAttempts(BaseModel):
-    email = models.EmailField(unique=True)
-    login_attempts = models.IntegerField(default=0)
-    created_on = models.DateTimeField(auto_now_add=True)
-    duration_before_next_attempt = models.DateTimeField(blank=True, null=True)
-
-    locked_out = models.BooleanField(default=False)
-
-
-# class UserEmailLog(BaseModel):
-#     email = models.EmailField(unique=True)
-#     trial = models.BooleanField(default=False)
-#     trial_end_date = models.DateTimeField(null=True)
-#     user_account_delete_attempts = models.IntegerField(default=0)

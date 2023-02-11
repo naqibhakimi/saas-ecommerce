@@ -1,6 +1,6 @@
 from graphql_jwt.backends import JSONWebTokenBackend
 from graphql_jwt.exceptions import JSONWebTokenError
-from graphql_jwt.shortcuts import get_user_by_token
+from graphql_jwt.shortcuts import get_user_by_token, get_token
 from graphql_jwt.utils import get_credentials
 
 

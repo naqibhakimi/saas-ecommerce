@@ -1,16 +1,5 @@
 import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
-from .mixins import UpdateAddressMixin
-
-class UpdateAddress(UpdateAddressMixin, RelayMutationMixin, DynamicInputMixin, graphene.ClientIDMutation):
-    pass
-
-
-
-class Mutation:
-    update_address = UpdateAddress.Field()
-
-
 
 from .models import SEUser
 import graphene
@@ -24,8 +13,8 @@ from .mixins import (ArchiveAccountMixin, DeleteAccountMixin, InviteMixin,
                      PasswordResetMixin, PasswordSetMixin, RegisterMixin,
                      RemoveSecondaryEmailMixin, ResendActivationEmailMixin,
                      SendPasswordResetEmailMixin,
-                     SendSecondaryEmailActivationMixin, SlackAuthCodeMixin, SwapEmailsMixin,
-                     UpdateAccountMixin, UpdateCompanyMixin, VerifyAccountMixin, VerifyCnameMixin,
+                     SendSecondaryEmailActivationMixin, SwapEmailsMixin,
+                     UpdateAccountMixin, UpdateCompanyMixin, VerifyAccountMixin,
                      VerifyOrRefreshOrRevokeTokenMixin,
                      VerifySecondaryEmailMixin)
 from .settings import graphql_auth_settings as app_settings
@@ -235,20 +224,5 @@ class UpdateCompany(
         "brand_domain": graphene.String,
 
     }
-
-class SlackAuthCode(
-    RelayMutationMixin, DynamicInputMixin, SlackAuthCodeMixin, graphene.ClientIDMutation
-):
-    __doc__ = SlackAuthCodeMixin.__doc__
-    _required_inputs = {
-        "code": graphene.String,
-    }
-
-
-class VerfiyCname(
-    RelayMutationMixin, DynamicInputMixin, VerifyCnameMixin, graphene.ClientIDMutation
-):
-    __doc__ = VerifyCnameMixin.__doc__
-    _required_inputs = {
-        "domain": graphene.String,
-    }
+class Mutation:
+    pass

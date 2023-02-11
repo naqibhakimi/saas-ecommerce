@@ -1,8 +1,7 @@
 from apps.core.mutations import Output
 import requests
-from core.interval_async_timer import RepeatingAsyncTimer
+from apps.core.interval_async_timer import RepeatingAsyncTimer
 # from subscription.models import Subscription
-from core.saas_domain_manager import SaasDomainManager
 from . import logger
 import logging
 from smtplib import SMTPException
@@ -16,8 +15,6 @@ from django.utils.module_loading import import_string
 from graphql_jwt.decorators import token_auth
 from graphql_jwt.exceptions import JSONWebTokenError, JSONWebTokenExpired
 
-# from core.bases import Output
-# from secure_auth.slack import SlackOAuth2
 from apps.auth.types import UserNode
 from .constants import Messages, TokenAction
 from .decorators import (login_required, password_confirmation_required,
@@ -27,40 +24,22 @@ from .exceptions import (EmailAlreadyInUse, InvalidCredentials,
                          UserAlreadyVerified, UserNotVerified, WrongUsage)
 from .forms import (EmailForm, PasswordLessRegisterForm, RegisterForm,
                     UpdateAccountForm)
-from .models import Company, Profile, SecureUser, UserStatus, check_domain
+from .models import UserStatus, SEUser
 from .settings import graphql_auth_settings as app_settings
 from .shortcuts import get_user_by_email, get_user_to_login
 from .signals import user_registered, user_verified
 from .utils import (get_token_payload, revoke_user_refresh_token,
                     using_refresh_tokens)
 
-from social_django.utils import load_strategy
-
 from django.db.utils import IntegrityError
 
 from django.conf import settings
 
-from graphql_jwt.shortcuts import get_token
+from graphql_jwt.shortcuts import get_token, get_user_by_token
 
 
-UserModel = SecureUser
-if app_settings.EMAIL_ASYNC_TASK and isinstance(app_settings.EMAIL_ASYNC_TASK, str):
-    async_email_func = import_string(app_settings.EMAIL_ASYNC_TASK)
-else:
-    async_email_func = None
-
-def grecaptcha_verify(captcha_rs):
-        url = "https://www.google.com/recaptcha/api/siteverify"
-        params = {
-            'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
-            'response': captcha_rs
-        }
-        verify_rs = requests.post(url, data=params)
-        verify_rs = verify_rs.json()
-
-        if not verify_rs.get("success", False):
-            raise Exception('Invalid recaptcha token')
-
+UserModel = SEUser
+async_email_func = None
 
 class RegisterMixin(Output):
     """
@@ -154,7 +133,6 @@ class RegisterMixin(Output):
 
                     user_registered.send(sender=cls, user=user)
                     user_company.user_emp.add(user)
-                    grecaptcha_verify(bot_token)
 
                     if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
                         payload = cls.login_on_register(
