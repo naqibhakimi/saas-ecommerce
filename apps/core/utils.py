@@ -3,8 +3,13 @@ import graphene
 import graphene_django_optimizer as gql_optimizer
 from graphene_django.utils import camelize
 from graphql.error import GraphQLLocatedError
-from core.ratelimit import ratelimit
-from secure_auth.exceptions import WrongUsage
+from apps.core.ratelimit import ratelimit
+from apps.auth.exceptions import WrongUsage
+import base64
+import collections
+
+import graphene
+from graphene_django import converter, utils
 
 from .utils import check_id
 
@@ -156,3 +161,53 @@ class DynamicInputMixin:
                     {key: graphene.InputField(graphene.String, required=True)}
                 )
         return super().Field(*args, **kwargs)
+
+
+
+def check_id(id):
+    if not id:
+        return None
+
+    if isinstance(id, str):
+        if str(id).isnumeric():
+            return int(id)
+        value = base64.urlsafe_b64decode(id).decode()
+        value = int(value.split(":")[1])
+        return int(value)
+    else:
+        return int(id)
+
+
+def convert_fields(model, only_fields=[], except_fields=[]):
+    model_fields = utils.get_model_fields(model=model)
+    fields = collections.OrderedDict()
+
+    for name in only_fields:
+        if name.endswith("__id"):
+            fields[name] = graphene.ID(required=False)
+
+    for field in model_fields:
+        name, d_type = field
+
+        # Must be in only_fields
+        if only_fields and name not in only_fields:
+            continue
+
+        if name in except_fields:
+            continue
+
+        if name.endswith("__id"):
+            continue
+
+        if name == "id":
+            fields[name] = graphene.ID(required=False)
+            continue
+
+        converted = converter.convert_django_field(d_type, None)
+
+        if not converted:
+            continue
+
+        fields[name] = converted
+
+    return fields

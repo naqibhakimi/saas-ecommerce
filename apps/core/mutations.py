@@ -110,3 +110,43 @@ class AbstractMutation(DjangoModelFormMutation):
 
     class Meta:
         abstract = True
+
+
+
+class DynamicArgsMixin:
+    """
+    A class that knows how to initialize graphene arguments
+    get args from
+        cls._args
+        cls._required_args
+    args is dict { arg_name: arg_type }
+    or list [arg_name,] -> defaults to String
+    """
+
+    _args = {}
+    _required_args = {}
+
+    @classmethod
+    def Field(cls, *args, **kwargs):
+        if isinstance(cls._args, dict):
+            for key in cls._args:
+                cls._meta.arguments.update(
+                    {key: graphene.Argument(getattr(graphene, cls._args[key]))}
+                )
+        elif isinstance(cls._args, list):
+            for key in cls._args:
+                cls._meta.arguments.update({key: graphene.String()})
+
+        if isinstance(cls._required_args, dict):
+            for key in cls._required_args:
+                cls._meta.arguments.update(
+                    {
+                        key: graphene.Argument(
+                            getattr(graphene, cls._required_args[key]), required=True
+                        )
+                    }
+                )
+        elif isinstance(cls._required_args, list):
+            for key in cls._required_args:
+                cls._meta.arguments.update({key: graphene.String(required=True)})
+        return super().Field(*args, **kwargs)
