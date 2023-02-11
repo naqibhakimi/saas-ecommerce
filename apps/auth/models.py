@@ -1,8 +1,35 @@
 from django.db import models
 from apps.core.models import BaseModel
 from django.contrib.auth.models import AbstractUser
+import time
+from apps.core.interval_async_timer import RepeatingAsyncTimer
+from apps.core.saas_domain_manager import SaasDomainManager
+import dns.resolver
+from django.conf import settings as django_settings
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.mail import send_mail
+from django.db import models, transaction
+from django.template.loader import render_to_string
+from django.utils import timezone
+from django.utils.html import strip_tags
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+from PIL import Image
 
+from apps.core.decorators.decorators import add_info
+
+from .constants import TokenAction
+from .exceptions import EmailAlreadyInUse, UserAlreadyVerified, WrongUsage
+from .settings import graphql_auth_settings as app_settings
+from .signals import user_verified
+from .utils import get_token, get_token_payload
+
+from apps.core.middlewares import thread_local
 from apps.customer.models import Address
+
 
 class Oauth(BaseModel):
     display_name = models.CharField(max_length=255)
@@ -54,42 +81,6 @@ class PublishableApiKey(BaseModel):
 #     # objects = UserManager()
 
 
-
-from time import time
-import sys
-import time
-from io import BytesIO
-from apps.core.interval_async_timer import RepeatingAsyncTimer
-from apps.core.saas_domain_manager import SaasDomainManager
-
-import dns.resolver
-
-
-from django.conf import settings as django_settings
-from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.mail import send_mail
-from django.db import models, transaction
-from django.template.loader import render_to_string
-from django.utils import timezone
-from django.utils.html import strip_tags
-from django.utils.translation import gettext_lazy as _
-from django.conf import settings
-from PIL import Image
-
-from apps.core.decorators.decorators import add_info
-
-from .constants import TokenAction
-from .exceptions import EmailAlreadyInUse, UserAlreadyVerified, WrongUsage
-from .settings import graphql_auth_settings as app_settings
-from .signals import user_verified
-from .utils import get_token, get_token_payload
-
-from apps.core.middlewares import thread_local
-
-
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -120,7 +111,8 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class SEUser(AbstractBaseUser, PermissionsMixin):
+# class SEUser(AbstractBaseUser, PermissionsMixin):
+class SEUser(AbstractBaseUser):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
     email = models.EmailField(_("email address"), blank=True, unique=True)
