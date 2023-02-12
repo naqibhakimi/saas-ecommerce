@@ -5,9 +5,10 @@ import graphene
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from apps.auth.queries import Query as AuthQuery
 from apps.customer.mutations import Mutation as CustomMutations
 from apps.store.mutations import Mutation as StoreMutations
+from apps.auth.mutations import Mutation as AuthMutations
+from apps.auth.queries import (UserQuery, UserStatusQuery)
 from apps.store.queries import (CartQuery, InviteQuery, NoteQuery,
                                 NotificationProviderQuery, NotificationQuery,
                                 SalesChannelLocationQuery, SalesChannelQuery,
@@ -17,7 +18,8 @@ channel_layer = get_channel_layer()
 
 
 class Query(
-    AuthQuery,
+    UserQuery,
+    UserStatusQuery,
     SalesChannelQuery,
     CartQuery,
     InviteQuery,
@@ -37,9 +39,10 @@ class Query(
 
 
 class Mutatation(
-    StoreMutations,
-    CustomMutations,
-    graphene.ObjectType):
+        AuthMutations,
+        StoreMutations,
+        CustomMutations,
+        graphene.ObjectType):
     test_object = graphene.String()
 
 

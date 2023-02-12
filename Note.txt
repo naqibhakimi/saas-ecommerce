@@ -1,0 +1,19 @@
+mutation createCustomer($input: CreateCustomerInput!){
+ createCustomer(input: $input){
+  customer{
+    firstName
+    lastName
+  }
+} 
+}
+
+
+
+Query variable:
+
+{
+  "input": {
+    "firstName": "Naqib",
+    "lastName": "Hakimi",
+  }
+}

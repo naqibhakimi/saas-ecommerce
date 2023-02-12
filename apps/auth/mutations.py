@@ -2,8 +2,11 @@ import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
 
 from .models import SEUser
+from .forms import RegisterForm, UserStatusForm
 import graphene
 import graphql_jwt
+from graphene_django.forms.mutation import DjangoModelFormMutation
+
 
 from graphene_file_upload.scalars import Upload
 
@@ -14,12 +17,51 @@ from .mixins import (ArchiveAccountMixin, DeleteAccountMixin, InviteMixin,
                      RemoveSecondaryEmailMixin, ResendActivationEmailMixin,
                      SendPasswordResetEmailMixin,
                      SendSecondaryEmailActivationMixin, SwapEmailsMixin,
-                     UpdateAccountMixin, UpdateCompanyMixin, VerifyAccountMixin,
+                     UpdateAccountMixin, VerifyAccountMixin,
                      VerifyOrRefreshOrRevokeTokenMixin,
                      VerifySecondaryEmailMixin)
 from .settings import graphql_auth_settings as app_settings
 from .types import UserNode
 from .utils import normalize_fields
+
+
+class CreateUser(DjangoModelFormMutation):
+    class Meta:
+        form_class = RegisterForm
+
+
+class UpdateUser(DjangoModelFormMutation):
+    class Meta:
+        form_class = RegisterForm
+
+
+class DeleteUser(DjangoModelFormMutation):
+    class Meta:
+        form_class = RegisterForm
+
+
+class CreateUserStatus(DjangoModelFormMutation):
+    class Meta:
+        form_class = UserStatusForm
+
+
+class UpdateUserStatus(DjangoModelFormMutation):
+    class Meta:
+        form_class = UserStatusForm
+
+
+class DeleteUserStatus(DjangoModelFormMutation):
+    class Meta:
+        form_class = UserStatusForm
+
+
+class Mutation:
+    create_user = CreateUser.Field()
+    update_user = UpdateUser.Field()
+    delete_user = DeleteUser.Field()
+    create_user_status = CreateUserStatus.Field()
+    update_user_status = UpdateUserStatus.Field()
+    delete_user_status = DeleteUserStatus.Field()
 
 
 class Register(
@@ -40,13 +82,11 @@ class Register(
     _inputs = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
 
 
-
 class Invite(
     RelayMutationMixin, DynamicInputMixin, InviteMixin, graphene.ClientIDMutation
 ):
 
     __doc__ = InviteMixin.__doc__
-    
 
     _required_inputs = app_settings.REGISTER_MUTATION_FIELDS
     _inputs = app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
@@ -210,19 +250,21 @@ class RevokeToken(
         refresh_token = graphene.String(required=True)
 
 
-class UpdateCompany(
-    RelayMutationMixin, DynamicInputMixin, UpdateCompanyMixin, graphene.ClientIDMutation
-):
-    __doc__ = UpdateCompanyMixin.__doc__
-    _required_inputs = {
-        "domain": graphene.String,
-        "header_text": graphene.String,
-        "company_logo": Upload,
-        "name": graphene.String,
-        "company_header_color": graphene.String,
-        "company_text_color": graphene.String,
-        "brand_domain": graphene.String,
+# class UpdateCompany(
+#     RelayMutationMixin, DynamicInputMixin, UpdateCompanyMixin, graphene.ClientIDMutation
+# ):
+#     __doc__ = UpdateCompanyMixin.__doc__
+#     _required_inputs = {
+#         "domain": graphene.String,
+#         "header_text": graphene.String,
+#         "company_logo": Upload,
+#         "name": graphene.String,
+#         "company_header_color": graphene.String,
+#         "company_text_color": graphene.String,
+#         "brand_domain": graphene.String,
 
-    }
+#     }
+
+
 class Mutation:
     pass

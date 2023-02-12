@@ -2,7 +2,9 @@ from django import forms
 from django.contrib.auth.forms import (UserChangeForm, UserCreationForm,
                                        UsernameField)
 
-from .models import SEUser
+from .models import SEUser, UserStatus
+from apps.core.forms import BaseForm
+
 from .settings import graphql_auth_settings as app_settings
 from .utils import flat_dict
 
@@ -13,6 +15,29 @@ class RegisterForm(UserCreationForm):
         fields = flat_dict(app_settings.REGISTER_MUTATION_FIELDS) + flat_dict(
             app_settings.REGISTER_MUTATION_FIELDS_OPTIONAL
         )
+
+
+class CreateUserStatusForm(BaseForm):
+    class Meta:
+        model = UserStatus
+        fields = "__all__"
+
+
+class UpdateUserStatusForm(BaseForm):
+
+    def save(self, commit: bool = ...):
+        UserStatus._default_manager.by_author(self.user)
+        return super().save(commit)
+
+    class Meta:
+        model = UserStatus
+        fields = "__all__"
+
+
+class DeleteUserStatusForm(BaseForm):
+    class Meta:
+        model = UserStatus
+        fields = ('id',)
 
 
 class EmailForm(forms.Form):

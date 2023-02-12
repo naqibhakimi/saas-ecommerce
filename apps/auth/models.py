@@ -40,6 +40,7 @@ class PublishableApiKeySalesChannel(BaseModel):
     sales_channel_id = models.CharField(max_length=100, unique=True)
     publishable_key_id = models.CharField(max_length=100, unique=True)
 
+
 class PublishableApiKey(BaseModel):
     created_by = models.CharField(max_length=100, null=True)
     revoked_by = models.CharField(max_length=100, null=True)
@@ -108,7 +109,6 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-# class SEUser(AbstractBaseUser, PermissionsMixin):
 class SEUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
