@@ -2,7 +2,7 @@ from apps.core.mutations import Output
 import requests
 from apps.core.interval_async_timer import RepeatingAsyncTimer
 # from subscription.models import Subscription
-from . import logger
+# from . import logger
 import logging
 from smtplib import SMTPException
 
@@ -40,6 +40,7 @@ from graphql_jwt.shortcuts import get_token, get_user_by_token
 
 UserModel = SEUser
 async_email_func = None
+
 
 class RegisterMixin(Output):
     """
@@ -90,21 +91,21 @@ class RegisterMixin(Output):
         bot_token = kwargs.pop("bot_token")
 
         try:
-            
+
             with transaction.atomic():
                 f = cls.form(kwargs)
                 if f.is_valid():
                     email = kwargs.get(UserModel.EMAIL_FIELD, False)
                     UserStatus.clean_email(email)
                     user = f.save()
-                    user_company, create = Company._default_manager.get_or_create(
-                        owner=user, name=company
-                    )
+                    # user_company, create = Company._default_manager.get_or_create(
+                    #     owner=user, name=company
+                    # )
 
-                    user_company.save()
+                    # user_company.save()
 
-                    Profile._default_manager.get_or_create(
-                        user=user, company=user_company)
+                    # Profile._default_manager.get_or_create(
+                    #     user=user, company=user_company)
 
                     send_activation = (
                         app_settings.SEND_ACTIVATION_EMAIL is True and email
@@ -132,7 +133,7 @@ class RegisterMixin(Output):
                             user.status.send_password_set_email(info)
 
                     user_registered.send(sender=cls, user=user)
-                    user_company.user_emp.add(user)
+                    # user_company.user_emp.add(user)
 
                     if app_settings.ALLOW_LOGIN_NOT_VERIFIED:
                         payload = cls.login_on_register(
@@ -213,8 +214,8 @@ class InviteMixin(Output):
                     company.user_emp.add(user)
                     send_password_set = True
 
-                    Profile._default_manager.get_or_create(
-                        user=user, company=company)
+                    # Profile._default_manager.get_or_create(
+                    #     user=user, company=company)
 
                     if send_password_set:
                         # TODO CHECK FOR EMAIL ASYNC SETTING
@@ -582,24 +583,24 @@ class DeleteAccountMixin(ArchiveOrDeleteMixin):
 
             if app_settings.ALLOW_DELETE_ACCOUNT:
                 revoke_user_refresh_token(user=user)
-                company = Company.objects.get(owner=user)
+                # company = Company.objects.get(owner=user)
                 user.delete()
 
-                for c_user in company.user_emp:
-                    revoke_user_refresh_token(user=c_user)
-                    c_user.delete()
+                # for c_user in company.user_emp:
+                #     revoke_user_refresh_token(user=c_user)
+                #     c_user.delete()
 
             else:
-                company = Company.objects.get(owner=user)
-                company.user_emp.update(is_active=False)
+                # company = Company.objects.get(owner=user)
+                # company.user_emp.update(is_active=False)
                 user.is_active = False
                 user.save(update_fields=["is_active"])
                 revoke_user_refresh_token(user=user)
 
-                for c_user in company.user_emp:
-                    revoke_user_refresh_token(user=c_user)
-                    c_user.is_active = False
-                    c_user.save(update_fields=["is_active"])
+                # for c_user in company.user_emp:
+                #     revoke_user_refresh_token(user=c_user)
+                #     c_user.is_active = False
+                #     c_user.save(update_fields=["is_active"])
 
 
 class PasswordChangeMixin(Output):
@@ -658,7 +659,7 @@ class UpdateAccountMixin(Output):
     @classmethod
     @verification_required
     def resolve_mutation(cls, root, info, **kwargs):
-        logger.info("Account update for")
+        # logger.info("Account update for")
         user = info.context.user
         fields = cls.form.Meta.fields
         for field in fields:
@@ -751,31 +752,32 @@ class RemoveSecondaryEmailMixin(Output):
         return cls(success=True)
 
 
+# class UpdateCompanyMixin(Output):
+#     """
+#     Update Company
+#     """
 
-class UpdateCompanyMixin(Output):
-    """
-    Update Company
-    """
+#     @classmethod
+#     @login_required
+#     def resolve_mutation(cls, root, info, **kwargs):
+#         try:
+#             brand_domain = Company.objects.get(
+#                 user_emp=info.context.user).brand_domain
+#             logo = kwargs.pop('company_logo')
+#             Company.objects.filter(user_emp=info.context.user).update(**kwargs)
+#             company = Company.objects.get(user_emp=info.context.user)
+#             company.save()
+#             RepeatingAsyncTimer(
+#                 cb=check_domain, company=company, domain=brand_domain)
 
-    @classmethod
-    @login_required
-    def resolve_mutation(cls, root, info, **kwargs):
-        try:
-            brand_domain = Company.objects.get(user_emp=info.context.user).brand_domain
-            logo = kwargs.pop('company_logo')
-            Company.objects.filter(user_emp=info.context.user).update(**kwargs)
-            company = Company.objects.get(user_emp=info.context.user)
-            company.save()
-            RepeatingAsyncTimer(cb=check_domain, company=company, domain=brand_domain)
+#             if logo and type(logo) is not str:
+#                 company = Company.objects.get(user_emp=info.context.user)
+#                 company.company_logo = logo
+#                 company.save()
+#         except IntegrityError:
+#             return cls(success=False, errors=Messages.COMPANY_UPDATE_FAIL)
 
-            if logo and type(logo) is not str:
-                company = Company.objects.get(user_emp=info.context.user)
-                company.company_logo = logo
-                company.save()
-        except IntegrityError:
-            return cls(success=False, errors=Messages.COMPANY_UPDATE_FAIL)
-
-        return cls(success=True)
+#         return cls(success=True)
 
 
 # class SlackAuthCodeMixin(Output):
@@ -812,7 +814,6 @@ class UpdateCompanyMixin(Output):
 #         return cls(success=True, auth_token=response['access_token'])
 
 
-
 # class VerifyCnameMixin(Output):
 #     """
 #     VerifyCname
@@ -823,7 +824,6 @@ class UpdateCompanyMixin(Output):
 #         domain = kwargs.get('domain', '')
 #         domain_manager = SaasDomainManager(settings.CLOUD_FLARE_ZONEID,settings.CLOUD_FLARE_KEY)
 #         company = Company.objects.filter(user_emp=info.context.user).first()
-
 
 
 #         if company.brand_domain != domain:

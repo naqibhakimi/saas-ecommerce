@@ -3,6 +3,11 @@ import graphene
 from apps.core.connections import BaseConnection
 
 
-class UserConnection(BaseConnection):
+class SEUserConnection(BaseConnection):
+    class Meta:
+        abstract = True
+
+
+class UserStatusConnection(BaseConnection):
     class Meta:
         abstract = True

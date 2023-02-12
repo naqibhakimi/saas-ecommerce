@@ -2,18 +2,21 @@ import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 from graphene_django.utils import camelize
-from .connections import UserConnection
+from .connections import SEUserConnection, UserStatusConnection
 from .exceptions import WrongUsage
-from .filters import SEUserFilter
-from .models import SEUser
+from .filters import SEUserFilter, UserStatusFilter
+from .models import SEUser, UserStatus
 from .settings import graphql_auth_settings as app_settings
+
 
 class UserNode(DjangoObjectType):
     class Meta:
         model = SEUser
+        interfaces = (graphene.Node,)
         filterset_class = SEUserFilter
-        interfaces = (graphene.relay.Node,)
-        skip_registry = True
+        # interfaces = (graphene.relay.Node,)
+        connection_class = SEUserConnection
+        # skip_registry = True
 
     pk = graphene.Int()
     archived = graphene.Boolean()
@@ -35,3 +38,11 @@ class UserNode(DjangoObjectType):
     @classmethod
     def get_queryset(cls, queryset, info):
         return queryset.select_related("status")
+
+
+class UserStatusNode(DjangoObjectType):
+    class Meta:
+        model = UserStatus
+        interfaces = (graphene.Node,)
+        filterset_class = UserStatusFilter
+        connection_class = UserStatusConnection

@@ -20,6 +20,7 @@ cloudflare = "^2.11.1"
 dnspython = "^2.3.0"
 graphene-django-optimizer = "^0.9.1"
 django-ratelimit = "^4.0.0"
+graphene-file-upload = "^1.3.0"
 
 
 [tool.poetry.dev-dependencies]
