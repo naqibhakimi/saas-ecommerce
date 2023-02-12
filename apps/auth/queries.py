@@ -10,22 +10,9 @@ from graphene_django.types import DjangoObjectType
 
 from apps.auth.types import UserNode
 
-
-# class Query:
-#     users = DjangoFilterConnectionField(UserNode, 'users')
-
-
-class UserQuery:
+class Query:
     user = graphene.relay.Node.Field(UserNode)
     users = DjangoFilterConnectionField(UserNode)
-
-
-class UserStatusQuery:
-    user_status = graphene.relay.Node.Field(UserStatusNode)
-    user_statuses = DjangoFilterConnectionField(UserStatusNode)
-
-
-class MeQuery(graphene.ObjectType):
     me = graphene.Field(UserNode)
 
     def resolve_me(self, info):

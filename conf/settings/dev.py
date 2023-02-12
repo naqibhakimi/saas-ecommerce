@@ -28,12 +28,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+APPEND_SLASH = True
+
 # import django.contrib.auth.backends
 
 # Auth Backends
 AUTHENTICATION_BACKENDS = [
     "graphql_jwt.backends.JSONWebTokenBackend",
-    "app.auth.backends.GraphQLAuthBackend",
+    "apps.auth.backends.GraphQLAuthBackend",
     "django.contrib.auth.backends.ModelBackend"
 ]
 
@@ -41,13 +43,15 @@ AUTHENTICATION_BACKENDS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
+    # 'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphene_django',
+    'django_filters',
     'apps.account',
     'apps.auth',
     'apps.channel',
@@ -65,8 +69,6 @@ INSTALLED_APPS = [
     'apps.shipping',
     'apps.store',
     'apps.tax',
-    'graphene_django',
-    'django_filters',
 
 ]
 

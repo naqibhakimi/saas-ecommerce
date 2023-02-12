@@ -1,5 +1,5 @@
 
-from apps.core.froms import BaseForm
+from apps.core.forms import BaseForm
 from .models import Note
 
 

@@ -1,49 +1,40 @@
-from apps.core.exceptions import GraphQLError
 from django.utils.translation import gettext as _
+
+from apps.core.exceptions import GraphQLError
+
 
 class RecordDoesNotExists(GraphQLError):
     default_message = _("Your request record does not exists.")
 
 
 
-from django.utils.translation import gettext as _
 
 
-class GraphQLAuthError(Exception):
-    default_message = None
-
-    def __init__(self, message=None):
-        if message is None:
-            message = self.default_message
-
-        super().__init__(message)
-
-
-class UserAlreadyVerified(GraphQLAuthError):
+class UserAlreadyVerified(GraphQLError):
     default_message = _("User already verified.")
 
 
-class InvalidCredentials(GraphQLAuthError):
+class InvalidCredentials(GraphQLError):
     default_message = _("Invalid credentials.")
 
 
-class UserNotVerified(GraphQLAuthError):
+class UserNotVerified(GraphQLError):
     default_message = _("User is not verified.")
 
 
-class EmailAlreadyInUse(GraphQLAuthError):
+class EmailAlreadyInUse(GraphQLError):
     default_message = _("This email is already in use.")
 
 
-class TokenScopeError(GraphQLAuthError):
+class TokenScopeError(GraphQLError):
     default_message = _("This token if for something else.")
 
 
-class PasswordAlreadySetError(GraphQLAuthError):
+class PasswordAlreadySetError(GraphQLError):
     default_message = _("Password already set for account.")
 
 
-class WrongUsage(GraphQLAuthError):
+class WrongUsage(GraphQLError):
     """
     internal exception
     """

@@ -11,7 +11,6 @@ class SEUserFilter(django_filters.FilterSet):
         model = SEUser
         fields = "__all__"
 
-
 class UserStatusFilter(django_filters.FilterSet):
     class Meta:
         model = UserStatus

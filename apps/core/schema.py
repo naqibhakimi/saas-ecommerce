@@ -8,28 +8,13 @@ from channels.layers import get_channel_layer
 from apps.customer.mutations import Mutation as CustomMutations
 from apps.store.mutations import Mutation as StoreMutations
 from apps.auth.mutations import Mutation as AuthMutations
-from apps.auth.queries import (UserQuery, UserStatusQuery)
-from apps.store.queries import (CartQuery, InviteQuery, NoteQuery,
-                                NotificationProviderQuery, NotificationQuery,
-                                SalesChannelLocationQuery, SalesChannelQuery,
-                                StagedJobQuery, StoreQuery, SwapQuery)
+from apps.auth.queries import  Query as AuthQueries
 
 channel_layer = get_channel_layer()
 
 
 class Query(
-    UserQuery,
-    UserStatusQuery,
-    SalesChannelQuery,
-    CartQuery,
-    InviteQuery,
-    NoteQuery,
-    NotificationProviderQuery,
-    NotificationQuery,
-    SalesChannelLocationQuery,
-    StagedJobQuery,
-    StoreQuery,
-    SwapQuery,
+    AuthQueries,
     graphene.ObjectType
 ):
     test = graphene.String(name=graphene.String())

@@ -2,11 +2,10 @@ import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 from graphene_django.utils import camelize
-from .connections import SEUserConnection, UserStatusConnection
+from .connections import SEUserConnection
 from .exceptions import WrongUsage
 from .filters import SEUserFilter, UserStatusFilter
 from .models import SEUser, UserStatus
-from .settings import graphql_auth_settings as app_settings
 
 
 class UserNode(DjangoObjectType):
@@ -14,9 +13,7 @@ class UserNode(DjangoObjectType):
         model = SEUser
         interfaces = (graphene.Node,)
         filterset_class = SEUserFilter
-        # interfaces = (graphene.relay.Node,)
         connection_class = SEUserConnection
-        # skip_registry = True
 
     pk = graphene.Int()
     archived = graphene.Boolean()
@@ -45,4 +42,3 @@ class UserStatusNode(DjangoObjectType):
         model = UserStatus
         interfaces = (graphene.Node,)
         filterset_class = UserStatusFilter
-        connection_class = UserStatusConnection
