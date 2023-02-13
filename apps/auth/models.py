@@ -1,5 +1,3 @@
-from django.db import models
-from apps.core.models import BaseModel
 from django.conf import settings as django_settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -8,6 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from apps.core.models import BaseModel
 
 
 class Oauth(BaseModel):
@@ -128,10 +127,11 @@ class UserStatus(BaseModel):
     archived = models.BooleanField(default=False)
     secondary_email = models.EmailField(blank=True, null=True)
 
-    # def __str__(self):
-    #     return "%s - status" % (self.user)
+    def __str__(self):
+        return "%s - status" % (self.user)
 
-    # def send(self, subject, template, context, recipient_list=None):
+    def send(self, subject, template, context, recipient_list=None):
+        pass
     #     _subject = render_to_string(
     #         subject, context).replace("\n", " ").strip()
     #     html_message = render_to_string(template, context)
@@ -152,7 +152,6 @@ class UserStatus(BaseModel):
     #     token = get_token(self.user, action, **kwargs)
     #     site = get_current_site(info.context)
     #     origin = info.context.headers.get('Origin', False)
-    #     # TODO(naqib): fix port on production server
 
     #     return {
     #         "user": self.user,

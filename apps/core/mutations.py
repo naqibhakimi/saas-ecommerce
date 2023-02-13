@@ -63,7 +63,7 @@ class DynamicInputMixin:
             for key in cls._required_inputs:
                 if not isinstance(cls._required_inputs[key], str):
                     cls._meta.arguments["input"]._meta.fields.update(
-                        {key: graphene.InputField(cls._required_inputs[key])}
+                        {key: graphene.InputField(cls._required_inputs[key], required=True)}
                     )
                 else:
                     cls._meta.arguments["input"]._meta.fields.update(
