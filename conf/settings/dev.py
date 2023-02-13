@@ -70,6 +70,10 @@ INSTALLED_APPS = [
     'apps.store',
     'apps.tax',
 
+    # third party
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+
+
 ]
 
 # from django.contrib.auth.middleware import AuthenticationMiddleware
@@ -167,7 +171,7 @@ GRAPHENE = {
     "SCHEMA_INDENT": 2,
     "MIDDLEWARE": [
         # "graphene_django.debug.DjangoDebugMiddleware",
-        # "graphql_jwt.middleware.JSONWebTokenMiddleware",
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
     ],
 }
 

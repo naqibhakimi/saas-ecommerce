@@ -7,9 +7,9 @@ class SEUserFilter(django_filters.FilterSet):
     search_fields = "__all__"
 
     class Meta:
-        # model = get_user_model()
-        model = SEUser
+        model = get_user_model()
         fields = "__all__"
+
 
 class UserStatusFilter(django_filters.FilterSet):
     class Meta:

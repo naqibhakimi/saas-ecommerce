@@ -10,6 +10,7 @@ from graphene_django.types import DjangoObjectType
 
 from apps.auth.types import UserNode
 
+
 class Query:
     user = graphene.relay.Node.Field(UserNode)
     users = DjangoFilterConnectionField(UserNode)
