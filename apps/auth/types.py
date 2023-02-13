@@ -1,5 +1,5 @@
 import graphene
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from graphene_django import DjangoObjectType
 from graphene_django.utils import camelize
 from .connections import SEUserConnection
@@ -10,7 +10,7 @@ from .models import SEUser, UserStatus
 
 class UserNode(DjangoObjectType):
     class Meta:
-        model = SEUser
+        model = get_user_model()
         interfaces = (graphene.Node,)
         filterset_class = SEUserFilter
         connection_class = SEUserConnection
