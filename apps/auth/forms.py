@@ -1,13 +1,21 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 
-from .models import SEUser
+User = get_user_model()
 
 
 class SignupForm(UserCreationForm):
+    # class SignupForm(forms.Form):
     class Meta:
-        model = SEUser
-        fields = ('email',)
+        model = User
+        fields = ('email', "first_name", "last_name")
+
+
+class UpdateUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('email', "first_name", "last_name")
 
 
 class SingInForm(forms.Form):

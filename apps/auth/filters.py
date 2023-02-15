@@ -1,6 +1,6 @@
 import django_filters
 from django.contrib.auth import get_user_model
-from .models import SEUser, UserStatus
+from .models import UserStatus
 
 
 class SEUserFilter(django_filters.FilterSet):

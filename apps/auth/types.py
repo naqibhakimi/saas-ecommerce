@@ -3,9 +3,8 @@ from django.contrib.auth import get_user_model
 from graphene_django import DjangoObjectType
 from graphene_django.utils import camelize
 from .connections import SEUserConnection
-from .exceptions import WrongUsage
 from .filters import SEUserFilter, UserStatusFilter
-from .models import SEUser, UserStatus
+from .models import UserStatus
 
 
 class UserNode(DjangoObjectType):
