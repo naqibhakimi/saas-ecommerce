@@ -2,11 +2,11 @@ from threading import Timer
 
 class Singleton(type):
     _instances = {}
-    def __call__(cls, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
         company = kwargs.get('company').id
-        if company not in cls._instances:
-            cls._instances[company] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[company]
+        if company not in self._instances:
+            self._instances[company] = super(Singleton, self).__call__(*args, **kwargs)
+        return self._instances[company]
         
 
 class RepeatingAsyncTimer(metaclass=Singleton):

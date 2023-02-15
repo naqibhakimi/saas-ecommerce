@@ -8,7 +8,7 @@ from apps.core.mutations import Output
 
 from .constants import EMAIL_MESSAGES, Messages
 from .exceptions import EmailAlreadyInUse, InvalidCredentials
-from .forms import SignupForm, SingInForm, UpdateUserForm
+from .forms import SignupForm, SingInForm, UpdateAccountForm
 
 UserModel = get_user_model()
 
@@ -67,27 +67,29 @@ class SignInMixin(Output):
             return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
 
 
-class UpdateUserMixin(Output):
-    form = UpdateUserForm
+class UpdateAccountMixin(Output):
+    form = UpdateAccountForm
 
-    # @classmethod
-    # def resolve_mutation(cls, root, info, **kwargs):
-    #     user = info.context.user
-    #     fields = cls.form.Meta.fields
-    #     for field in fields:
-    #         if field not in kwargs:
-    #             kwargs[field] = getattr(user, field)
-    #     f = cls.form(kwargs, instance=user)
-    #     if not f.is_valid():
-    #         return cls(success=False, errors=f.errors.get_json_data())
-    #     f.save()
-    #     return cls(success=True)
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        # print(info.context.headers)
+        # user = info.context.user
+        # fields = cls.form.Meta.fields
+        # for field in fields:
+        #     if field not in kwargs:
+        #         kwargs[field] = getattr(user, field)
+        # f = cls.form(kwargs, instance=user)
 
-    @staticmethod
-    def mutate(root, info, id, **kwargs):
-        user = get_user_model().objects.get(id=id)
-        for key, value in kwargs.items():
-            if value is not None:
-                setattr(user, key, value)
-        user.save()
-        return UpdateUserMixin(user=user)
+        # if not f.is_valid():
+        #     return cls(success=False, errors=f.errors.get_json_data())
+        # f.save()
+        return cls(success=True)
+
+    # @staticmethod
+    # def mutate(root, info, id, **kwargs):
+    #     user = get_user_model().objects.get(id=id)
+    #     for key, value in kwargs.items():
+    #         if value is not None:
+    #             setattr(user, key, value)
+    #     user.save()
+    #     return UpdateUserMixin(user=user)

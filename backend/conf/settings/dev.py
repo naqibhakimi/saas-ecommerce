@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import datetime
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,11 +31,37 @@ ALLOWED_HOSTS = []
 
 APPEND_SLASH = True
 
+
+
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(hours=9),
+    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(hours=9),
+    "JWT_ALLOW_ANY_CLASSES": [
+        # "secure_auth.mutations.Register",
+        # "secure_auth.mutations.VerifyAccount",
+        # "secure_auth.mutations.ResendActivationEmail",
+        # "secure_auth.mutations.SendPasswordResetEmail",
+        # "secure_auth.mutations.PasswordReset",
+        # "secure_auth.mutations.ObtainJSONWebToken",
+        # "secure_auth.mutations.VerifyToken",
+        # "secure_auth.mutations.RefreshToken",
+        # "secure_auth.mutations.RevokeToken",
+        # "secure_auth.mutations.VerifySecondaryEmail",
+        # "secure_auth.mutations.SlackAuthCode",
+        # "secure_auth.mutations.VerifySecondaryEmail",
+        # "graphql_social_auth.relay.SocialAuthJWT",
+    ],
+}
+
+
 # import django.contrib.auth.backends
 
 # Auth Backends
 AUTHENTICATION_BACKENDS = [
-    "graphql_jwt.backends.JSONWebTokenBackend",
+    # "graphql_jwt.backends.JSONWebTokenBackend",
     "apps.auth.backends.GraphQLAuthBackend",
     "django.contrib.auth.backends.ModelBackend"
 ]

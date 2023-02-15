@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
-from .mixins import SignInMixin, SignupMixin, UpdateUserMixin
+from .mixins import SignInMixin, SignupMixin, UpdateAccountMixin
 
 
 class Signup(DynamicInputMixin, RelayMutationMixin, SignupMixin, graphene.ClientIDMutation):
@@ -23,12 +23,9 @@ class SignIn(DynamicInputMixin, RelayMutationMixin, SignInMixin, graphene.Client
     }
 
 
-class UpdateUser(DynamicInputMixin, RelayMutationMixin, UpdateUserMixin, graphene.ClientIDMutation):
-    _required_inputs = {
-        "id": graphene.String,
+class UpdateAccount(DynamicInputMixin, RelayMutationMixin, UpdateAccountMixin, graphene.ClientIDMutation):
+    _inputs = {
         'email': graphene.String,
-        'password1': graphene.String,
-        'password2': graphene.String,
         'first_name': graphene.String,
         'last_name': graphene.String,
     }
@@ -37,4 +34,4 @@ class UpdateUser(DynamicInputMixin, RelayMutationMixin, UpdateUserMixin, graphen
 class Mutation:
     signup = Signup.Field()
     signin = SignIn.Field()
-    update_user = UpdateUser.Field()
+    update_account = UpdateAccount.Field()
