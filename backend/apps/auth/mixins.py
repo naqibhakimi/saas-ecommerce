@@ -13,7 +13,9 @@ from .exceptions import EmailAlreadyInUse, InvalidCredentials, UserAlreadyVerifi
 from .forms import SignupForm, SingInForm, UpdateAccountForm
 from .models import UserStatus
 from .types import UserNode
-from conf.settings import DEFAULTS
+from conf.settings import graphql_auth_settings as app_settings
+from .signals import user_registered
+
 
 UserModel = get_user_model()
 
@@ -30,10 +32,16 @@ class SignupMixin(Output):
                 return cls(success=False, errors=form.errors)
 
             if form.is_valid():
+                email = kwargs.get(UserModel.EMAIL_FIELD, False)
                 user = form.save()
                 send_activation = (
-                    DEFAULTS.SEND_ACTIVATION_EMAIL is True and email
+                    app_settings.SEND_ACTIVATION_EMAIL is True and email
                 )
+
+                if send_activation:
+                    user.status.send_activation_email(info)
+
+                user_registered.send(sender=cls, user=user)
                 user.status.send(
                     context=info.context,
                     recipient_list=[user.email],
