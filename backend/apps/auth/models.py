@@ -5,6 +5,9 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 
 from apps.core.models import BaseModel
 
@@ -138,22 +141,21 @@ class UserStatus(BaseModel):
         return f"{self.user} - status"
 
     def send(self, subject, template, context, recipient_list=None):
-        pass
-    #     _subject = render_to_string(
-    #         subject, context).replace("\n", " ").strip()
-    #     html_message = render_to_string(template, context)
-    #     message = strip_tags(html_message)
+        _subject = render_to_string(
+            subject, context).replace("\n", " ").strip()
+        html_message = render_to_string(template, context)
+        message = strip_tags(html_message)
 
-    #     return send_mail(
-    #         subject=_subject,
-    #         from_email=app_settings.EMAIL_FROM,
-    #         message=message,
-    #         html_message=html_message,
-    #         recipient_list=(
-    #             recipient_list or [getattr(self.user, SEUser.EMAIL_FIELD)]
-    #         ),
-    #         fail_silently=False,
-    #     )
+        return send_mail(
+            subject=_subject,
+            from_email=app_settings.EMAIL_FROM,
+            message=message,
+            html_message=html_message,
+            recipient_list=(
+                recipient_list or [getattr(self.user, SEUser.EMAIL_FIELD)]
+            ),
+            fail_silently=False,
+        )
 
     # def get_email_context(self, info, path, action, **kwargs):
     #     token = get_token(self.user, action, **kwargs)
@@ -173,16 +175,16 @@ class UserStatus(BaseModel):
     #         **app_settings.EMAIL_TEMPLATE_VARIABLES,
     #     }
 
-    # def send_activation_email(self, info, *args, **kwargs):
-    #     email_context = self.get_email_context(
-    #         info, app_settings.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
-    #     )
-    #     template = app_settings.EMAIL_TEMPLATE_ACTIVATION
-    #     subject = app_settings.EMAIL_SUBJECT_ACTIVATION
-    #     return self.send(subject, template, email_context, *args, **kwargs)
+    def send_activation_email(self, info, *args, **kwargs):
+        email_context = self.get_email_context(
+            info, app_settings.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
+        )
+        template = app_settings.EMAIL_TEMPLATE_ACTIVATION
+        subject = app_settings.EMAIL_SUBJECT_ACTIVATION
+        return self.send(subject, template, email_context, *args, **kwargs)
 
     # def resend_activation_email(self, info, *args, **kwargs):
-    #     if self.verified is True:
+    #     if self.verified is True:x
     #         raise UserAlreadyVerified
     #     email_context = self.get_email_context(
     #         info, app_settings.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
