@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from django.test.signals import setting_changed
+from django.conf import settings as django_settings
 import datetime
 from pathlib import Path
 
@@ -30,7 +32,6 @@ ALLOWED_HOSTS = []
 
 
 APPEND_SLASH = True
-
 
 
 GRAPHQL_JWT = {
@@ -223,3 +224,79 @@ AUTH_USER_MODEL = 'apps_auth.SEUser'
 #         },
 #     },
 # }
+
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+DEFAULTS = {
+
+    # email stuff
+    "EMAIL_FROM": getattr(django_settings, "DEFAULT_FROM_EMAIL", "test@email.com"),
+    "SEND_ACTIVATION_EMAIL": True,
+    # client: example.com/activate/token
+    "ACTIVATION_PATH_ON_EMAIL": "activate",
+    "ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL": "activate",
+    # client: example.com/password-set/token
+    "PASSWORD_SET_PATH_ON_EMAIL": "password-set",
+    # client: example.com/password-reset/token
+    "PASSWORD_RESET_PATH_ON_EMAIL": "password-reset",
+    # email subjects templates
+    "EMAIL_SUBJECT_ACTIVATION": "email/activation_subject.txt",
+    "EMAIL_SUBJECT_ACTIVATION_RESEND": "email/activation_subject.txt",
+    "EMAIL_SUBJECT_SECONDARY_EMAIL_ACTIVATION": "email/activation_subject.txt",
+    "EMAIL_SUBJECT_PASSWORD_SET": "email/password_set_subject.txt",
+    "EMAIL_SUBJECT_PASSWORD_RESET": "email/password_reset_subject.txt",
+    # email templates
+    "EMAIL_TEMPLATE_ACTIVATION": "email/activation_email.html",
+    "EMAIL_TEMPLATE_ACTIVATION_RESEND": "email/activation_email.html",
+    "EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION": "email/activation_email.html",
+    "EMAIL_TEMPLATE_PASSWORD_SET": "email/password_set_email.html",
+    "EMAIL_TEMPLATE_PASSWORD_RESET": "email/password_reset_email.html",
+    "EMAIL_TEMPLATE_VARIABLES": {},
+}
+
+
+class GraphQLAuthSettings(object):
+    """
+    A settings object, that allows API settings to be accessed as properties.
+    """
+
+    def __init__(self, user_settings=None, defaults=None):
+        if user_settings:
+            self._user_settings = user_settings
+        self.defaults = defaults or DEFAULTS
+
+    @property
+    def user_settings(self):
+        if not hasattr(self, "_user_settings"):
+            self._user_settings = getattr(django_settings, "GRAPHQL_AUTH", {})
+        return self._user_settings
+
+    def __getattr__(self, attr):
+        if attr not in self.defaults:
+            raise AttributeError(f"Invalid graphql_auth setting: '{attr}'")
+        try:
+            # Check if present in user settings
+            val = self.user_settings[attr]
+        except KeyError:
+            # Fall back to defaults
+            val = self.defaults[attr]
+
+        # Cache the result
+        setattr(self, attr, val)
+        return val
+
+
+graphql_auth_settings = GraphQLAuthSettings(None, DEFAULTS)
+
+
+def reload_graphql_auth_settings(*args, **kwargs):
+    global graphql_auth_settings
+    setting, value = kwargs["setting"], kwargs["value"]
+    if setting == "GRAPHQL_AUTH":
+        graphql_auth_settings = GraphQLAuthSettings(value, DEFAULTS)
+
+
+setting_changed.connect(reload_graphql_auth_settings)

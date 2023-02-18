@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
-from .mixins import SignInMixin, SignupMixin, UpdateAccountMixin
+from .mixins import SignInMixin, SignupMixin, UpdateAccountMixin, VerifyAccountMixin
 
 
 class Signup(DynamicInputMixin, RelayMutationMixin, SignupMixin, graphene.ClientIDMutation):
@@ -29,6 +29,23 @@ class UpdateAccount(DynamicInputMixin, RelayMutationMixin, UpdateAccountMixin, g
         'first_name': graphene.String,
         'last_name': graphene.String,
     }
+
+
+class VerifyAccount(
+    RelayMutationMixin, DynamicInputMixin, VerifyAccountMixin, graphene.ClientIDMutation
+):
+    __doc__ = VerifyAccountMixin.__doc__
+    _required_inputs = ["token"]
+
+
+class ResendActivationEmail(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    ResendActivationEmailMixin,
+    graphene.ClientIDMutation,
+):
+    __doc__ = ResendActivationEmailMixin.__doc__
+    _required_inputs = ["email"]
 
 
 class Mutation:
