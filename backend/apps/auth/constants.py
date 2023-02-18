@@ -12,9 +12,15 @@ class Messages:
         {"message": _("This email address already exists"), "code": "email_in_use"}]
 
 
-
 class EMAIL_MESSAGES:
     SIGN_UP = {
         'subject': _("Sign up"),
         'template': 'activate_account_signup.html',
     }
+
+
+class TokenAction(object):
+    ACTIVATION = "activation"
+    PASSWORD_RESET = "password_reset"
+    ACTIVATION_SECONDARY_EMAIL = "activation_secondary_email"
+    PASSWORD_SET = "password_set"

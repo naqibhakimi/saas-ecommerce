@@ -4,9 +4,7 @@ from graphene_django.filter.fields import DjangoFilterConnectionField
 from .types import UserNode, UserStatusNode
 
 import graphene
-from django.db.models import Q
 from graphene_django.filter.fields import DjangoFilterConnectionField
-from graphene_django.types import DjangoObjectType
 
 from apps.auth.types import UserNode
 

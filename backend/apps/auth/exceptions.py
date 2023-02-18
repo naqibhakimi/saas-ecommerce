@@ -7,9 +7,6 @@ class RecordDoesNotExists(GraphQLError):
     default_message = _("Your request record does not exists.")
 
 
-
-
-
 class UserAlreadyVerified(GraphQLError):
     default_message = _("User already verified.")
 

@@ -8,6 +8,12 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.core.models import BaseModel
 
+from .utils import get_token_payload
+from .constants import TokenAction
+from .signals import user_verified
+from .exceptions import UserAlreadyVerified
+from conf.settings.dev import graphql_auth_settings as app_settings
+
 
 class Oauth(BaseModel):
     display_name = models.CharField(max_length=255)
@@ -27,6 +33,7 @@ class PublishableApiKey(BaseModel):
     revoked_by = models.CharField(max_length=100, null=True)
     revoked_at = models.DateTimeField(null=True)
     title = models.CharField(max_length=100)
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -58,7 +65,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class SEUser(BaseModel,AbstractBaseUser, PermissionsMixin):
+class SEUser(BaseModel, AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
     email = models.EmailField(_("email address"), blank=True, unique=True)
@@ -103,7 +110,7 @@ class SEUser(BaseModel,AbstractBaseUser, PermissionsMixin):
         """
         Return the first_name plus the last_name, with a space in between.
         """
-        full_name = "%s %s" % (self.first_name, self.last_name)
+        full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
 
     def get_short_name(self):
@@ -128,7 +135,7 @@ class UserStatus(BaseModel):
     secondary_email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
-        return "%s - status" % (self.user)
+        return f"{self.user} - status"
 
     def send(self, subject, template, context, recipient_list=None):
         pass
@@ -233,20 +240,20 @@ class UserStatus(BaseModel):
     #         if cls.email_is_free(email) is False:
     #             raise EmailAlreadyInUse
 
-    # @classmethod
-    # def verify(cls, token):
-    #     payload = get_token_payload(
-    #         token, TokenAction.ACTIVATION, app_settings.EXPIRATION_ACTIVATION_TOKEN
-    #     )
-    #     user = SEUser._default_manager.get(**payload)
-    #     user_status = cls.objects.get(user=user)
-    #     if user_status.verified is False:
-    #         user_status.verified = True
-    #         user_status.save(update_fields=["verified"])
-    #         user_verified.send(sender=cls, user=user)
-    #         return user
-    #     else:
-    #         raise UserAlreadyVerified
+    @classmethod
+    def verify(cls, token):
+        payload = get_token_payload(
+            token, TokenAction.ACTIVATION, app_settings.EXPIRATION_ACTIVATION_TOKEN
+        )
+        user = SEUser._default_manager.get(**payload)
+        user_status = cls.objects.get(user=user)
+        if user_status.verified is False:
+            user_status.verified = True
+            user_status.save(update_fields=["verified"])
+            user_verified.send(sender=cls, user=user)
+            return user
+        else:
+            raise UserAlreadyVerified
 
     # @classmethod
     # def verify_secondary_email(cls, token):
