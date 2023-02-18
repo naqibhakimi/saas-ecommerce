@@ -71,7 +71,7 @@ AUTHENTICATION_BACKENDS = [
 # Application definition
 
 INSTALLED_APPS = [
-    # 'daphne',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -181,6 +181,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+SITE_URLS = 'localhost'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -230,8 +232,25 @@ AUTH_USER_MODEL = 'apps_auth.SEUser'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-DEFAULTS = {
 
+AUTH_COFIG = {
+    # if allow to login without verification,
+    # the register mutation will return a token
+    "ALLOW_LOGIN_NOT_VERIFIED": False,
+    # mutations fields options
+    "LOGIN_ALLOWED_FIELDS": ["email"],
+    "ALLOW_LOGIN_WITH_SECONDARY_EMAIL": True,
+    # required fields on register, plus password1 and password2,
+    # can be a dict like UPDATE_MUTATION_FIELDS setting
+    "REGISTER_MUTATION_FIELDS": ["email"],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": [],
+    # optional fields on update account, can be list of fields
+    "UPDATE_MUTATION_FIELDS": {"first_name": "String", "last_name": "String"},
+    # tokens
+    "EXPIRATION_ACTIVATION_TOKEN": datetime.timedelta(days=7),
+    "EXPIRATION_PASSWORD_RESET_TOKEN": datetime.timedelta(hours=1),
+    "EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN": datetime.timedelta(hours=1),
+    "EXPIRATION_PASSWORD_SET_TOKEN": datetime.timedelta(hours=1),
     # email stuff
     "EMAIL_FROM": getattr(django_settings, "DEFAULT_FROM_EMAIL", "test@email.com"),
     "SEND_ACTIVATION_EMAIL": True,
@@ -255,48 +274,26 @@ DEFAULTS = {
     "EMAIL_TEMPLATE_PASSWORD_SET": "email/password_set_email.html",
     "EMAIL_TEMPLATE_PASSWORD_RESET": "email/password_reset_email.html",
     "EMAIL_TEMPLATE_VARIABLES": {},
+    # query stuff
+    "USER_NODE_EXCLUDE_FIELDS": ["password", "is_superuser"],
+    "USER_NODE_FILTER_FIELDS": {
+        "email": ["exact"],
+        "email": ["exact", "icontains", "istartswith"],
+        "is_active": ["exact"],
+        "status__archived": ["exact"],
+        "status__verified": ["exact"],
+        "status__secondary_email": ["exact"],
+    },
+    # turn is_active to False instead
+    "ALLOW_DELETE_ACCOUNT": False,
+    # string path for email function wrapper, see the testproject example
+    "EMAIL_ASYNC_TASK": False,
+    # mutation error type
+    "CUSTOM_ERROR_TYPE": None,
+    # registration with no password
+    "ALLOW_PASSWORDLESS_REGISTRATION": False,
+    "SEND_PASSWORD_SET_EMAIL": False,
 }
 
+AUTH = type('AUTH', (object,), AUTH_COFIG)
 
-class GraphQLAuthSettings(object):
-    """
-    A settings object, that allows API settings to be accessed as properties.
-    """
-
-    def __init__(self, user_settings=None, defaults=None):
-        if user_settings:
-            self._user_settings = user_settings
-        self.defaults = defaults or DEFAULTS
-
-    @property
-    def user_settings(self):
-        if not hasattr(self, "_user_settings"):
-            self._user_settings = getattr(django_settings, "GRAPHQL_AUTH", {})
-        return self._user_settings
-
-    def __getattr__(self, attr):
-        if attr not in self.defaults:
-            raise AttributeError(f"Invalid graphql_auth setting: '{attr}'")
-        try:
-            # Check if present in user settings
-            val = self.user_settings[attr]
-        except KeyError:
-            # Fall back to defaults
-            val = self.defaults[attr]
-
-        # Cache the result
-        setattr(self, attr, val)
-        return val
-
-
-graphql_auth_settings = GraphQLAuthSettings(None, DEFAULTS)
-
-
-def reload_graphql_auth_settings(*args, **kwargs):
-    global graphql_auth_settings
-    setting, value = kwargs["setting"], kwargs["value"]
-    if setting == "GRAPHQL_AUTH":
-        graphql_auth_settings = GraphQLAuthSettings(value, DEFAULTS)
-
-
-setting_changed.connect(reload_graphql_auth_settings)

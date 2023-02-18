@@ -2,6 +2,8 @@ from django.utils.translation import gettext as _
 
 
 class Messages:
+    INVALID_TOKEN =[
+        {"message": _("The provided token is invalid"), "code": "invalid_token"}],
     INVALID_EMAIL = [
         {"message": _("The email address is invalid"), "code": "invalid_email"}]
     INVALID_CREDENTIALS = [{"message": _(

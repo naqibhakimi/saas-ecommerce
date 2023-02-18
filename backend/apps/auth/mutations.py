@@ -11,8 +11,6 @@ class Signup(DynamicInputMixin, RelayMutationMixin, SignupMixin, graphene.Client
         'email': graphene.String,
         'password1': graphene.String,
         'password2': graphene.String,
-        'first_name': graphene.String,
-        'last_name': graphene.String,
     }
 
 
@@ -38,17 +36,18 @@ class VerifyAccount(
     _required_inputs = ["token"]
 
 
-class ResendActivationEmail(
-    RelayMutationMixin,
-    DynamicInputMixin,
-    ResendActivationEmailMixin,
-    graphene.ClientIDMutation,
-):
-    __doc__ = ResendActivationEmailMixin.__doc__
-    _required_inputs = ["email"]
+# class ResendActivationEmail(
+#     RelayMutationMixin,
+#     DynamicInputMixin,
+#     ResendActivationEmailMixin,
+#     graphene.ClientIDMutation,
+# ):
+#     __doc__ = ResendActivationEmailMixin.__doc__
+#     _required_inputs = ["email"]
 
 
 class Mutation:
     signup = Signup.Field()
     signin = SignIn.Field()
     update_account = UpdateAccount.Field()
+    verify_account = VerifyAccount.Field()

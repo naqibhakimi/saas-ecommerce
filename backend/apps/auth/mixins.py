@@ -9,11 +9,11 @@ from django.core.signing import BadSignature, SignatureExpired
 from apps.core.mutations import Output
 
 from .constants import EMAIL_MESSAGES, Messages
-from .exceptions import EmailAlreadyInUse, InvalidCredentials, UserAlreadyVerified, SignatureExpired, BadSignature, TokenScopeError
+from .exceptions import EmailAlreadyInUse, InvalidCredentials, UserAlreadyVerified, TokenScopeError
 from .forms import SignupForm, SingInForm, UpdateAccountForm
 from .models import UserStatus
 from .types import UserNode
-from conf.settings import graphql_auth_settings as app_settings
+from django.conf import settings
 from .signals import user_registered
 
 
@@ -34,11 +34,9 @@ class SignupMixin(Output):
             if form.is_valid():
                 email = kwargs.get(UserModel.EMAIL_FIELD, False)
                 user = form.save()
-                send_activation = (
-                    app_settings.SEND_ACTIVATION_EMAIL is True and email
-                )
-
-                if send_activation:
+                if send_activation := (
+                    settings.AUTH.SEND_ACTIVATION_EMAIL is True and email
+                ):
                     user.status.send_activation_email(info)
 
                 user_registered.send(sender=cls, user=user)
@@ -112,6 +110,7 @@ class VerifyAccountMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
+        raise NameError()
         try:
             token = kwargs.get("token")
             user = UserStatus.verify(token)

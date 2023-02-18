@@ -1,21 +1,23 @@
+import time
+
+from apps.core.models import BaseModel
+from django.conf import settings
 from django.conf import settings as django_settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.db import models
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.html import strip_tags
+from django.utils.translation import gettext_lazy as _
+from graphql_jwt.shortcuts import get_token
 
-
-from apps.core.models import BaseModel
-
-from .utils import get_token_payload
 from .constants import TokenAction
-from .signals import user_verified
 from .exceptions import UserAlreadyVerified
-from conf.settings.dev import graphql_auth_settings as app_settings
+from .signals import user_verified
+from .utils import get_token_payload
 
 
 class Oauth(BaseModel):
@@ -148,7 +150,7 @@ class UserStatus(BaseModel):
 
         return send_mail(
             subject=_subject,
-            from_email=app_settings.EMAIL_FROM,
+            from_email=settings.AUTH.EMAIL_FROM,
             message=message,
             html_message=html_message,
             recipient_list=(
@@ -157,56 +159,56 @@ class UserStatus(BaseModel):
             fail_silently=False,
         )
 
-    # def get_email_context(self, info, path, action, **kwargs):
-    #     token = get_token(self.user, action, **kwargs)
-    #     site = get_current_site(info.context)
-    #     origin = info.context.headers.get('Origin', False)
+    def get_email_context(self, info, path, action, **kwargs):
+        token = get_token(self.user, action, **kwargs)
+        site = get_current_site(info.context)
+        origin = info.context.headers.get('Origin', False)
 
-    #     return {
-    #         "user": self.user,
-    #         "request": info.context,
-    #         "token": token,
-    #         "port": info.context.get_port(),
-    #         "site_name": site.name,
-    #         "domain": settings.SITE_URLS,
-    #         "protocol": "https" if info.context.is_secure() else "http",
-    #         "path": path,
-    #         "timestamp": time.time(),
-    #         **app_settings.EMAIL_TEMPLATE_VARIABLES,
-    #     }
+        return {
+            "user": self.user,
+            "request": info.context,
+            "token": token,
+            "port": info.context.get_port(),
+            "site_name": site.name,
+            "domain": settings.SITE_URLS,
+            "protocol": "https" if info.context.is_secure() else "http",
+            "path": path,
+            "timestamp": time.time(),
+            **settings.AUTH.EMAIL_TEMPLATE_VARIABLES,
+        }
 
     def send_activation_email(self, info, *args, **kwargs):
         email_context = self.get_email_context(
-            info, app_settings.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
+            info, settings.AUTH.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
         )
-        template = app_settings.EMAIL_TEMPLATE_ACTIVATION
-        subject = app_settings.EMAIL_SUBJECT_ACTIVATION
+        template = settings.AUTH.EMAIL_TEMPLATE_ACTIVATION
+        subject = settings.AUTH.EMAIL_SUBJECT_ACTIVATION
         return self.send(subject, template, email_context, *args, **kwargs)
 
     # def resend_activation_email(self, info, *args, **kwargs):
     #     if self.verified is True:x
     #         raise UserAlreadyVerified
     #     email_context = self.get_email_context(
-    #         info, app_settings.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
+    #         info, settings.AUTH.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
     #     )
-    #     template = app_settings.EMAIL_TEMPLATE_ACTIVATION_RESEND
-    #     subject = app_settings.EMAIL_SUBJECT_ACTIVATION_RESEND
+    #     template = settings.AUTH.EMAIL_TEMPLATE_ACTIVATION_RESEND
+    #     subject = settings.AUTH.EMAIL_SUBJECT_ACTIVATION_RESEND
     #     return self.send(subject, template, email_context, *args, **kwargs)
 
     # def send_password_set_email(self, info, *args, **kwargs):
     #     email_context = self.get_email_context(
-    #         info, app_settings.PASSWORD_SET_PATH_ON_EMAIL, TokenAction.PASSWORD_SET
+    #         info, settings.AUTH.PASSWORD_SET_PATH_ON_EMAIL, TokenAction.PASSWORD_SET
     #     )
-    #     template = app_settings.EMAIL_TEMPLATE_PASSWORD_SET
-    #     subject = app_settings.EMAIL_SUBJECT_PASSWORD_SET
+    #     template = settings.AUTH.EMAIL_TEMPLATE_PASSWORD_SET
+    #     subject = settings.AUTH.EMAIL_SUBJECT_PASSWORD_SET
     #     return self.send(subject, template, email_context, *args, **kwargs)
 
     # def send_password_reset_email(self, info, *args, **kwargs):
     #     email_context = self.get_email_context(
-    #         info, app_settings.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET
+    #         info, settings.AUTH.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET
     #     )
-    #     template = app_settings.EMAIL_TEMPLATE_PASSWORD_RESET
-    #     subject = app_settings.EMAIL_SUBJECT_PASSWORD_RESET
+    #     template = settings.AUTH.EMAIL_TEMPLATE_PASSWORD_RESET
+    #     subject = settings.AUTH.EMAIL_SUBJECT_PASSWORD_RESET
     #     return self.send(subject, template, email_context, *args, **kwargs)
 
     # def send_secondary_email_activation(self, info, email):
@@ -214,12 +216,12 @@ class UserStatus(BaseModel):
     #         raise EmailAlreadyInUse
     #     email_context = self.get_email_context(
     #         info,
-    #         app_settings.ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL,
+    #         settings.AUTH.ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL,
     #         TokenAction.ACTIVATION_SECONDARY_EMAIL,
     #         secondary_email=email,
     #     )
-    #     template = app_settings.EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION
-    #     subject = app_settings.EMAIL_SUBJECT_SECONDARY_EMAIL_ACTIVATION
+    #     template = settings.AUTH.EMAIL_TEMPLATE_SECONDARY_EMAIL_ACTIVATION
+    #     subject = settings.AUTH.EMAIL_SUBJECT_SECONDARY_EMAIL_ACTIVATION
     #     return self.send(subject, template, email_context, recipient_list=[email])
 
     # @classmethod
@@ -245,7 +247,7 @@ class UserStatus(BaseModel):
     @classmethod
     def verify(cls, token):
         payload = get_token_payload(
-            token, TokenAction.ACTIVATION, app_settings.EXPIRATION_ACTIVATION_TOKEN
+            token, TokenAction.ACTIVATION, settings.AUTH.EXPIRATION_ACTIVATION_TOKEN
         )
         user = SEUser._default_manager.get(**payload)
         user_status = cls.objects.get(user=user)
@@ -262,7 +264,7 @@ class UserStatus(BaseModel):
     #     payload = get_token_payload(
     #         token,
     #         TokenAction.ACTIVATION_SECONDARY_EMAIL,
-    #         app_settings.EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN,
+    #         settings.AUTH.EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN,
     #     )
     #     secondary_email = payload.pop("secondary_email")
     #     if not cls.email_is_free(secondary_email):
