@@ -2,7 +2,6 @@ import graphene
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 from django.forms import ValidationError
-from graphql_jwt.shortcuts import get_token
 from django.core.signing import BadSignature, SignatureExpired
 
 
@@ -11,12 +10,12 @@ from apps.core.mutations import Output
 from .constants import EMAIL_MESSAGES, Messages
 from .exceptions import EmailAlreadyInUse, InvalidCredentials, UserAlreadyVerified, TokenScopeError
 from .forms import SignupForm, SingInForm, UpdateAccountForm
-from .models import UserStatus
+from .models import SEUser, UserStatus
 from .types import UserNode
 from django.conf import settings
 from .signals import user_registered
 
-
+from graphql_jwt.shortcuts import  get_token, get_user_by_token
 UserModel = get_user_model()
 
 
@@ -109,12 +108,10 @@ class VerifyAccountMixin(Output):
         return super().Field(*args, **kwargs)
 
     @classmethod
-    def resolve_mutation(cls, root, info, **kwargs):
-        raise NameError()
+    def resolve_mutation(cls, root, info, **kwargs):        
         try:
             token = kwargs.get("token")
             user = UserStatus.verify(token)
-            token = get_token(user)
             return cls(success=True, user=user, token=token)
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)

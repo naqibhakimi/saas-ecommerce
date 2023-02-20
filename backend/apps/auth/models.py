@@ -12,13 +12,13 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
-from graphql_jwt.shortcuts import get_token
+# from graphql_jwt.shortcuts import get_token
 
 from .constants import TokenAction
 from .exceptions import UserAlreadyVerified
 from .signals import user_verified
-from .utils import get_token_payload
 
+from graphql_jwt.shortcuts import  get_token, get_user_by_token
 
 class Oauth(BaseModel):
     display_name = models.CharField(max_length=255)
@@ -246,10 +246,7 @@ class UserStatus(BaseModel):
 
     @classmethod
     def verify(cls, token):
-        payload = get_token_payload(
-            token, TokenAction.ACTIVATION, settings.AUTH.EXPIRATION_ACTIVATION_TOKEN
-        )
-        user = SEUser._default_manager.get(**payload)
+        user = get_user_by_token(token)
         user_status = cls.objects.get(user=user)
         if user_status.verified is False:
             user_status.verified = True

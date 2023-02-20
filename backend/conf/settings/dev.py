@@ -58,8 +58,6 @@ GRAPHQL_JWT = {
 }
 
 
-# import django.contrib.auth.backends
-
 # Auth Backends
 AUTHENTICATION_BACKENDS = [
     # "graphql_jwt.backends.JSONWebTokenBackend",
@@ -194,14 +192,16 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# from graphene_django.debug  import DjangoDebugMiddleware
 # Grphene settings
 GRAPHENE = {
     "SCHEMA": "apps.core.schema.schema",
     "SCHEMA_OUTPUT": "schema.json",
     "SCHEMA_INDENT": 2,
     "MIDDLEWARE": [
-        # "graphene_django.debug.DjangoDebugMiddleware",
+        # "apps.core.middlewares.sentry_middleware.gguncaught_exception_middleware",
         "graphql_jwt.middleware.JSONWebTokenMiddleware",
+        #  "graphene_django.debug.DjangoDebugMiddleware",
     ],
 }
 
@@ -297,3 +297,58 @@ AUTH_COFIG = {
 
 AUTH = type('AUTH', (object,), AUTH_COFIG)
 
+
+
+JWT_AUTH = {
+    "JWT_ENCODE_HANDLER": "rest_framework_jwt.utils.jwt_encode_handler",
+    "JWT_DECODE_HANDLER": "rest_framework_jwt.utils.jwt_decode_handler",
+    "JWT_PAYLOAD_HANDLER": "rest_framework_jwt.utils.jwt_payload_handler",
+    "JWT_SECRET_KEY": SECRET_KEY,
+    "JWT_GET_USER_SECRET_KEY": None,
+    "JWT_PUBLIC_KEY": None,
+    "JWT_PRIVATE_KEY": None,
+    "JWT_ALGORITHM": "HS256",
+    "JWT_VERIFY": True,
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LEEWAY": 0,
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=30),
+    "JWT_AUDIENCE": None,
+    "JWT_ISSUER": None,
+    "JWT_ALLOW_REFRESH": True,
+    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=5),
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+    "JWT_AUTH_COOKIE": None,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'NOTSET',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'NOTSET',
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'propagate': False,
+            'level': 'ERROR'
+        }
+    }
+}

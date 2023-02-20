@@ -2,6 +2,10 @@ from django.utils.translation import gettext as _
 
 
 class Messages:
+    ALREADY_VERIFIED =[
+        {"message": _("The provided token is invalid"), "code": "invalid_token"}],
+    EXPIRED_TOKEN =[
+        {"message": _("The provided token is invalid"), "code": "invalid_token"}],
     INVALID_TOKEN =[
         {"message": _("The provided token is invalid"), "code": "invalid_token"}],
     INVALID_EMAIL = [

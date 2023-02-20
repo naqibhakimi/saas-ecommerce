@@ -6,7 +6,7 @@ authors = ["Naqib Hakimi <naqib.hakimi.cgi@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 django = "^4.1.5"
 graphene-django = "^3.0.0"
 django-filter = "^22.1"
@@ -22,6 +22,7 @@ graphene-django-optimizer = "^0.9.1"
 django-ratelimit = "^4.0.0"
 graphene-file-upload = "^1.3.0"
 mypy = "^1.0.0"
+twisted = {extras = ["http2", "tls"], version = "^22.10.0"}
 
 
 [tool.poetry.dev-dependencies]

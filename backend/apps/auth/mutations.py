@@ -1,5 +1,6 @@
 import graphene
 from django.contrib.auth import authenticate, login
+from graphql.error import GraphQLError
 
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
@@ -46,8 +47,14 @@ class VerifyAccount(
 #     _required_inputs = ["email"]
 
 
+class Active( graphene.ClientIDMutation):
+    @classmethod
+    def mutate_and_get_payload(root, info, *args, **kwargs):
+        raise GraphQLError('sadfasdfsadf')
+
 class Mutation:
     signup = Signup.Field()
     signin = SignIn.Field()
     update_account = UpdateAccount.Field()
     verify_account = VerifyAccount.Field()
+    active = Active.Field()

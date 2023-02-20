@@ -2,13 +2,13 @@ import asyncio
 import datetime
 
 import graphene
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-
+from apps.auth.mutations import Mutation as AuthMutations
+from apps.auth.queries import Query as AuthQueries
 from apps.customer.mutations import Mutation as CustomMutations
 from apps.store.mutations import Mutation as StoreMutations
-from apps.auth.mutations import Mutation as AuthMutations
-from apps.auth.queries import  Query as AuthQueries
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from graphene_django.debug import DjangoDebug
 
 channel_layer = get_channel_layer()
 
