@@ -10,17 +10,16 @@ from .models import (
 class LineItemFilter(django_filters.FilterSet):
     class Meta:
         model = LineItem
-        Exception  = ('metadata')
+        Exception = "metadata"
 
 
 class LineItemAdjustmentFilter(django_filters.FilterSet):
     class Meta:
         model = LineItemAdjustment
-        Exception  = ('metadata')
+        Exception = "metadata"
 
 
 class LineItemTaxLineFilter(django_filters.FilterSet):
     class Meta:
         model = LineItemTaxLine
-        Exception  = ('metadata')
-
+        Exception = "metadata"

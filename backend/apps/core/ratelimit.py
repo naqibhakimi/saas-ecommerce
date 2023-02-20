@@ -12,7 +12,6 @@ def GQLRatelimitKey(group, request):
 
 
 def ratelimit(group=None, key=None, rate=None, method=ALL, block=False):
-   
     def decorator(fn):
         @wraps(fn)
         def _wrapped(cls, root, info, **kw):
@@ -45,8 +44,8 @@ def ratelimit(group=None, key=None, rate=None, method=ALL, block=False):
 
             if ratelimited and block:
                 logger.warn(
-                   "url:<%s> is denied for <%s> in Ratelimit"
-                   % (request.path, request.META["REMOTE_ADDR"])
+                    "url:<%s> is denied for <%s> in Ratelimit"
+                    % (request.path, request.META["REMOTE_ADDR"])
                 )
                 raise Ratelimited("rate_limited")
             return fn(cls, root, info, **kw)

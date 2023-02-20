@@ -2,26 +2,36 @@ from django.utils.translation import gettext as _
 
 
 class Messages:
-    ALREADY_VERIFIED =[
-        {"message": _("The provided token is invalid"), "code": "invalid_token"}],
-    EXPIRED_TOKEN =[
-        {"message": _("The provided token is invalid"), "code": "invalid_token"}],
-    INVALID_TOKEN =[
-        {"message": _("The provided token is invalid"), "code": "invalid_token"}],
+    ALREADY_VERIFIED = [
+        {"message": _("The user already verified"), "code": "user_already_verified"}
+    ]
+    EXPIRED_TOKEN = [
+        {"message": _("The provided token is invalid"), "code": "invalid_token"}
+    ]
+    INVALID_TOKEN = [
+        {"message": _("The provided token is invalid"), "code": "invalid_token"}
+    ]
     INVALID_EMAIL = [
-        {"message": _("The email address is invalid"), "code": "invalid_email"}]
-    INVALID_CREDENTIALS = [{"message": _(
-        "The email or password in is incorrect"), "code": "invalid_credentials"}]
+        {"message": _("The email address is invalid"), "code": "invalid_email"}
+    ]
+    INVALID_CREDENTIALS = [
+        {
+            "message": _("The email or password in is incorrect"),
+            "code": "invalid_credentials",
+        }
+    ]
     PASSWORD_DOESNOT_MATCH = [
-        {"message": _("Password does not match"), "code": "password_does_not_match"}]
+        {"message": _("Password does not match"), "code": "password_does_not_match"}
+    ]
     EMAIL_IN_USE = [
-        {"message": _("This email address already exists"), "code": "email_in_use"}]
+        {"message": _("This email address already exists"), "code": "email_in_use"}
+    ]
 
 
 class EMAIL_MESSAGES:
     SIGN_UP = {
-        'subject': _("Sign up"),
-        'template': 'email/activation_email.html',
+        "subject": _("Sign up"),
+        "template": "email/activation_email.html",
     }
 
 

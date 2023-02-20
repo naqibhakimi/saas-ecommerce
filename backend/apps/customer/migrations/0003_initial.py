@@ -5,44 +5,69 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('order', '0001_initial'),
-        ('product', '0001_initial'),
-        ('customer', '0002_initial'),
+        ("order", "0001_initial"),
+        ("product", "0001_initial"),
+        ("customer", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customergroup',
-            name='price_lists',
-            field=models.ManyToManyField(to='product.pricelist'),
+            model_name="customergroup",
+            name="price_lists",
+            field=models.ManyToManyField(to="product.pricelist"),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='billing_address',
-            field=models.OneToOneField(blank=True, help_text='Billing address of the customer, not required.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='customer.address'),
+            model_name="customer",
+            name="billing_address",
+            field=models.OneToOneField(
+                blank=True,
+                help_text="Billing address of the customer, not required.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="customer.address",
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='groups',
-            field=models.ManyToManyField(help_text='Groups the customer belongs to.', related_name='+', to='customer.customergroup'),
+            model_name="customer",
+            name="groups",
+            field=models.ManyToManyField(
+                help_text="Groups the customer belongs to.",
+                related_name="+",
+                to="customer.customergroup",
+            ),
         ),
         migrations.AddField(
-            model_name='customer',
-            name='orders',
-            field=models.ForeignKey(help_text='Orders placed by the customer.', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='order.order'),
+            model_name="customer",
+            name="orders",
+            field=models.ForeignKey(
+                help_text="Orders placed by the customer.",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="order.order",
+            ),
         ),
         migrations.AddField(
-            model_name='country',
-            name='region',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='customer.region'),
+            model_name="country",
+            name="region",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="customer.region",
+            ),
         ),
         migrations.AddField(
-            model_name='address',
-            name='country',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='customer.country'),
+            model_name="address",
+            name="country",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="customer.country",
+            ),
         ),
     ]

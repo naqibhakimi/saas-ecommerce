@@ -32,60 +32,57 @@ from .connections import (
 )
 
 
-
 class ShippingProfileNode(Node, DjangoObjectType):
     class Meta:
-        model =  ShippingProfile
+        model = ShippingProfile
         interfaces = (graphene.Node,)
-        filter_class =  ShippingProfileFilter
+        filter_class = ShippingProfileFilter
         connection_class = ShippingProfileConnection
 
-    
+
 class ShippingOptionNode(Node, DjangoObjectType):
     class Meta:
-        model =  ShippingOption
+        model = ShippingOption
         interfaces = (graphene.Node,)
-        filter_class =  ShippingOptionFilter
+        filter_class = ShippingOptionFilter
         connection_class = ShippingOptionConnection
 
-    
+
 class ShippingMethodNode(Node, DjangoObjectType):
     class Meta:
-        model =  ShippingMethod
+        model = ShippingMethod
         interfaces = (graphene.Node,)
-        filter_class =  ShippingMethodFilter
+        filter_class = ShippingMethodFilter
         connection_class = ShippingMethodConnection
 
-    
+
 class CustomShippingOptionNode(Node, DjangoObjectType):
     class Meta:
-        model =  CustomShippingOption
+        model = CustomShippingOption
         interfaces = (graphene.Node,)
-        filter_class =  CustomShippingOptionFilter
+        filter_class = CustomShippingOptionFilter
         connection_class = CustomShippingOptionConnection
 
-    
+
 class ShippingMethodTaxLineNode(Node, DjangoObjectType):
     class Meta:
-        model =  ShippingMethodTaxLine
+        model = ShippingMethodTaxLine
         interfaces = (graphene.Node,)
-        filter_class =  ShippingMethodTaxLineFilter
+        filter_class = ShippingMethodTaxLineFilter
         connection_class = ShippingMethodTaxLineConnection
 
-    
+
 class ShippingOptionRequirementNode(Node, DjangoObjectType):
     class Meta:
-        model =  ShippingOptionRequirement
+        model = ShippingOptionRequirement
         interfaces = (graphene.Node,)
-        filter_class =  ShippingOptionRequirementFilter
+        filter_class = ShippingOptionRequirementFilter
         connection_class = ShippingOptionRequirementConnection
 
-    
+
 class ShippingTaxRateNode(Node, DjangoObjectType):
     class Meta:
-        model =  ShippingTaxRate
+        model = ShippingTaxRate
         interfaces = (graphene.Node,)
-        filter_class =  ShippingTaxRateFilter
+        filter_class = ShippingTaxRateFilter
         connection_class = ShippingTaxRateConnection
-
-    

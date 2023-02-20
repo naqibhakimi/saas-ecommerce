@@ -5,60 +5,88 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('customer', '0003_initial'),
-        ('order', '0003_initial'),
-        ('payment', '0001_initial'),
-        ('store', '0001_initial'),
+        ("customer", "0003_initial"),
+        ("order", "0003_initial"),
+        ("payment", "0001_initial"),
+        ("store", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='paymentsession',
-            name='cart',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='store.cart'),
+            model_name="paymentsession",
+            name="cart",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="store.cart",
+            ),
         ),
         migrations.AddField(
-            model_name='paymentcollection',
-            name='currency',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='payment.currency'),
+            model_name="paymentcollection",
+            name="currency",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="payment.currency"
+            ),
         ),
         migrations.AddField(
-            model_name='paymentcollection',
-            name='payment_sessions',
-            field=models.ManyToManyField(to='payment.paymentsession'),
+            model_name="paymentcollection",
+            name="payment_sessions",
+            field=models.ManyToManyField(to="payment.paymentsession"),
         ),
         migrations.AddField(
-            model_name='paymentcollection',
-            name='payments',
-            field=models.ManyToManyField(to='payment.payment'),
+            model_name="paymentcollection",
+            name="payments",
+            field=models.ManyToManyField(to="payment.payment"),
         ),
         migrations.AddField(
-            model_name='paymentcollection',
-            name='region',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='customer.region'),
+            model_name="paymentcollection",
+            name="region",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="customer.region"
+            ),
         ),
         migrations.AddField(
-            model_name='payment',
-            name='cart',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='store.cart'),
+            model_name="payment",
+            name="cart",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="store.cart",
+            ),
         ),
         migrations.AddField(
-            model_name='payment',
-            name='currency',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='payment.currency'),
+            model_name="payment",
+            name="currency",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="payment.currency",
+            ),
         ),
         migrations.AddField(
-            model_name='payment',
-            name='order',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='order.order'),
+            model_name="payment",
+            name="order",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="order.order",
+            ),
         ),
         migrations.AddField(
-            model_name='payment',
-            name='swap',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='store.swap'),
+            model_name="payment",
+            name="swap",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="store.swap",
+            ),
         ),
     ]

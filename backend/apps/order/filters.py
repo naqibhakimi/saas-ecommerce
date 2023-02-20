@@ -20,85 +20,82 @@ from .models import (
 class OrderFilter(django_filters.FilterSet):
     class Meta:
         model = Order
-        exclude = ('metadata')
-
+        exclude = "metadata"
 
 
 class OrderDiscountFilter(django_filters.FilterSet):
     class Meta:
         model = OrderDiscount
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class OrderGiftCardFilter(django_filters.FilterSet):
     class Meta:
         model = OrderGiftCard
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class OrderFilter(django_filters.FilterSet):
     class Meta:
         model = Order
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class OrderEditFilter(django_filters.FilterSet):
     class Meta:
         model = OrderEdit
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class OrderItemChangeFilter(django_filters.FilterSet):
     class Meta:
         model = OrderItemChange
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class DraftOrderFilter(django_filters.FilterSet):
     class Meta:
         model = DraftOrder
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class ClaimOrderFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimOrder
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class ClaimTagFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimTag
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class ClaimItemFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimItem
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class ClaimImageFilter(django_filters.FilterSet):
     class Meta:
         model = ClaimImage
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class ReturnFilter(django_filters.FilterSet):
     class Meta:
         model = Return
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class ReturnItemFilter(django_filters.FilterSet):
     class Meta:
         model = ReturnItem
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
+
 class ReturnReasonFilter(django_filters.FilterSet):
     class Meta:
         model = ReturnReason
-        exclude = ('metadata')
-
-        
+        exclude = "metadata"

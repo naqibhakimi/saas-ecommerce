@@ -11,62 +11,60 @@ class Customer(BaseModel):
     """
     This class represents a customer in the store.
     """
+
     email = models.EmailField(
         validators=[EmailValidator()],
         unique=True,
-        help_text="Email of the customer, must be unique."
+        help_text="Email of the customer, must be unique.",
     )
     first_name = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        help_text="First name of the customer, not required."
+        help_text="First name of the customer, not required.",
     )
     last_name = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        help_text="Last name of the customer, not required."
+        help_text="Last name of the customer, not required.",
     )
     billing_address = models.OneToOneField(
-        'Address',
+        "Address",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='+',
-        help_text="Billing address of the customer, not required."
+        related_name="+",
+        help_text="Billing address of the customer, not required.",
     )
     phone = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        help_text="Phone number of the customer, not required."
+        help_text="Phone number of the customer, not required.",
     )
     has_account = models.BooleanField(
-        default=False,
-        help_text="Indicates whether the customer has an account or not."
+        default=False, help_text="Indicates whether the customer has an account or not."
     )
     password_hash = models.CharField(
         max_length=255,
         blank=True,
         null=True,
-        help_text="Hashed password of the customer, not required."
+        help_text="Hashed password of the customer, not required.",
     )
     orders = models.ForeignKey(
-        'order.Order',
+        "order.Order",
         on_delete=models.CASCADE,
-        related_name='+',
-        help_text="Orders placed by the customer."
+        related_name="+",
+        help_text="Orders placed by the customer.",
     )
     groups = models.ManyToManyField(
-        'CustomerGroup',
-        related_name='+',
-        help_text="Groups the customer belongs to."
+        "CustomerGroup", related_name="+", help_text="Groups the customer belongs to."
     )
     metadata = models.JSONField(
         blank=True,
         null=True,
-        help_text="Metadata related to the customer, not required."
+        help_text="Metadata related to the customer, not required.",
     )
 
     def __str__(self):
@@ -76,10 +74,11 @@ class Customer(BaseModel):
         """
         return f"{self.first_name} {self.last_name} ({self.email})"
 
+
 class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)
-    customers = models.ManyToManyField(Customer, related_name='+')
-    price_lists = models.ManyToManyField('product.PriceList')
+    customers = models.ManyToManyField(Customer, related_name="+")
+    price_lists = models.ManyToManyField("product.PriceList")
     metadata = models.JSONField(null=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
@@ -90,7 +89,9 @@ class Country(BaseModel):
     num_code = models.IntegerField()
     name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
-    region = models.ForeignKey('Region', on_delete=models.SET_NULL, null=True, blank=True,  related_name='+')
+    region = models.ForeignKey(
+        "Region", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
 
 
 class Address(BaseModel):
@@ -101,7 +102,7 @@ class Address(BaseModel):
     address_2 = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     country_code = models.CharField(max_length=255, null=True, blank=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='+')
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="+")
     province = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
@@ -110,19 +111,22 @@ class Address(BaseModel):
 
 class Region(BaseModel):
     name = models.CharField(max_length=100)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='+')
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name="+")
     tax_rate = models.FloatField()
-    tax_rates = models.ForeignKey(TaxRate, on_delete=models.SET_NULL, related_name='+', null=True, blank=True)
+    tax_rates = models.ForeignKey(
+        TaxRate, on_delete=models.SET_NULL, related_name="+", null=True, blank=True
+    )
     tax_code = models.CharField(max_length=100, null=True)
     gift_cards_taxable = models.BooleanField(default=True)
     automatic_taxes = models.BooleanField(default=True)
-    countries = models.ManyToManyField(Country, related_name='+')
+    countries = models.ManyToManyField(Country, related_name="+")
     tax_provider = models.ForeignKey(TaxProvider, on_delete=models.SET_NULL, null=True)
-    payment_providers = models.ManyToManyField(PaymentProvider, related_name='+')
-    fulfillment_providers = models.ManyToManyField(FulfillmentProvider, related_name='+')
+    payment_providers = models.ManyToManyField(PaymentProvider, related_name="+")
+    fulfillment_providers = models.ManyToManyField(
+        FulfillmentProvider, related_name="+"
+    )
     metadata = models.JSONField(null=True)
     includes_tax = models.BooleanField(default=False)
-
 
 
 # {

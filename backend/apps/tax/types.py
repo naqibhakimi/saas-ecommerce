@@ -19,24 +19,26 @@ from .connections import (
     TaxProviderConnection,
 )
 
+
 class TaxLineNode(Node, DjangoObjectType):
     class Meta:
         model = TaxLine
-        filterset_class = TaxLineFilter 
+        filterset_class = TaxLineFilter
         interfaces = (graphene.Node,)
-        connection_class = TaxLineConnection 
-        
+        connection_class = TaxLineConnection
+
+
 class TaxRateNode(Node, DjangoObjectType):
     class Meta:
         model = TaxRate
-        filterset_class = TaxRateFilter 
+        filterset_class = TaxRateFilter
         interfaces = (graphene.Node,)
-        connection_class = TaxRateConnection 
-        
+        connection_class = TaxRateConnection
+
+
 class TaxProviderNode(Node, DjangoObjectType):
     class Meta:
         model = TaxProvider
-        filterset_class = TaxProviderFilter 
+        filterset_class = TaxProviderFilter
         interfaces = (graphene.Node,)
-        connection_class = TaxProviderConnection 
-        
+        connection_class = TaxProviderConnection

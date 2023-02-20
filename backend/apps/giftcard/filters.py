@@ -5,15 +5,14 @@ from .models import (
     GiftCardTransaction,
 )
 
+
 class GiftCardFilter(django_filters.FilterSet):
     class Meta:
         model = GiftCard
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class GiftCardTransactionFilter(django_filters.FilterSet):
     class Meta:
         model = GiftCardTransaction
-        exclude = ('metadata')
-
-
+        exclude = "metadata"

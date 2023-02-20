@@ -5,133 +5,259 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('tax', '0001_initial'),
-        ('inventory', '0003_initial'),
-        ('customer', '0003_initial'),
+        ("tax", "0001_initial"),
+        ("inventory", "0003_initial"),
+        ("customer", "0003_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CustomShippingOption',
+            name="CustomShippingOption",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('price', models.IntegerField()),
-                ('metadata', models.JSONField(null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("price", models.IntegerField()),
+                ("metadata", models.JSONField(null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='ShippingMethod',
+            name="ShippingMethod",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('price', models.PositiveIntegerField()),
-                ('data', models.JSONField()),
-                ('includes_tax', models.BooleanField(default=False)),
-                ('subtotal', models.PositiveIntegerField(null=True)),
-                ('total', models.PositiveIntegerField(null=True)),
-                ('tax_total', models.PositiveIntegerField(null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("price", models.PositiveIntegerField()),
+                ("data", models.JSONField()),
+                ("includes_tax", models.BooleanField(default=False)),
+                ("subtotal", models.PositiveIntegerField(null=True)),
+                ("total", models.PositiveIntegerField(null=True)),
+                ("tax_total", models.PositiveIntegerField(null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='ShippingOption',
+            name="ShippingOption",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('name', models.CharField(max_length=255)),
-                ('price_type', models.CharField(choices=[('flat_rate', 'FLAT_RATE'), ('calculated', 'CALCULATED')], default='FLAT_RATE', max_length=20)),
-                ('amount', models.PositiveIntegerField(null=True)),
-                ('is_return', models.BooleanField(default=False)),
-                ('admin_only', models.BooleanField(default=False)),
-                ('data', models.JSONField()),
-                ('metadata', models.JSONField(null=True)),
-                ('includes_tax', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "price_type",
+                    models.CharField(
+                        choices=[
+                            ("flat_rate", "FLAT_RATE"),
+                            ("calculated", "CALCULATED"),
+                        ],
+                        default="FLAT_RATE",
+                        max_length=20,
+                    ),
+                ),
+                ("amount", models.PositiveIntegerField(null=True)),
+                ("is_return", models.BooleanField(default=False)),
+                ("admin_only", models.BooleanField(default=False)),
+                ("data", models.JSONField()),
+                ("metadata", models.JSONField(null=True)),
+                ("includes_tax", models.BooleanField(default=False)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='ShippingProfile',
+            name="ShippingProfile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('name', models.CharField(max_length=255)),
-                ('type', models.CharField(choices=[('default', 'DEFAULT'), ('gift_card', 'GIFT_CARD'), ('custom', 'CUSTOM')], max_length=255)),
-                ('metadata', models.JSONField(null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("default", "DEFAULT"),
+                            ("gift_card", "GIFT_CARD"),
+                            ("custom", "CUSTOM"),
+                        ],
+                        max_length=255,
+                    ),
+                ),
+                ("metadata", models.JSONField(null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='ShippingTaxRate',
+            name="ShippingTaxRate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('metadata', models.JSONField(null=True)),
-                ('shipping_option', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='shipping.shippingoption')),
-                ('tax_rate', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='tax.taxrate')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("metadata", models.JSONField(null=True)),
+                (
+                    "shipping_option",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="shipping.shippingoption",
+                    ),
+                ),
+                (
+                    "tax_rate",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="tax.taxrate",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='ShippingOptionRequirement',
+            name="ShippingOptionRequirement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('type', models.CharField(choices=[('min_subtotal', 'MIN_SUBTOTAL'), ('max_subtotal', 'MAX_SUBTOTAL')], max_length=32)),
-                ('amount', models.IntegerField()),
-                ('deleted_at', models.DateTimeField(null=True)),
-                ('shipping_option', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='shipping.shippingoption')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("min_subtotal", "MIN_SUBTOTAL"),
+                            ("max_subtotal", "MAX_SUBTOTAL"),
+                        ],
+                        max_length=32,
+                    ),
+                ),
+                ("amount", models.IntegerField()),
+                ("deleted_at", models.DateTimeField(null=True)),
+                (
+                    "shipping_option",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="shipping.shippingoption",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AddField(
-            model_name='shippingoption',
-            name='profile',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='shipping.shippingprofile'),
+            model_name="shippingoption",
+            name="profile",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="shipping.shippingprofile",
+            ),
         ),
         migrations.AddField(
-            model_name='shippingoption',
-            name='provider',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='inventory.fulfillmentprovider'),
+            model_name="shippingoption",
+            name="provider",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="inventory.fulfillmentprovider",
+            ),
         ),
         migrations.AddField(
-            model_name='shippingoption',
-            name='region',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='customer.region'),
+            model_name="shippingoption",
+            name="region",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="customer.region"
+            ),
         ),
         migrations.CreateModel(
-            name='ShippingMethodTaxLine',
+            name="ShippingMethodTaxLine",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('code', models.CharField(max_length=255, unique=True)),
-                ('shipping_method', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='shipping.shippingmethod')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("code", models.CharField(max_length=255, unique=True)),
+                (
+                    "shipping_method",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="shipping.shippingmethod",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='shippingmethod',
-            name='shipping_option',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='shipping_methods', to='shipping.shippingoption'),
+            model_name="shippingmethod",
+            name="shipping_option",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="shipping_methods",
+                to="shipping.shippingoption",
+            ),
         ),
     ]

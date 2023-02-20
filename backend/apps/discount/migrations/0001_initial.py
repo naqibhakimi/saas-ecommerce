@@ -5,117 +5,228 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Discount',
+            name="Discount",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('code', models.CharField(max_length=255, unique=True)),
-                ('is_dynamic', models.BooleanField()),
-                ('is_disabled', models.BooleanField()),
-                ('starts_at', models.DateTimeField(auto_now_add=True)),
-                ('ends_at', models.DateTimeField(blank=True, null=True)),
-                ('valid_duration', models.CharField(blank=True, max_length=255, null=True)),
-                ('usage_limit', models.IntegerField(blank=True, null=True)),
-                ('usage_count', models.IntegerField(default=0)),
-                ('metadata', models.JSONField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("code", models.CharField(max_length=255, unique=True)),
+                ("is_dynamic", models.BooleanField()),
+                ("is_disabled", models.BooleanField()),
+                ("starts_at", models.DateTimeField(auto_now_add=True)),
+                ("ends_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "valid_duration",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                ("usage_limit", models.IntegerField(blank=True, null=True)),
+                ("usage_count", models.IntegerField(default=0)),
+                ("metadata", models.JSONField(blank=True, null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='DiscountCondition',
+            name="DiscountCondition",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('type', models.CharField(choices=[('products', 'PRODUCTS'), ('product_types', 'PRODUCT_TYPES'), ('product_collections', 'PRODUCT_COLLECTIONS'), ('product_tags', 'PRODUCT_TAGS'), ('customer_groups', 'CUSTOMER_GROUPS')], max_length=20)),
-                ('operator', models.CharField(choices=[('in', 'IN'), ('not_in', 'NOT_IN')], max_length=20)),
-                ('metadata', models.JSONField(null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("products", "PRODUCTS"),
+                            ("product_types", "PRODUCT_TYPES"),
+                            ("product_collections", "PRODUCT_COLLECTIONS"),
+                            ("product_tags", "PRODUCT_TAGS"),
+                            ("customer_groups", "CUSTOMER_GROUPS"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "operator",
+                    models.CharField(
+                        choices=[("in", "IN"), ("not_in", "NOT_IN")], max_length=20
+                    ),
+                ),
+                ("metadata", models.JSONField(null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='DiscountConditionCustomerGroup',
+            name="DiscountConditionCustomerGroup",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('metadata', models.JSONField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("metadata", models.JSONField(blank=True, null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='DiscountConditionProduct',
+            name="DiscountConditionProduct",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('metadata', models.JSONField(null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("metadata", models.JSONField(null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='DiscountConditionProductCollection',
+            name="DiscountConditionProductCollection",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('metadata', models.JSONField(null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("metadata", models.JSONField(null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='DiscountConditionProductTag',
+            name="DiscountConditionProductTag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('metadata', models.JSONField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("metadata", models.JSONField(blank=True, null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='DiscountRule',
+            name="DiscountRule",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('description', models.CharField(max_length=255, null=True)),
-                ('type', models.CharField(choices=[('fixed', 'FIXED'), ('percentage', 'PERCENTAGE'), ('free_shipping', 'FREE_SHIPPING')], max_length=20)),
-                ('value', models.FloatField()),
-                ('allocation', models.CharField(choices=[('total', 'TOTAL'), ('item', 'ITEM')], max_length=20, null=True)),
-                ('metadata', models.JSONField(null=True)),
-                ('conditions', models.ManyToManyField(related_name='+', to='discount.discountcondition')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("description", models.CharField(max_length=255, null=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("fixed", "FIXED"),
+                            ("percentage", "PERCENTAGE"),
+                            ("free_shipping", "FREE_SHIPPING"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("value", models.FloatField()),
+                (
+                    "allocation",
+                    models.CharField(
+                        choices=[("total", "TOTAL"), ("item", "ITEM")],
+                        max_length=20,
+                        null=True,
+                    ),
+                ),
+                ("metadata", models.JSONField(null=True)),
+                (
+                    "conditions",
+                    models.ManyToManyField(
+                        related_name="+", to="discount.discountcondition"
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='DiscountConditionProductType',
+            name="DiscountConditionProductType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('metadata', models.JSONField(null=True)),
-                ('discount_condition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='discount.discountcondition')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("metadata", models.JSONField(null=True)),
+                (
+                    "discount_condition",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="discount.discountcondition",
+                    ),
+                ),
             ],
         ),
     ]

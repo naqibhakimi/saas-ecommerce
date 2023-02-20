@@ -6,15 +6,28 @@ from apps.core.models import BaseModel
 from apps.product.models import ProductVariant
 
 
-
 class LineItem(BaseModel):
-    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, related_name='+')
-    order = models.ForeignKey('order.Order', on_delete=models.SET_NULL, null=True, related_name='+')
-    swap = models.ForeignKey(Swap, on_delete=models.SET_NULL, null=True, related_name='+')
-    claim_order = models.ForeignKey('order.ClaimOrder', on_delete=models.SET_NULL, null=True, related_name='+')
-    original_item = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='+')
-    order_edit = models.ForeignKey('order.OrderEdit', on_delete=models.SET_NULL, null=True, related_name='+')
-    variant = models.ForeignKey(ProductVariant, on_delete=models.SET_NULL, null=True, related_name='+')
+    cart = models.ForeignKey(
+        Cart, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    order = models.ForeignKey(
+        "order.Order", on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    swap = models.ForeignKey(
+        Swap, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    claim_order = models.ForeignKey(
+        "order.ClaimOrder", on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    original_item = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    order_edit = models.ForeignKey(
+        "order.OrderEdit", on_delete=models.SET_NULL, null=True, related_name="+"
+    )
+    variant = models.ForeignKey(
+        ProductVariant, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
     title = models.CharField(max_length=100)
     description = models.TextField(null=True)
     thumbnail = models.TextField(null=True)
@@ -40,14 +53,14 @@ class LineItem(BaseModel):
     gift_cart_total = models.PositiveIntegerField(null=True)
 
 
-
 class LineItemAdjustment(BaseModel):
-    item = models.ForeignKey(LineItem, on_delete=models.CASCADE, related_name='+')
-    discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True)
+    item = models.ForeignKey(LineItem, on_delete=models.CASCADE, related_name="+")
+    discount = models.ForeignKey(
+        Discount, on_delete=models.SET_NULL, null=True, blank=True
+    )
     description = models.CharField(max_length=255)
     amount = models.IntegerField()
     metadata = models.JSONField(null=True, blank=True)
-
 
 
 class LineItemTaxLine(BaseModel):

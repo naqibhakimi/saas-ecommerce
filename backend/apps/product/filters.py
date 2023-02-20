@@ -18,87 +18,85 @@ from .models import (
 )
 
 
-class  PriceListFilter(django_filters.FilterSet):
+class PriceListFilter(django_filters.FilterSet):
     class Meta:
         model = PriceList
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  MoneyAmountFilter(django_filters.FilterSet):
+
+class MoneyAmountFilter(django_filters.FilterSet):
     class Meta:
         model = MoneyAmount
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductTypeFilter(django_filters.FilterSet):
+
+class ProductTypeFilter(django_filters.FilterSet):
     class Meta:
         model = ProductType
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductTagFilter(django_filters.FilterSet):
+
+class ProductTagFilter(django_filters.FilterSet):
     class Meta:
         model = ProductTag
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ImageFilter(django_filters.FilterSet):
+
+class ImageFilter(django_filters.FilterSet):
     class Meta:
         model = Image
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductFilter(django_filters.FilterSet):
+
+class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductCategoryFilter(django_filters.FilterSet):
+
+class ProductCategoryFilter(django_filters.FilterSet):
     class Meta:
         model = ProductCategory
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductCollectionFilter(django_filters.FilterSet):
+
+class ProductCollectionFilter(django_filters.FilterSet):
     class Meta:
         model = ProductCollection
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductOptionFilter(django_filters.FilterSet):
+
+class ProductOptionFilter(django_filters.FilterSet):
     class Meta:
         model = ProductOption
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductOptionValueFilter(django_filters.FilterSet):
+
+class ProductOptionValueFilter(django_filters.FilterSet):
     class Meta:
         model = ProductOptionValue
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductTaxRateFilter(django_filters.FilterSet):
+
+class ProductTaxRateFilter(django_filters.FilterSet):
     class Meta:
         model = ProductTaxRate
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductTypeTaxRateFilter(django_filters.FilterSet):
+
+class ProductTypeTaxRateFilter(django_filters.FilterSet):
     class Meta:
         model = ProductTypeTaxRate
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductVariantInventoryItemFilter(django_filters.FilterSet):
+
+class ProductVariantInventoryItemFilter(django_filters.FilterSet):
     class Meta:
         model = ProductVariantInventoryItem
-        exclude = ('metadata')
+        exclude = "metadata"
 
-        
-class  ProductVariantFilter(django_filters.FilterSet):
+
+class ProductVariantFilter(django_filters.FilterSet):
     class Meta:
         model = ProductVariant
-        exclude = ('metadata')
-
-        
+        exclude = "metadata"

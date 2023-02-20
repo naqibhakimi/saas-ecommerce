@@ -30,13 +30,12 @@ from .filters import (
 )
 
 
-
 class AnalyticsConfigNode(Node, DjangoObjectType):
     class Meta:
         model = AnalyticsConfig
         filterset_class = AnalyticsConfigFilter
         interfaces = (graphene.Node,)
-        connection_class = AnalyticsConfigConnection 
+        connection_class = AnalyticsConfigConnection
 
 
 class BatchJobNode(Node, DjangoObjectType):
@@ -44,7 +43,7 @@ class BatchJobNode(Node, DjangoObjectType):
         model = BatchJob
         filterset_class = BatchJobFilter
         interfaces = (graphene.Node,)
-        connection_class = BatchJobConnection 
+        connection_class = BatchJobConnection
 
 
 class FulfillmentNode(Node, DjangoObjectType):
@@ -52,7 +51,7 @@ class FulfillmentNode(Node, DjangoObjectType):
         model = Fulfillment
         filterset_class = FulfillmentFilter
         interfaces = (graphene.Node,)
-        connection_class = FulfillmentConnection 
+        connection_class = FulfillmentConnection
 
 
 class FulfillmentItemNode(Node, DjangoObjectType):
@@ -60,7 +59,7 @@ class FulfillmentItemNode(Node, DjangoObjectType):
         model = FulfillmentItem
         filterset_class = FulfillmentItemFilter
         interfaces = (graphene.Node,)
-        connection_class = FulfillmentItemConnection 
+        connection_class = FulfillmentItemConnection
 
 
 class FulfillmentProviderNode(Node, DjangoObjectType):
@@ -68,7 +67,7 @@ class FulfillmentProviderNode(Node, DjangoObjectType):
         model = FulfillmentProvider
         filterset_class = FulfillmentProviderFilter
         interfaces = (graphene.Node,)
-        connection_class = FulfillmentProviderConnection 
+        connection_class = FulfillmentProviderConnection
 
 
 class TrackingLinkNode(Node, DjangoObjectType):
@@ -76,6 +75,4 @@ class TrackingLinkNode(Node, DjangoObjectType):
         model = TrackingLink
         filterset_class = TrackingLinkFilter
         interfaces = (graphene.Node,)
-        connection_class = TrackingLinkConnection 
-
-
+        connection_class = TrackingLinkConnection

@@ -22,16 +22,14 @@ from .filters import (
 class GiftCardNode(Node, DjangoObjectType):
     class Meta:
         model = GiftCard
-        filterset_class = GiftCardFilter 
-        interfaces = (graphene.Node, )
-        connection_class = GiftCardConnection 
+        filterset_class = GiftCardFilter
+        interfaces = (graphene.Node,)
+        connection_class = GiftCardConnection
 
 
 class GiftCardTransactionNode(Node, DjangoObjectType):
     class Meta:
         model = GiftCardTransaction
-        filterset_class = GiftCardTransactionFilter 
-        interfaces = (graphene.Node, )
-        connection_class = GiftCardTransactionConnection 
-
-
+        filterset_class = GiftCardTransactionFilter
+        interfaces = (graphene.Node,)
+        connection_class = GiftCardTransactionConnection

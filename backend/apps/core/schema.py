@@ -13,21 +13,14 @@ from graphene_django.debug import DjangoDebug
 channel_layer = get_channel_layer()
 
 
-class Query(
-    AuthQueries,
-    graphene.ObjectType
-):
+class Query(AuthQueries, graphene.ObjectType):
     test = graphene.String(name=graphene.String())
 
     def resolve_test(root, info, name):
         async_to_sync(channel_layer.group_send)("new_message", {"data": name})
 
 
-class Mutatation(
-        AuthMutations,
-        StoreMutations,
-        CustomMutations,
-        graphene.ObjectType):
+class Mutatation(AuthMutations, StoreMutations, CustomMutations, graphene.ObjectType):
     test_object = graphene.String()
 
 
@@ -51,5 +44,4 @@ class Subscription(graphene.ObjectType):
             await asyncio.sleep(1)
 
 
-schema = graphene.Schema(
-    query=Query, mutation=Mutatation, subscription=Subscription)
+schema = graphene.Schema(query=Query, mutation=Mutatation, subscription=Subscription)

@@ -3,6 +3,7 @@ import graphene
 from graphene_django.forms.mutation import DjangoModelFormMutation, ErrorType
 from graphql_relay.node.node import from_global_id
 
+
 class Output:
     """
     A class to all public classes extend to
@@ -17,7 +18,7 @@ class RelayMutationMixin:
     """
     All relay mutations should extend this class
     """
-    
+
     @classmethod
     def mutate_and_get_payload(cls, root, info, **kwargs):
         return cls.resolve_mutation(root, info, **kwargs)
@@ -63,7 +64,11 @@ class DynamicInputMixin:
             for key in cls._required_inputs:
                 if not isinstance(cls._required_inputs[key], str):
                     cls._meta.arguments["input"]._meta.fields.update(
-                        {key: graphene.InputField(cls._required_inputs[key], required=True)}
+                        {
+                            key: graphene.InputField(
+                                cls._required_inputs[key], required=True
+                            )
+                        }
                     )
                 else:
                     cls._meta.arguments["input"]._meta.fields.update(
@@ -82,9 +87,7 @@ class DynamicInputMixin:
         return super().Field(*args, **kwargs)
 
 
-
 class AbstractMutation(DjangoModelFormMutation):
-
     # @classmethod
     # def mutate_and_get_payload(cls, root, info, **input):
     #     form = cls.get_form(root, info, **input)
@@ -110,7 +113,6 @@ class AbstractMutation(DjangoModelFormMutation):
 
     class Meta:
         abstract = True
-
 
 
 class DynamicArgsMixin:

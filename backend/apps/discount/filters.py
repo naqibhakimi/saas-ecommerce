@@ -11,51 +11,50 @@ from .models import (
     DiscountConditionProduct,
 )
 
+
 class DiscountConditionFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountCondition
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class DiscountRuleFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountRule
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class DiscountFilter(django_filters.FilterSet):
     class Meta:
         model = Discount
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class DiscountConditionCustomerGroupFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionCustomerGroup
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class DiscountConditionProductCollectionFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProductCollection
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class DiscountConditionProductTagFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProductTag
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class DiscountConditionProductTypeFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProductType
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class DiscountConditionProductFilter(django_filters.FilterSet):
     class Meta:
         model = DiscountConditionProduct
-        exclude = ('metadata')
-
-
+        exclude = "metadata"

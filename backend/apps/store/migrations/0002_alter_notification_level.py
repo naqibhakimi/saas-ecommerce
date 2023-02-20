@@ -4,15 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('store', '0001_initial'),
+        ("store", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='notification',
-            name='level',
-            field=models.CharField(choices=[('info', 'Info'), ('warning', 'Warning'), ('danger', 'Danger'), ('success', 'Success')], default='success', max_length=20),
+            model_name="notification",
+            name="level",
+            field=models.CharField(
+                choices=[
+                    ("info", "Info"),
+                    ("warning", "Warning"),
+                    ("danger", "Danger"),
+                    ("success", "Success"),
+                ],
+                default="success",
+                max_length=20,
+            ),
         ),
     ]

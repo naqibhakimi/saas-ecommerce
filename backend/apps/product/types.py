@@ -53,115 +53,113 @@ from .connections import (
 )
 
 
-
 class PriceListNode(Node, DjangoObjectType):
     class Meta:
         model = PriceList
-        filter_class = PriceListFilter 
+        filter_class = PriceListFilter
         interfaces = (graphene.Node,)
-        connection_class = PriceListConnection 
+        connection_class = PriceListConnection
 
 
 class MoneyAmountNode(Node, DjangoObjectType):
     class Meta:
         model = MoneyAmount
-        filter_class = MoneyAmountFilter 
+        filter_class = MoneyAmountFilter
         interfaces = (graphene.Node,)
-        connection_class = MoneyAmountConnection 
+        connection_class = MoneyAmountConnection
 
 
 class ProductTypeNode(Node, DjangoObjectType):
     class Meta:
         model = ProductType
-        filter_class = ProductTypeFilter 
+        filter_class = ProductTypeFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductTypeConnection 
+        connection_class = ProductTypeConnection
 
 
 class ProductTagNode(Node, DjangoObjectType):
     class Meta:
         model = ProductTag
-        filter_class = ProductTagFilter 
+        filter_class = ProductTagFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductTagConnection 
+        connection_class = ProductTagConnection
 
 
 class ImageNode(Node, DjangoObjectType):
     class Meta:
         model = Image
-        filter_class = ImageFilter 
+        filter_class = ImageFilter
         interfaces = (graphene.Node,)
-        connection_class = ImageConnection 
+        connection_class = ImageConnection
 
 
 class ProductNode(Node, DjangoObjectType):
     class Meta:
         model = Product
-        filter_class = ProductFilter 
+        filter_class = ProductFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductConnection 
+        connection_class = ProductConnection
 
 
 class ProductCategoryNode(Node, DjangoObjectType):
     class Meta:
         model = ProductCategory
-        filter_class = ProductCategoryFilter 
+        filter_class = ProductCategoryFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductCategoryConnection 
+        connection_class = ProductCategoryConnection
 
 
 class ProductCollectionNode(Node, DjangoObjectType):
     class Meta:
         model = ProductCollection
-        filter_class = ProductCollectionFilter 
+        filter_class = ProductCollectionFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductCollectionConnection 
+        connection_class = ProductCollectionConnection
 
 
 class ProductOptionNode(Node, DjangoObjectType):
     class Meta:
         model = ProductOption
-        filter_class = ProductOptionFilter 
+        filter_class = ProductOptionFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductOptionConnection 
+        connection_class = ProductOptionConnection
 
 
 class ProductOptionValueNode(Node, DjangoObjectType):
     class Meta:
         model = ProductOptionValue
-        filter_class = ProductOptionValueFilter 
+        filter_class = ProductOptionValueFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductOptionValueConnection 
+        connection_class = ProductOptionValueConnection
 
 
 class ProductTaxRateNode(Node, DjangoObjectType):
     class Meta:
         model = ProductTaxRate
-        filter_class = ProductTaxRateFilter 
+        filter_class = ProductTaxRateFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductTaxRateConnection 
+        connection_class = ProductTaxRateConnection
 
 
 class ProductTypeTaxRateNode(Node, DjangoObjectType):
     class Meta:
         model = ProductTypeTaxRate
-        filter_class = ProductTypeTaxRateFilter 
+        filter_class = ProductTypeTaxRateFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductTypeTaxRateConnection 
+        connection_class = ProductTypeTaxRateConnection
 
 
 class ProductVariantInventoryItemNode(Node, DjangoObjectType):
     class Meta:
         model = ProductVariantInventoryItem
-        filter_class = ProductVariantInventoryItemFilter 
+        filter_class = ProductVariantInventoryItemFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductVariantInventoryItemConnection 
+        connection_class = ProductVariantInventoryItemConnection
 
 
 class ProductVariantNode(Node, DjangoObjectType):
     class Meta:
         model = ProductVariant
-        filter_class = ProductVariantFilter 
+        filter_class = ProductVariantFilter
         interfaces = (graphene.Node,)
-        connection_class = ProductVariantConnection 
-
+        connection_class = ProductVariantConnection

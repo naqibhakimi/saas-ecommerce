@@ -5,58 +5,88 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('customer', '0001_initial'),
+        ("customer", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TaxLine',
+            name="TaxLine",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('rate', models.FloatField()),
-                ('name', models.CharField(blank=True, max_length=255, null=True)),
-                ('code', models.CharField(blank=True, max_length=255, null=True)),
-                ('metadata', models.JSONField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("rate", models.FloatField()),
+                ("name", models.CharField(blank=True, max_length=255, null=True)),
+                ("code", models.CharField(blank=True, max_length=255, null=True)),
+                ("metadata", models.JSONField(blank=True, null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='TaxProvider',
+            name="TaxProvider",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('is_installed', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("is_installed", models.BooleanField(default=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='TaxRate',
+            name="TaxRate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('rate', models.FloatField(null=True)),
-                ('code', models.CharField(max_length=255, null=True)),
-                ('name', models.CharField(max_length=255)),
-                ('metadata', models.JSONField(null=True)),
-                ('product_count', models.IntegerField(blank=True, null=True)),
-                ('product_type_count', models.IntegerField(blank=True, null=True)),
-                ('shipping_option_count', models.IntegerField(blank=True, null=True)),
-                ('region', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='customer.region')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("rate", models.FloatField(null=True)),
+                ("code", models.CharField(max_length=255, null=True)),
+                ("name", models.CharField(max_length=255)),
+                ("metadata", models.JSONField(null=True)),
+                ("product_count", models.IntegerField(blank=True, null=True)),
+                ("product_type_count", models.IntegerField(blank=True, null=True)),
+                ("shipping_option_count", models.IntegerField(blank=True, null=True)),
+                (
+                    "region",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="customer.region",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

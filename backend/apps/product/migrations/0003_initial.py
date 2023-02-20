@@ -5,59 +5,82 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('customer', '0003_initial'),
-        ('store', '0001_initial'),
-        ('product', '0002_initial'),
-        ('payment', '0002_initial'),
+        ("customer", "0003_initial"),
+        ("store", "0001_initial"),
+        ("product", "0002_initial"),
+        ("payment", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='product',
-            name='sales_channels',
-            field=models.ManyToManyField(related_name='+', to='store.saleschannel'),
+            model_name="product",
+            name="sales_channels",
+            field=models.ManyToManyField(related_name="+", to="store.saleschannel"),
         ),
         migrations.AddField(
-            model_name='product',
-            name='tags',
-            field=models.ManyToManyField(related_name='+', to='product.producttag'),
+            model_name="product",
+            name="tags",
+            field=models.ManyToManyField(related_name="+", to="product.producttag"),
         ),
         migrations.AddField(
-            model_name='product',
-            name='type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='product.producttype'),
+            model_name="product",
+            name="type",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="product.producttype",
+            ),
         ),
         migrations.AddField(
-            model_name='pricelist',
-            name='customer_groups',
-            field=models.ManyToManyField(related_name='+', to='customer.customergroup'),
+            model_name="pricelist",
+            name="customer_groups",
+            field=models.ManyToManyField(related_name="+", to="customer.customergroup"),
         ),
         migrations.AddField(
-            model_name='moneyamount',
-            name='currency',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='payment.currency'),
+            model_name="moneyamount",
+            name="currency",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="payment.currency",
+            ),
         ),
         migrations.AddField(
-            model_name='moneyamount',
-            name='price_list',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='product.pricelist'),
+            model_name="moneyamount",
+            name="price_list",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="product.pricelist",
+            ),
         ),
         migrations.AddField(
-            model_name='moneyamount',
-            name='region',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='customer.region'),
+            model_name="moneyamount",
+            name="region",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="customer.region",
+            ),
         ),
         migrations.AddField(
-            model_name='moneyamount',
-            name='variant',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='product.productvariant'),
+            model_name="moneyamount",
+            name="variant",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="product.productvariant",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='productvariant',
-            unique_together={('sku', 'barcode', 'ean', 'upc')},
+            name="productvariant",
+            unique_together={("sku", "barcode", "ean", "upc")},
         ),
     ]

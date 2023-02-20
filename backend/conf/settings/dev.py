@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8j8k)&0lt3&mg79-=1vdw%y5r_v(^w=qpr^bnl!lm=vl2_1lgg'
+SECRET_KEY = "django-insecure-8j8k)&0lt3&mg79-=1vdw%y5r_v(^w=qpr^bnl!lm=vl2_1lgg"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -62,77 +62,74 @@ GRAPHQL_JWT = {
 AUTHENTICATION_BACKENDS = [
     # "graphql_jwt.backends.JSONWebTokenBackend",
     "apps.auth.backends.GraphQLAuthBackend",
-    "django.contrib.auth.backends.ModelBackend"
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'graphene_django',
-    'django_filters',
-    'apps.account',
-    'apps.auth',
-    'apps.channel',
-    'apps.checkout',
-    'apps.core',
-    'apps.customer',
-    'apps.discount',
-    'apps.giftcard',
-    'apps.inventory',
-    'apps.invoice',
-    'apps.order',
-    'apps.payment',
-    'apps.permission',
-    'apps.product',
-    'apps.shipping',
-    'apps.store',
-    'apps.tax',
-
+    "daphne",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "graphene_django",
+    "django_filters",
+    "apps.account",
+    "apps.auth",
+    "apps.channel",
+    "apps.checkout",
+    "apps.core",
+    "apps.customer",
+    "apps.discount",
+    "apps.giftcard",
+    "apps.inventory",
+    "apps.invoice",
+    "apps.order",
+    "apps.payment",
+    "apps.permission",
+    "apps.product",
+    "apps.shipping",
+    "apps.store",
+    "apps.tax",
     # third party
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
-
-
 ]
 
 # from django.contrib.auth.middleware import AuthenticationMiddleware
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'conf.urls'
+ROOT_URLCONF = "conf.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'conf.wsgi.application'
+WSGI_APPLICATION = "conf.wsgi.application"
 ASGI_APPLICATION = "conf.asgi.application"
 
 
@@ -140,10 +137,10 @@ ASGI_APPLICATION = "conf.asgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'ATOMIC_REQUESTS': True,
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        "ATOMIC_REQUESTS": True,
     }
 }
 
@@ -153,16 +150,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -170,9 +167,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -180,18 +177,18 @@ USE_L10N = True
 
 USE_TZ = True
 
-SITE_URLS = 'localhost'
+SITE_URLS = "localhost"
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # from graphene_django.debug  import DjangoDebugMiddleware
 # Grphene settings
@@ -202,21 +199,17 @@ GRAPHENE = {
     "MIDDLEWARE": [
         # "apps.core.middlewares.sentry_middleware.gguncaught_exception_middleware",
         "graphql_jwt.middleware.JSONWebTokenMiddleware",
-         "graphene_django.debug.DjangoDebugMiddleware",
+        #  "graphene_django.debug.DjangoDebugMiddleware",
     ],
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 
-AUTH_USER_MODEL = 'apps_auth.SEUser'
+AUTH_USER_MODEL = "apps_auth.SEUser"
 
 
 # CHANNEL_LAYERS = {
@@ -230,8 +223,7 @@ AUTH_USER_MODEL = 'apps_auth.SEUser'
 
 
 # Email settings
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 AUTH_COFIG = {
@@ -296,8 +288,7 @@ AUTH_COFIG = {
     "SEND_PASSWORD_SET_EMAIL": False,
 }
 
-AUTH = type('AUTH', (object,), AUTH_COFIG)
-
+AUTH = type("AUTH", (object,), AUTH_COFIG)
 
 
 JWT_AUTH = {
@@ -322,34 +313,34 @@ JWT_AUTH = {
 }
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'NOTSET',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+    "handlers": {
+        "console": {
+            "level": "NOTSET",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "debug.log",
         },
     },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'NOTSET',
+    "loggers": {
+        "": {
+            "handlers": ["console"],
+            "level": "NOTSET",
         },
-        'django.request': {
-            'handlers': ['console'],
-            'propagate': False,
-            'level': 'ERROR'
-        }
-    }
+        "django.request": {
+            "handlers": ["console"],
+            "propagate": False,
+            "level": "ERROR",
+        },
+    },
 }

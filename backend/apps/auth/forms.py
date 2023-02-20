@@ -8,13 +8,13 @@ User = get_user_model()
 class SignupForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ("email",)
 
 
 class UpdateAccountForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', "first_name", "last_name")
+        fields = ("email", "first_name", "last_name")
 
 
 class SingInForm(forms.Form):

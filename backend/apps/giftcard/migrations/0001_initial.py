@@ -5,41 +5,62 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='GiftCard',
+            name="GiftCard",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('code', models.CharField(max_length=255, unique=True)),
-                ('value', models.IntegerField()),
-                ('balance', models.IntegerField()),
-                ('is_disabled', models.BooleanField(default=False)),
-                ('ends_at', models.DateTimeField(blank=True, null=True)),
-                ('tax_rate', models.FloatField(blank=True, null=True)),
-                ('metadata', models.JSONField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("code", models.CharField(max_length=255, unique=True)),
+                ("value", models.IntegerField()),
+                ("balance", models.IntegerField()),
+                ("is_disabled", models.BooleanField(default=False)),
+                ("ends_at", models.DateTimeField(blank=True, null=True)),
+                ("tax_rate", models.FloatField(blank=True, null=True)),
+                ("metadata", models.JSONField(blank=True, null=True)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='GiftCardTransaction',
+            name="GiftCardTransaction",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('amount', models.IntegerField()),
-                ('is_taxable', models.BooleanField(blank=True, null=True)),
-                ('tax_rate', models.FloatField(blank=True, null=True)),
-                ('gift_card', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='giftcard.giftcard')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                ("amount", models.IntegerField()),
+                ("is_taxable", models.BooleanField(blank=True, null=True)),
+                ("tax_rate", models.FloatField(blank=True, null=True)),
+                (
+                    "gift_card",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="giftcard.giftcard",
+                    ),
+                ),
             ],
         ),
     ]

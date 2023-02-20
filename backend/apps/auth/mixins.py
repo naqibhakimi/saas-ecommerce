@@ -10,7 +10,12 @@ from smtplib import SMTPException
 from apps.core.mutations import Output
 
 from .constants import EMAIL_MESSAGES, Messages
-from .exceptions import EmailAlreadyInUse, InvalidCredentials, UserAlreadyVerified, TokenScopeError
+from .exceptions import (
+    EmailAlreadyInUse,
+    InvalidCredentials,
+    UserAlreadyVerified,
+    TokenScopeError,
+)
 from .forms import SignupForm, SingInForm, UpdateAccountForm, EmailForm
 from .models import SEUser, UserStatus
 from .types import UserNode
@@ -18,10 +23,13 @@ from django.conf import settings
 from .signals import user_registered
 from .shortcuts import get_user_by_email
 
-from graphql_jwt.shortcuts import  get_token, get_user_by_token
+from graphql_jwt.shortcuts import get_token, get_user_by_token
+
 UserModel = get_user_model()
 
 import traceback
+
+
 class SignupMixin(Output):
     form = SignupForm
 
@@ -54,7 +62,6 @@ class SignupMixin(Output):
             traceback.print_exc()
 
 
-
 class SignInMixin(Output):
     form = SingInForm
     token = graphene.String()
@@ -66,8 +73,8 @@ class SignInMixin(Output):
 
         try:
             if form.is_valid():
-                email = form.cleaned_data['email']
-                password = form.cleaned_data['password']
+                email = form.cleaned_data["email"]
+                password = form.cleaned_data["password"]
 
                 if not UserModel.objects.filter(email=email).exists():
                     raise InvalidCredentials()
@@ -106,19 +113,12 @@ class VerifyAccountMixin(Output):
     token = graphene.String()
     user = graphene.Field(UserNode)
 
-    # @classmethod
-    # def Field(cls, *args, **kwargs):
-    #     cls._meta.fields["token"] = graphene.Field(graphene.String)
-    #     cls._meta.fields["user"] = graphene.Field(UserNode)
-    #     return super().Field(*args, **kwargs)
-
     @classmethod
-    def resolve_mutation(cls, root, info, **kwargs):        
+    def resolve_mutation(cls, root, info, **kwargs):
         try:
             token = kwargs.get("token")
             user = UserStatus.verify(token)
-            print(user, 'asdasdsadasdasd')
-            return cls(success=True, user=user, token=token)
+            return cls(success=True, user=user, token=get_token(user))
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
         except SignatureExpired:
@@ -130,7 +130,6 @@ class VerifyAccountMixin(Output):
 
 
 class ResendActivationEmailMixin(Output):
-
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
@@ -144,9 +143,11 @@ class ResendActivationEmailMixin(Output):
         except ObjectDoesNotExist:
             return cls(success=True)  # even if user is not registred
         except SMTPException:
+            print(traceback.print_exc())
             return cls(success=False, errors=Messages.EMAIL_FAIL)
         except UserAlreadyVerified:
-            return cls(success=False, errors={"email": Messages.ALREADY_VERIFIED})
+            return cls(success=False, errors=Messages.ALREADY_VERIFIED)
+
 
 # class VerifySecondaryEmailMixin(Output):
 

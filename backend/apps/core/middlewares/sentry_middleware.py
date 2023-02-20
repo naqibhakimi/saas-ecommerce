@@ -3,8 +3,9 @@ import graphql
 
 logger = logging.getLogger(__name__)
 
+
 def log_error(error):
-    logger.error(error) # we've set this up to send issues to sentry
+    logger.error(error)  # we've set this up to send issues to sentry
     raise graphql.GraphQLError("An internal error occurred")
 
 
@@ -15,11 +16,12 @@ def gguncaught_exception_middleware(next, root, info, **args):
 
 from time import time as timer
 
+
 def uncaught_exception_middleware(next, root, info, **args):
     start = timer()
     return_value = next(root, info, **args)
     duration = round((timer() - start) * 1000, 2)
-    parent_type_name = root._meta.name if root and hasattr(root, '_meta') else ''
+    parent_type_name = root._meta.name if root and hasattr(root, "_meta") else ""
     logger.debug(f"{parent_type_name}.{info.field_name}: {duration} ms")
     return return_value
 

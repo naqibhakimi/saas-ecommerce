@@ -8,24 +8,28 @@ from .types import (
     AddressNode,
     RegionNode,
 )
+
+
 class CustomerQuery:
-        customers = DjangoFilterConnectionField(CustomerNode)
-        customer = graphene.Field(CustomerNode, id=graphene.ID())
-        
+    customers = DjangoFilterConnectionField(CustomerNode)
+    customer = graphene.Field(CustomerNode, id=graphene.ID())
+
+
 class CountryQuery:
-        countrys = DjangoFilterConnectionField(CountryNode)
-        country = graphene.Field(CountryNode, id=graphene.ID())
-        
+    countrys = DjangoFilterConnectionField(CountryNode)
+    country = graphene.Field(CountryNode, id=graphene.ID())
+
+
 class AddressQuery:
-        addresss = DjangoFilterConnectionField(AddressNode)
-        address = graphene.Field(AddressNode, id=graphene.ID())
-        
+    addresss = DjangoFilterConnectionField(AddressNode)
+    address = graphene.Field(AddressNode, id=graphene.ID())
+
+
 class CustomerGroupQuery:
-        customer_groups = DjangoFilterConnectionField(CustomerGroupNode)
-        customer_group = graphene.Field(CustomerGroupNode, id=graphene.ID())
-       
-        
+    customer_groups = DjangoFilterConnectionField(CustomerGroupNode)
+    customer_group = graphene.Field(CustomerGroupNode, id=graphene.ID())
+
+
 class RegionQuery:
-        regions = DjangoFilterConnectionField(RegionNode)
-        region = graphene.Field(RegionNode, id=graphene.ID())
-    
+    regions = DjangoFilterConnectionField(RegionNode)
+    region = graphene.Field(RegionNode, id=graphene.ID())

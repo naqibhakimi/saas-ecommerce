@@ -16,7 +16,4 @@ class Query:
 
     def resolve_me(self, info):
         user = info.context.user
-        if user.is_authenticated:
-            user.owner = user.employee.first()
-            return user
-        return None
+        return user if user.is_authenticated else None

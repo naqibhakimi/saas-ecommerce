@@ -44,5 +44,3 @@ class LineItemTaxLineNode(Node, DjangoObjectType):
         filterset_class = LineItemTaxLineFilter
         interfaces = (graphene.Node,)
         connection_class = LineItemTaxLineConnection
-
-

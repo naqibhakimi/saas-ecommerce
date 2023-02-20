@@ -24,7 +24,6 @@ class SalesChannelLocation(BaseModel):
     location_id = models.CharField(max_length=255)
 
 
-
 class Cart(BaseModel):
     CART_TYPE_CHOICES = (
         ("default", "Default"),
@@ -34,24 +33,59 @@ class Cart(BaseModel):
         ("claim", "Claim"),
     )
     email = models.EmailField(blank=True, null=True)
-    billing_address = models.ForeignKey('customer.Address', on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
-    shipping_address = models.ForeignKey('customer.Address', on_delete=models.SET_NULL, related_name='+', blank=True, null=True)
-    items = models.ManyToManyField('invoice.LineItem', blank=True, related_name='+')
-    region = models.ForeignKey('customer.Region', on_delete=models.CASCADE)
-    discounts = models.ManyToManyField('discount.Discount', blank=True, related_name='+')
-    gift_cards = models.ManyToManyField(GiftCard, blank=True, related_name='+')
-    customer = models.ForeignKey('customer.Customer', on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
-    payment_session = models.OneToOneField('payment.PaymentSession', on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
-    payment = models.OneToOneField('payment.Payment', on_delete=models.SET_NULL, blank=True, null=True, related_name='+')
-    shipping_methods = models.ManyToManyField(ShippingMethod, blank=True, related_name='+')
-    type = models.CharField(max_length=20, choices=CART_TYPE_CHOICES, default='default')
+    billing_address = models.ForeignKey(
+        "customer.Address",
+        on_delete=models.SET_NULL,
+        related_name="+",
+        blank=True,
+        null=True,
+    )
+    shipping_address = models.ForeignKey(
+        "customer.Address",
+        on_delete=models.SET_NULL,
+        related_name="+",
+        blank=True,
+        null=True,
+    )
+    items = models.ManyToManyField("invoice.LineItem", blank=True, related_name="+")
+    region = models.ForeignKey("customer.Region", on_delete=models.CASCADE)
+    discounts = models.ManyToManyField(
+        "discount.Discount", blank=True, related_name="+"
+    )
+    gift_cards = models.ManyToManyField(GiftCard, blank=True, related_name="+")
+    customer = models.ForeignKey(
+        "customer.Customer",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="+",
+    )
+    payment_session = models.OneToOneField(
+        "payment.PaymentSession",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="+",
+    )
+    payment = models.OneToOneField(
+        "payment.Payment",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="+",
+    )
+    shipping_methods = models.ManyToManyField(
+        ShippingMethod, blank=True, related_name="+"
+    )
+    type = models.CharField(max_length=20, choices=CART_TYPE_CHOICES, default="default")
     completed_at = models.DateTimeField(blank=True, null=True)
     payment_authorized_at = models.DateTimeField(blank=True, null=True)
     idempotency_key = models.CharField(max_length=255, blank=True, null=True)
     context = models.JSONField(blank=True, null=True)
-    metadata = models.JSONField() # [FIXME] do we even need this ? 
-    sales_channel = models.ForeignKey(SalesChannel, related_name='+', on_delete=models.SET_NULL, null=True)
-
+    metadata = models.JSONField()  # [FIXME] do we even need this ?
+    sales_channel = models.ForeignKey(
+        SalesChannel, related_name="+", on_delete=models.SET_NULL, null=True
+    )
 
 
 class Invite(BaseModel):
@@ -69,21 +103,19 @@ class Invite(BaseModel):
     deleted_at = models.DateTimeField(null=True)
 
 
-
-
 class Note(BaseModel):
     value = models.TextField()
     resource_type = models.CharField(max_length=255, null=True, blank=True)
     resource_id = models.CharField(max_length=255, null=True, blank=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
     metadata = models.JSONField(null=True)
     objects = NoteQuerSet.as_manager()
 
 
-
 class NotificationProvider(BaseModel):
     is_installed = models.BooleanField(default=True)
-
 
 
 class NotificationQuerySet(models.query.QuerySet):
@@ -148,16 +180,18 @@ class NotificationQuerySet(models.query.QuerySet):
             qset = qset.filter(recipient=recipient)
         return qset.update(emailed=True)
 
+
 class LevelChoices(models.Choices):
-    INFO="info"
-    WARNING='warning'
-    DANGER="danger"
-    SUCCESS = 'success'
+    INFO = "info"
+    WARNING = "warning"
+    DANGER = "danger"
+    SUCCESS = "success"
 
 
 class Notification(BaseModel):
-   
-    level = models.CharField(choices=LevelChoices.choices, default=LevelChoices.SUCCESS, max_length=20)
+    level = models.CharField(
+        choices=LevelChoices.choices, default=LevelChoices.SUCCESS, max_length=20
+    )
 
     recipient = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -266,6 +300,7 @@ class Notification(BaseModel):
             self.unread = True
             self.save()
 
+
 class StagedJob(BaseModel):
     event_name = models.CharField(max_length=255)
     data = models.JSONField()
@@ -281,17 +316,20 @@ class Store(BaseModel):
     invite_link_template = models.TextField(null=True, blank=True)
     default_location_id = models.CharField(null=True, max_length=255)
     metadata = models.JSONField(null=True, blank=True)
-    default_sales_channel = models.OneToOneField(SalesChannel,null=True, blank=True, on_delete=models.SET_NULL)
+    default_sales_channel = models.OneToOneField(
+        SalesChannel, null=True, blank=True, on_delete=models.SET_NULL
+    )
 
 
 class Swap(BaseModel):
     """
     A swap occurs when a customer wants to exchange one or more products they have
-    bought for different items. This process involves returning the original products 
-    and receiving new ones. The payment for the returned items will be applied towards 
-    the purchase of the new ones. If the payment for the returned products is greater than 
+    bought for different items. This process involves returning the original products
+    and receiving new ones. The payment for the returned items will be applied towards
+    the purchase of the new ones. If the payment for the returned products is greater than
     the cost of the new items, a refund for the remaining amount will be provided.
     """
+
     Swap_Fulfillment_Status = (
         ("not_fulfilled", "NOT_FULFILLED"),
         ("fulfilled", "FULFILLED"),
@@ -313,25 +351,26 @@ class Swap(BaseModel):
         ("requires_action", "REQUIRES_ACTION"),
     )
     fulfillment_status = models.CharField(
-        max_length=20,
-        choices=Swap_Fulfillment_Status,
-        default="NOT_FULFILLED"
+        max_length=20, choices=Swap_Fulfillment_Status, default="NOT_FULFILLED"
     )
     payment_status = models.CharField(
-        max_length=20,
-        choices=Swap_Payment_Status,
-        default="NOT_PAID"
+        max_length=20, choices=Swap_Payment_Status, default="NOT_PAID"
     )
-    order = models.ForeignKey('order.Order', on_delete=models.CASCADE, related_name='+')
-    return_order = models.OneToOneField('order.Return', on_delete=models.CASCADE, related_name='+')
-    payment = models.OneToOneField('payment.Payment', on_delete=models.CASCADE,  related_name='+')
+    order = models.ForeignKey("order.Order", on_delete=models.CASCADE, related_name="+")
+    return_order = models.OneToOneField(
+        "order.Return", on_delete=models.CASCADE, related_name="+"
+    )
+    payment = models.OneToOneField(
+        "payment.Payment", on_delete=models.CASCADE, related_name="+"
+    )
     difference_due = models.IntegerField(null=True)
-    shipping_address = models.ForeignKey('customer.Address', on_delete=models.CASCADE,  related_name='+')
-    cart = models.OneToOneField(Cart, on_delete=models.CASCADE,  related_name='+')
+    shipping_address = models.ForeignKey(
+        "customer.Address", on_delete=models.CASCADE, related_name="+"
+    )
+    cart = models.OneToOneField(Cart, on_delete=models.CASCADE, related_name="+")
     confirmed_at = models.DateTimeField(null=True)
     canceled_at = models.DateTimeField(null=True)
     no_notification = models.BooleanField(null=True)
     allow_back_order = models.BooleanField(default=False)
     idempotency_key = models.CharField(max_length=255, null=True)
     metadata = models.JSONField(null=True)
-

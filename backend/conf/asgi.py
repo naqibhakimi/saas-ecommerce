@@ -13,16 +13,19 @@ django_asgi_app = get_asgi_application()
 
 from apps.core.consumer import GraphQLSubscriptionConsumer
 
-application = ProtocolTypeRouter({
-    # Django's ASGI application to handle traditional HTTP requests
-    "http": django_asgi_app,
-
-    # WebSocket chat handler
-    "websocket": AllowedHostsOriginValidator(
-        AuthMiddlewareStack(
-            URLRouter([
-                path("graphql", GraphQLSubscriptionConsumer.as_asgi()),
-            ])
-        )
-    ),
-})
+application = ProtocolTypeRouter(
+    {
+        # Django's ASGI application to handle traditional HTTP requests
+        "http": django_asgi_app,
+        # WebSocket chat handler
+        "websocket": AllowedHostsOriginValidator(
+            AuthMiddlewareStack(
+                URLRouter(
+                    [
+                        path("graphql", GraphQLSubscriptionConsumer.as_asgi()),
+                    ]
+                )
+            )
+        ),
+    }
+)

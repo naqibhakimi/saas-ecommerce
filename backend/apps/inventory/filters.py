@@ -9,44 +9,44 @@ from .models import (
     TrackingLink,
 )
 
+
 class OrderDiscountFilter(django_filters.FilterSet):
     class Meta:
         model = OrderDiscount
-        fields = '__all__'
+        fields = "__all__"
 
 
 class AnalyticsConfigFilter(django_filters.FilterSet):
     class Meta:
         model = AnalyticsConfig
-        exception = ('metadata')
+        exception = "metadata"
 
 
 class BatchJobFilter(django_filters.FilterSet):
     class Meta:
         model = BatchJob
-        exception = ('metadata')
+        exception = "metadata"
 
 
 class FulfillmentFilter(django_filters.FilterSet):
     class Meta:
         model = Fulfillment
-        exception = ('metadata')
+        exception = "metadata"
 
 
 class FulfillmentItemFilter(django_filters.FilterSet):
     class Meta:
         model = FulfillmentItem
-        exception = ('metadata')
+        exception = "metadata"
 
 
 class FulfillmentProviderFilter(django_filters.FilterSet):
     class Meta:
         model = FulfillmentProvider
-        exception = ('metadata')
+        exception = "metadata"
 
 
 class TrackingLinkFilter(django_filters.FilterSet):
     class Meta:
         model = TrackingLink
-        exception = ('metadata')
-
+        exception = "metadata"

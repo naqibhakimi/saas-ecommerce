@@ -5,10 +5,14 @@ from apps.core.exceptions import WrongUsage
 
 from graphql_relay.node.node import from_global_id
 
+from graphene.types.generic import GenericScalar
+
+
 class Node:
     pass
 
-class ExpectedErrorType(graphene.Scalar):
+
+class ExpectedErrorType(GenericScalar):
     class Meta:
         description = """
     Errors messages and codes mapped to
@@ -38,6 +42,7 @@ class ExpectedErrorType(graphene.Scalar):
 
     @staticmethod
     def serialize(errors):
+        print(errors)
         if isinstance(errors, dict):
             if errors.get("__all__", False):
                 errors["non_field_errors"] = errors.pop("__all__")

@@ -44,6 +44,7 @@ class UpdateCustomerForm(forms.ModelForm):
             # "metadata",
         )
 
+
 # class CustomerGroupForm(forms.ModelForm):
 #     class Meta:
 #         model = CustomerGroup
@@ -66,5 +67,3 @@ class UpdateCustomerForm(forms.ModelForm):
 #     class Meta:
 #         model = Region
 #         fields = ("","")
-
-

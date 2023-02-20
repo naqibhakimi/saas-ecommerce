@@ -1,6 +1,7 @@
 import graphene
 from django.utils.translation import gettext_lazy as _
 
+
 class GraphQLError(Exception):
     default_message = None
 
@@ -9,12 +10,11 @@ class GraphQLError(Exception):
             message = self.default_message
 
         super().__init__(message)
-        
+
+
 class WrongUsage(GraphQLError):
     """
     internal exception
     """
 
     default_message = _("Wrong usage, check your code!.")
-
-

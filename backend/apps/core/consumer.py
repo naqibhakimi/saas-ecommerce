@@ -13,7 +13,7 @@ class GraphQLSubscriptionConsumer(AsyncJsonWebsocketConsumer):
             "query": payload.get("query"),
             "variable_values": payload.get("variables"),
             "operation_name": payload.get("operationName"),
-            "context_value": self.scope
+            "context_value": self.scope,
         }
 
     def build_message(self, id, op_type, payload):
@@ -39,17 +39,21 @@ class GraphQLSubscriptionConsumer(AsyncJsonWebsocketConsumer):
             self.connection_context.socket_closed = True
 
     async def receive_json(self, content):
-        self.schema =  import_string(settings.GRAPHENE.get('SCHEMA'))
-        if content.get('type') == 'start':
-            result = await self.schema.subscribe(**dict(self.get_graphql_params(content.get('payload'))))
-            if hasattr(result, '__aiter__'):
+        self.schema = import_string(settings.GRAPHENE.get("SCHEMA"))
+        if content.get("type") == "start":
+            result = await self.schema.subscribe(
+                **dict(self.get_graphql_params(content.get("payload")))
+            )
+            if hasattr(result, "__aiter__"):
                 async for single_result in result:
-                    await self.send_json(content=self.build_message(
-                        content.get('id'),
-                        GQL_DATA,
-                        single_result.data))
+                    await self.send_json(
+                        content=self.build_message(
+                            content.get("id"), GQL_DATA, single_result.data
+                        )
+                    )
             else:
-                await self.send_json(content=self.build_message(
-                        content.get('id'),
-                        GQL_DATA,
-                        single_result.data))
+                await self.send_json(
+                    content=self.build_message(
+                        content.get("id"), GQL_DATA, single_result.data
+                    )
+                )

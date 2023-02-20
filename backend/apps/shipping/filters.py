@@ -14,25 +14,39 @@ from .models import (
 
 class ShippingProfileTypeFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"
+
+
 class ShippingProfileFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"
+
+
 class ShippingOptionFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"
+
+
 class ShippingMethodFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"
+
+
 class CustomShippingOptionFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"
+
+
 class ShippingMethodTaxLineFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"
+
+
 class ShippingOptionRequirementFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"
+
+
 class ShippingTaxRateFilter(django_filters.FilterSet):
     class Meta:
-        exclude = ('metadata')
+        exclude = "metadata"

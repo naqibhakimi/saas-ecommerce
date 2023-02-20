@@ -4,9 +4,10 @@ from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 from .mixins import UpdateAddressMixin
 
 
-class UpdateAddress(UpdateAddressMixin, RelayMutationMixin, DynamicInputMixin, graphene.ClientIDMutation):
+class UpdateAddress(
+    UpdateAddressMixin, RelayMutationMixin, DynamicInputMixin, graphene.ClientIDMutation
+):
     pass
-
 
 
 class Mutation:

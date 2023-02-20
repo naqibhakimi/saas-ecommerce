@@ -16,12 +16,9 @@ from .forms import (
 )
 
 
-
 class CreateCustomer(AbstractMutation):
-
     class Meta:
         form_class = CreateCustomerForm
-
 
 
 # class UpdateCustomer(UpdateCustomerMixin, RelayMutationMixin, DynamicInputMixin, graphene.ClientIDMutation):
@@ -44,7 +41,8 @@ class CreateCustomer(AbstractMutation):
 
 
 class Query(object):
-    pass 
+    pass
+
 
 class Mutation(object):
     create_customer = CreateCustomer.Field()

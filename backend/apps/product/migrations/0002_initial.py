@@ -5,18 +5,21 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('shipping', '0001_initial'),
-        ('product', '0001_initial'),
+        ("shipping", "0001_initial"),
+        ("product", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='product',
-            name='profile',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='shipping.shippingprofile'),
+            model_name="product",
+            name="profile",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="shipping.shippingprofile",
+            ),
         ),
     ]

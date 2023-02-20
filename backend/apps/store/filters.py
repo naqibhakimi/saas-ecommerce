@@ -13,62 +13,62 @@ from .models import (
     Swap,
 )
 
+
 class SalesChannelFilter(django_filters.FilterSet):
     class Meta:
         model = SalesChannel
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class SalesChannelLocationFilter(django_filters.FilterSet):
     class Meta:
         model = SalesChannelLocation
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class CartFilter(django_filters.FilterSet):
     class Meta:
         model = Cart
-        exclude = ('metadata', 'context')
+        exclude = ("metadata", "context")
 
 
 class InviteFilter(django_filters.FilterSet):
     class Meta:
         model = Invite
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class NoteFilter(django_filters.FilterSet):
     class Meta:
         model = Note
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class NotificationProviderFilter(django_filters.FilterSet):
     class Meta:
         model = NotificationProvider
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class NotificationFilter(django_filters.FilterSet):
     class Meta:
         model = Notification
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class StagedJobFilter(django_filters.FilterSet):
     class Meta:
         model = StagedJob
-        exclude = ('data', 'options')
+        exclude = ("data", "options")
 
 
 class StoreFilter(django_filters.FilterSet):
     class Meta:
         model = Store
-        exclude = ('metadata')
+        exclude = "metadata"
 
 
 class SwapFilter(django_filters.FilterSet):
     class Meta:
         model = Swap
-        exclude = ('metadata')
-
+        exclude = "metadata"

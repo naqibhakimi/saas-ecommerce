@@ -12,13 +12,15 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+
 # from graphql_jwt.shortcuts import get_token
 
 from .constants import TokenAction
 from .exceptions import UserAlreadyVerified
 from .signals import user_verified
 
-from graphql_jwt.shortcuts import  get_token, get_user_by_token
+from graphql_jwt.shortcuts import get_token, get_user_by_token
+
 
 class Oauth(BaseModel):
     display_name = models.CharField(max_length=255)
@@ -77,8 +79,7 @@ class SEUser(BaseModel, AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
-        help_text=_(
-            "Designates whether the user can log into this admin site."),
+        help_text=_("Designates whether the user can log into this admin site."),
     )
     is_active = models.BooleanField(
         _("active"),
@@ -98,10 +99,10 @@ class SEUser(BaseModel, AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f'{self.pk}  {self.last_name} {self.first_name} {self.email}'
+        return f"{self.pk}  {self.last_name} {self.first_name} {self.email}"
 
     def __repr__(self):
-        return f'{self.pk}  {self.last_name} {self.first_name} {self.email}'
+        return f"{self.pk}  {self.last_name} {self.first_name} {self.email}"
 
     class Meta:
         verbose_name = _("user")
@@ -149,20 +150,18 @@ class UserStatus(BaseModel):
         message = strip_tags(html_message)
 
         return send_mail(
-            subject= subject,
+            subject=subject,
             from_email=settings.AUTH.EMAIL_FROM,
             message=message,
             html_message=html_message,
-            recipient_list=(
-                recipient_list or [getattr(self.user, SEUser.EMAIL_FIELD)]
-            ),
+            recipient_list=(recipient_list or [getattr(self.user, SEUser.EMAIL_FIELD)]),
             fail_silently=False,
         )
 
     def get_email_context(self, info, path, action, **kwargs):
         token = get_token(self.user, action, **kwargs)
         site = get_current_site(info.context)
-        origin = info.context.headers.get('Origin', False)
+        origin = info.context.headers.get("Origin", False)
 
         return {
             "user": self.user,
@@ -185,15 +184,15 @@ class UserStatus(BaseModel):
         subject = settings.AUTH.EMAIL_SUBJECT_ACTIVATION
         return self.send(subject, template, email_context, *args, **kwargs)
 
-    # def resend_activation_email(self, info, *args, **kwargs):
-    #     if self.verified is True:x
-    #         raise UserAlreadyVerified
-    #     email_context = self.get_email_context(
-    #         info, settings.AUTH.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
-    #     )
-    #     template = settings.AUTH.EMAIL_TEMPLATE_ACTIVATION_RESEND
-    #     subject = settings.AUTH.EMAIL_SUBJECT_ACTIVATION_RESEND
-    #     return self.send(subject, template, email_context, *args, **kwargs)
+    def resend_activation_email(self, info, *args, **kwargs):
+        if self.verified is True:
+            raise UserAlreadyVerified
+        email_context = self.get_email_context(
+            info, settings.AUTH.ACTIVATION_PATH_ON_EMAIL, TokenAction.ACTIVATION
+        )
+        template = settings.AUTH.EMAIL_TEMPLATE_ACTIVATION_RESEND
+        subject = settings.AUTH.EMAIL_SUBJECT_ACTIVATION_RESEND
+        return self.send(subject, template, email_context, *args, **kwargs)
 
     # def send_password_set_email(self, info, *args, **kwargs):
     #     email_context = self.get_email_context(
@@ -247,6 +246,7 @@ class UserStatus(BaseModel):
     @classmethod
     def verify(cls, token):
         user = get_user_by_token(token)
+        print(user)
         user_status = cls.objects.get(user=user)
         if user_status.verified is False:
             user_status.verified = True
@@ -254,7 +254,7 @@ class UserStatus(BaseModel):
             # user_verified.send(sender=cls, user=user)
             return user
         else:
-            raise UserAlreadyVerified
+            raise UserAlreadyVerified()
 
     # @classmethod
     # def verify_secondary_email(cls, token):
