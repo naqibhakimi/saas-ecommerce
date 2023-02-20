@@ -143,13 +143,13 @@ class UserStatus(BaseModel):
         return f"{self.user} - status"
 
     def send(self, subject, template, context, recipient_list=None):
-        _subject = render_to_string(
-            subject, context).replace("\n", " ").strip()
+        print(template)
+        # _subject = render_to_string(subject, context).replace("\n", " ").strip()
         html_message = render_to_string(template, context)
         message = strip_tags(html_message)
 
         return send_mail(
-            subject=_subject,
+            subject= subject,
             from_email=settings.AUTH.EMAIL_FROM,
             message=message,
             html_message=html_message,
@@ -251,7 +251,7 @@ class UserStatus(BaseModel):
         if user_status.verified is False:
             user_status.verified = True
             user_status.save(update_fields=["verified"])
-            user_verified.send(sender=cls, user=user)
+            # user_verified.send(sender=cls, user=user)
             return user
         else:
             raise UserAlreadyVerified

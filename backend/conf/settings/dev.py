@@ -143,6 +143,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -201,7 +202,7 @@ GRAPHENE = {
     "MIDDLEWARE": [
         # "apps.core.middlewares.sentry_middleware.gguncaught_exception_middleware",
         "graphql_jwt.middleware.JSONWebTokenMiddleware",
-        #  "graphene_django.debug.DjangoDebugMiddleware",
+         "graphene_django.debug.DjangoDebugMiddleware",
     ],
 }
 

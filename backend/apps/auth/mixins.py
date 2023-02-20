@@ -21,7 +21,7 @@ from .shortcuts import get_user_by_email
 from graphql_jwt.shortcuts import  get_token, get_user_by_token
 UserModel = get_user_model()
 
-
+import traceback
 class SignupMixin(Output):
     form = SignupForm
 
@@ -42,10 +42,7 @@ class SignupMixin(Output):
                     user.status.send_activation_email(info)
 
                 user_registered.send(sender=cls, user=user)
-                user.status.send(
-                    context=info.context,
-                    recipient_list=[user.email],
-                    **EMAIL_MESSAGES.SIGN_UP)
+                user.status.send_activation_email(info)
 
                 return cls(success=True)
 
@@ -53,6 +50,9 @@ class SignupMixin(Output):
             return cls(success=False, errors=Messages.PASSWORD_DOESNOT_MATCH)
         except EmailAlreadyInUse:
             return cls(success=False, errors=Messages.EMAIL_IN_USE)
+        except Exception as e:
+            traceback.print_exc()
+
 
 
 class SignInMixin(Output):
@@ -103,18 +103,21 @@ class UpdateAccountMixin(Output):
 
 
 class VerifyAccountMixin(Output):
+    token = graphene.String()
+    user = graphene.Field(UserNode)
 
-    @classmethod
-    def Field(cls, *args, **kwargs):
-        cls._meta.fields["token"] = graphene.Field(graphene.String)
-        cls._meta.fields["user"] = graphene.Field(UserNode)
-        return super().Field(*args, **kwargs)
+    # @classmethod
+    # def Field(cls, *args, **kwargs):
+    #     cls._meta.fields["token"] = graphene.Field(graphene.String)
+    #     cls._meta.fields["user"] = graphene.Field(UserNode)
+    #     return super().Field(*args, **kwargs)
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):        
         try:
             token = kwargs.get("token")
             user = UserStatus.verify(token)
+            print(user, 'asdasdsadasdasd')
             return cls(success=True, user=user, token=token)
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
@@ -122,6 +125,8 @@ class VerifyAccountMixin(Output):
             return cls(success=False, errors=Messages.EXPIRED_TOKEN)
         except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
+        except Exception as e:
+            traceback.print_exc()
 
 
 class ResendActivationEmailMixin(Output):

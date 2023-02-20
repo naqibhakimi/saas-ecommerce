@@ -21,7 +21,7 @@ class Messages:
 class EMAIL_MESSAGES:
     SIGN_UP = {
         'subject': _("Sign up"),
-        'template': 'activate_account_signup.html',
+        'template': 'email/activation_email.html',
     }
 
 
