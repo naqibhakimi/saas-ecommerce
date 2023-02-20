@@ -4,17 +4,20 @@ from django.contrib.auth.hashers import check_password
 from django.forms import ValidationError
 from graphql_jwt.shortcuts import get_token
 from django.core.signing import BadSignature, SignatureExpired
+from django.core.exceptions import ObjectDoesNotExist
+from smtplib import SMTPException
 
 
 from apps.core.mutations import Output
 
 from .constants import EMAIL_MESSAGES, Messages
 from .exceptions import EmailAlreadyInUse, InvalidCredentials, UserAlreadyVerified, TokenScopeError
-from .forms import SignupForm, SingInForm, UpdateAccountForm
+from .forms import SignupForm, SingInForm, UpdateAccountForm, EmailForm
 from .models import UserStatus
 from .types import UserNode
 from django.conf import settings
 from .signals import user_registered
+from .shortcuts import get_user_by_email
 
 
 UserModel = get_user_model()
@@ -123,6 +126,25 @@ class VerifyAccountMixin(Output):
         except (BadSignature, TokenScopeError):
             return cls(success=False, errors=Messages.INVALID_TOKEN)
 
+
+class ResendActivationEmailMixin(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            email = kwargs.get("email")
+            f = EmailForm({"email": email})
+            if f.is_valid():
+                user = get_user_by_email(email)
+                user.status.resend_activation_email(info)
+                return cls(success=True)
+            return cls(success=False, errors=f.errors.get_json_data())
+        except ObjectDoesNotExist:
+            return cls(success=True)  # even if user is not registred
+        except SMTPException:
+            return cls(success=False, errors=Messages.EMAIL_FAIL)
+        except UserAlreadyVerified:
+            return cls(success=False, errors={"email": Messages.ALREADY_VERIFIED})
 
 # class VerifySecondaryEmailMixin(Output):
 
