@@ -16,6 +16,11 @@ class UpdateAccountForm(forms.ModelForm):
         model = User
         fields = ('email', "first_name", "last_name")
 
+
 class SingInForm(forms.Form):
     email = forms.EmailField(max_length=100, required=True)
     password = forms.CharField(max_length=100, required=True)
+
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(max_length=100)

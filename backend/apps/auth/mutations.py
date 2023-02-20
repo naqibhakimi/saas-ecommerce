@@ -4,7 +4,7 @@ from graphql.error import GraphQLError
 
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
-from .mixins import SignInMixin, SignupMixin, UpdateAccountMixin, VerifyAccountMixin
+from .mixins import ResendActivationEmailMixin, SignInMixin, SignupMixin, UpdateAccountMixin, VerifyAccountMixin
 
 
 class Signup(DynamicInputMixin, RelayMutationMixin, SignupMixin, graphene.ClientIDMutation):
@@ -37,14 +37,14 @@ class VerifyAccount(
     _required_inputs = ["token"]
 
 
-# class ResendActivationEmail(
-#     RelayMutationMixin,
-#     DynamicInputMixin,
-#     ResendActivationEmailMixin,
-#     graphene.ClientIDMutation,
-# ):
-#     __doc__ = ResendActivationEmailMixin.__doc__
-#     _required_inputs = ["email"]
+class ResendActivationEmail(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    ResendActivationEmailMixin,
+    graphene.ClientIDMutation,
+):
+    __doc__ = ResendActivationEmailMixin.__doc__
+    _required_inputs = ["email"]
 
 
 class Active( graphene.ClientIDMutation):
@@ -58,3 +58,4 @@ class Mutation:
     update_account = UpdateAccount.Field()
     verify_account = VerifyAccount.Field()
     active = Active.Field()
+    resend_activation_email = ResendActivationEmail.Field()
