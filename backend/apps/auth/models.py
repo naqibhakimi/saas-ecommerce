@@ -16,8 +16,9 @@ from django.utils.translation import gettext_lazy as _
 # from graphql_jwt.shortcuts import get_token
 
 from .constants import TokenAction
-from .exceptions import UserAlreadyVerified
+from .exceptions import EmailAlreadyInUse, UserAlreadyVerified
 from .signals import user_verified
+from . utils import get_token_payload
 
 from graphql_jwt.shortcuts import get_token, get_user_by_token
 
@@ -202,13 +203,13 @@ class UserStatus(BaseModel):
     #     subject = settings.AUTH.EMAIL_SUBJECT_PASSWORD_SET
     #     return self.send(subject, template, email_context, *args, **kwargs)
 
-    # def send_password_reset_email(self, info, *args, **kwargs):
-    #     email_context = self.get_email_context(
-    #         info, settings.AUTH.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET
-    #     )
-    #     template = settings.AUTH.EMAIL_TEMPLATE_PASSWORD_RESET
-    #     subject = settings.AUTH.EMAIL_SUBJECT_PASSWORD_RESET
-    #     return self.send(subject, template, email_context, *args, **kwargs)
+    def send_password_reset_email(self, info, *args, **kwargs):
+        email_context = self.get_email_context(
+            info, settings.AUTH.PASSWORD_RESET_PATH_ON_EMAIL, TokenAction.PASSWORD_RESET
+        )
+        template = settings.AUTH.EMAIL_TEMPLATE_PASSWORD_RESET
+        subject = settings.AUTH.EMAIL_SUBJECT_PASSWORD_RESET
+        return self.send(subject, template, email_context, *args, **kwargs)
 
     # def send_secondary_email_activation(self, info, email):
     #     if not self.email_is_free(email):
@@ -256,20 +257,20 @@ class UserStatus(BaseModel):
         else:
             raise UserAlreadyVerified()
 
-    # @classmethod
-    # def verify_secondary_email(cls, token):
-    #     payload = get_token_payload(
-    #         token,
-    #         TokenAction.ACTIVATION_SECONDARY_EMAIL,
-    #         settings.AUTH.EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN,
-    #     )
-    #     secondary_email = payload.pop("secondary_email")
-    #     if not cls.email_is_free(secondary_email):
-    #         raise EmailAlreadyInUse
-    #     user = SEUser._default_manager.get(**payload)
-    #     user_status = cls.objects.get(user=user)
-    #     user_status.secondary_email = secondary_email
-    #     user_status.save(update_fields=["secondary_email"])
+    @classmethod
+    def verify_secondary_email(cls, token):
+        payload = get_token_payload(
+            token,
+            TokenAction.ACTIVATION_SECONDARY_EMAIL,
+            settings.AUTH.EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN,
+        )
+        secondary_email = payload.pop("secondary_email")
+        if not cls.email_is_free(secondary_email):
+            raise EmailAlreadyInUse
+        user = SEUser._default_manager.get(**payload)
+        user_status = cls.objects.get(user=user)
+        user_status.secondary_email = secondary_email
+        user_status.save(update_fields=["secondary_email"])
 
     # @classmethod
     # def unarchive(cls, user):
