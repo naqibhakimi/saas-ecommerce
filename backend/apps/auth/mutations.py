@@ -6,6 +6,7 @@ from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
 from .mixins import (
     ResendActivationEmailMixin,
+    SendPasswordResetEmailMixin,
     SignInMixin,
     SignupMixin,
     UpdateAccountMixin,
@@ -59,6 +60,26 @@ class ResendActivationEmail(
     _required_inputs = ["email"]
 
 
+class SendPasswordResetEmail(
+    RelayMutationMixin,
+    DynamicInputMixin,
+    SendPasswordResetEmailMixin,
+    graphene.ClientIDMutation,
+):
+    __doc__ = SendPasswordResetEmailMixin.__doc__
+    _required_inputs = ["email"]
+
+
+# class SendSecondaryEmailActivation(
+#     RelayMutationMixin,
+#     DynamicInputMixin,
+#     SendSecondaryEmailActivationMixin,
+#     graphene.ClientIDMutation,
+# ):
+#     __doc__ = SendSecondaryEmailActivationMixin.__doc__
+#     _required_inputs = ["email", "password"]
+
+
 class Active(graphene.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(root, info, *args, **kwargs):
@@ -72,3 +93,4 @@ class Mutation:
     verify_account = VerifyAccount.Field()
     active = Active.Field()
     resend_activation_email = ResendActivationEmail.Field()
+    send_password_reset_email = SendPasswordResetEmail.Field()

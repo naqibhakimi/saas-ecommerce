@@ -1,3 +1,4 @@
+import traceback
 import graphene
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -5,19 +6,23 @@ from django.forms import ValidationError
 from django.core.signing import BadSignature, SignatureExpired
 from django.core.exceptions import ObjectDoesNotExist
 from smtplib import SMTPException
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 
 
 from apps.core.mutations import Output
+from backend.apps.auth.utils import get_token_payload
+from backend.conf.settings.dev import AUTH
 
-from .constants import EMAIL_MESSAGES, Messages
+from .constants import EMAIL_MESSAGES, Messages, TokenAction
 from .exceptions import (
     EmailAlreadyInUse,
     InvalidCredentials,
     UserAlreadyVerified,
     TokenScopeError,
+    UserNotVerified,
 )
 from .forms import SignupForm, SingInForm, UpdateAccountForm, EmailForm
-from .models import SEUser, UserStatus
+from .models import UserStatus
 from .types import UserNode
 from django.conf import settings
 from .signals import user_registered
@@ -26,8 +31,6 @@ from .shortcuts import get_user_by_email
 from graphql_jwt.shortcuts import get_token, get_user_by_token
 
 UserModel = get_user_model()
-
-import traceback
 
 
 class SignupMixin(Output):
@@ -149,20 +152,138 @@ class ResendActivationEmailMixin(Output):
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
 
 
-# class VerifySecondaryEmailMixin(Output):
+class VerifySecondaryEmailMixin(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            token = kwargs.get("token")
+            UserStatus.verify_secondary_email(token)
+            return cls(success=True)
+        except EmailAlreadyInUse:
+            # while the token was sent and the user haven't
+            # verified, the email was free. If other account
+            # was created with it, it is already in use.
+            return cls(success=False, errors=Messages.EMAIL_IN_USE)
+        except SignatureExpired:
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
+        except (BadSignature, TokenScopeError):
+            return cls(success=False, errors=Messages.INVALID_TOKEN)
+
+
+class SendPasswordResetEmailMixin(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            email = kwargs.get("email")
+            f = EmailForm({"email": email})
+            if f.is_valid():
+                user = get_user_by_email(email)
+                user.status.send_password_reset_email(info, [email])
+                return cls(success=True)
+            return cls(success=False, errors=f.errors.get_json_data())
+        except ObjectDoesNotExist:
+            return cls(success=True)  # even if user is not registred
+        except SMTPException:
+            return cls(success=False, errors=Messages.EMAIL_FAIL)
+        except UserNotVerified:
+            user = get_user_by_email(email)
+            try:
+                user.status.resend_activation_email(info)
+                return cls(
+                    success=False,
+                    errors={"email": Messages.NOT_VERIFIED_PASSWORD_RESET},
+                )
+            except SMTPException:
+                return cls(success=False, errors=Messages.EMAIL_FAIL)
+
+
+# class PasswordResetMixin(Output):
+#     """
+#     Change user password without old password.
+
+#     Receive the token that was sent by email.
+
+#     If token and new passwords are valid, update
+#     user password and in case of using refresh
+#     tokens, revoke all of them.
+
+#     Also, if user has not been verified yet, verify it.
+#     """
+
+#     form = SetPasswordForm
 
 #     @classmethod
 #     def resolve_mutation(cls, root, info, **kwargs):
 #         try:
-#             token = kwargs.get("token")
-#             UserStatus.verify_secondary_email(token)
-#             return cls(success=True)
-#         except EmailAlreadyInUse:
-#             # while the token was sent and the user haven't
-#             # verified, the email was free. If other account
-#             # was created with it, it is already in use.
-#             return cls(success=False, errors=Messages.EMAIL_IN_USE)
+#             token = kwargs.pop("token")
+#             payload = get_token_payload(
+#                 token,
+#                 TokenAction.PASSWORD_RESET,
+#                 AUTH.EXPIRATION_PASSWORD_RESET_TOKEN,
+#             )
+#             user = UserModel._default_manager.get(**payload)
+#             f = cls.form(user, kwargs)
+#             if f.is_valid():
+#                 revoke_user_refresh_token(user)
+#                 user = f.save()
+
+#                 if user.status.verified is False:
+#                     user.status.verified = True
+#                     user.status.save(update_fields=["verified"])
+#                     user_verified.send(sender=cls, user=user)
+
+#                 return cls(success=True)
+#             return cls(success=False, errors=f.errors.get_json_data())
 #         except SignatureExpired:
 #             return cls(success=False, errors=Messages.EXPIRED_TOKEN)
 #         except (BadSignature, TokenScopeError):
 #             return cls(success=False, errors=Messages.INVALID_TOKEN)
+
+
+# class PasswordSetMixin(Output):
+#     """
+#     Set user password - for passwordless registration
+
+#     Receive the token that was sent by email.
+
+#     If token and new passwords are valid, set
+#     user password and in case of using refresh
+#     tokens, revoke all of them.
+
+#     Also, if user has not been verified yet, verify it.
+#     """
+
+#     form = SetPasswordForm
+
+#     @classmethod
+#     def resolve_mutation(cls, root, info, **kwargs):
+#         try:
+#             token = kwargs.pop("token")
+#             payload = get_token_payload(
+#                 token,
+#                 TokenAction.PASSWORD_SET,
+#                 app_settings.EXPIRATION_PASSWORD_SET_TOKEN,
+#             )
+#             user = UserModel._default_manager.get(**payload)
+#             f = cls.form(user, kwargs)
+#             if f.is_valid():
+#                 # Check if user has already set a password
+#                 if user.has_usable_password():
+#                     raise PasswordAlreadySetError
+#                 revoke_user_refresh_token(user)
+#                 user = f.save()
+
+#                 if user.status.verified is False:
+#                     user.status.verified = True
+#                     user.status.save(update_fields=["verified"])
+
+#                 return cls(success=True)
+#             return cls(success=False, errors=f.errors.get_json_data())
+#         except SignatureExpired:
+#             return cls(success=False, errors=Messages.EXPIRED_TOKEN)
+#         except (BadSignature, TokenScopeError):
+#             return cls(success=False, errors=Messages.INVALID_TOKEN)
+#         except (PasswordAlreadySetError):
+#             return cls(success=False, errors=Messages.PASSWORD_ALREADY_SET)
