@@ -1,6 +1,6 @@
 from .base import *
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 
 # EMAIL_HOST = "email-smtp.us-west-2.amazonaws.com"
