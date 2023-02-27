@@ -1,5 +1,4 @@
 from .auth import *
-from .base import *
 from .cors_header import *
 from .database import *
 from .email import *
@@ -14,7 +13,5 @@ from .template import *
 DEBUG = True
 
 
-AUTH_USER_MODEL = "secure_auth.SecureUser"
-
 SITE_PROTOCOL = env('SITE_PROTOCOL')
-SITE_URLS = env("SITE_URLS")
+SITE_URL = env("SITE_URL")

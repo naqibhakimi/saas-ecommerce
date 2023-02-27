@@ -12,11 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import environ
 
-
-from django.test.signals import setting_changed
-from django.conf import settings as django_settings
-import datetime
 from pathlib import Path
+
+
+DEBUG = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -36,47 +35,10 @@ SECRET_KEY = "django-insecure-8j8k)&0lt3&mg79-=1vdw%y5r_v(^w=qpr^bnl!lm=vl2_1lgg
 # SECRET_KEY = env("SECRET_KEY")
 
 # # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-
-# ALLOWED_HOSTS = []
 
 
 APPEND_SLASH = True
 
-
-# GRAPHQL_JWT = {
-#     "JWT_VERIFY_EXPIRATION": True,
-#     "JWT_AUTH_HEADER_PREFIX": "Bearer",
-#     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-#     "JWT_EXPIRATION_DELTA": datetime.timedelta(hours=9),
-#     "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(hours=9),
-#     "JWT_ALLOW_ANY_CLASSES": [
-#         # "secure_auth.mutations.Register",
-#         # "secure_auth.mutations.VerifyAccount",
-#         # "secure_auth.mutations.ResendActivationEmail",
-#         # "secure_auth.mutations.SendPasswordResetEmail",
-#         # "secure_auth.mutations.PasswordReset",
-#         # "secure_auth.mutations.ObtainJSONWebToken",
-#         # "secure_auth.mutations.VerifyToken",
-#         # "secure_auth.mutations.RefreshToken",
-#         # "secure_auth.mutations.RevokeToken",
-#         # "secure_auth.mutations.VerifySecondaryEmail",
-#         # "secure_auth.mutations.SlackAuthCode",
-#         # "secure_auth.mutations.VerifySecondaryEmail",
-#         # "graphql_social_auth.relay.SocialAuthJWT",
-#     ],
-# }
-
-
-# # Auth Backends
-# AUTHENTICATION_BACKENDS = [
-#     # "graphql_jwt.backends.JSONWebTokenBackend",
-#     "apps.auth.backends.GraphQLAuthBackend",
-#     "django.contrib.auth.backends.ModelBackend",
-# ]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "daphne",
@@ -123,95 +85,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "conf.urls"
 
-# TEMPLATES = [
-#     {
-#         "BACKEND": "django.template.backends.django.DjangoTemplates",
-#         "DIRS": [],
-#         "APP_DIRS": True,
-#         "OPTIONS": {
-#             "context_processors": [
-#                 "django.template.context_processors.debug",
-#                 "django.template.context_processors.request",
-#                 "django.contrib.auth.context_processors.auth",
-#                 "django.contrib.messages.context_processors.messages",
-#             ],
-#         },
-#     },
-# ]
-
 WSGI_APPLICATION = "conf.wsgi.application"
 ASGI_APPLICATION = "conf.asgi.application"
 
 
-# # Database
-# # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#         "ATOMIC_REQUESTS": True,
-#     }
-# }
-
-
-# # Password validation
-# # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-#     },
-#     {
-#         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-#     },
-#     {
-#         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-#     },
-#     {
-#         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-#     },
-# ]
-
-
-# # Internationalization
-# # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
-# LANGUAGE_CODE = "en-us"
-
-# TIME_ZONE = "UTC"
-
-# USE_I18N = True
-
-# USE_L10N = True
-
-# USE_TZ = True
-
-# SITE_URLS = "localhost"
-
-
-# # Static files (CSS, JavaScript, Images)
-# # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-# STATIC_URL = "/static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# # from graphene_django.debug  import DjangoDebugMiddleware
-# # Grphene settings
-# GRAPHENE = {
-#     "SCHEMA": "apps.core.schema.schema",
-#     "SCHEMA_OUTPUT": "schema.json",
-#     "SCHEMA_INDENT": 2,
-#     "MIDDLEWARE": [
-#         # "apps.core.middlewares.sentry_middleware.gguncaught_exception_middleware",
-#         "graphql_jwt.middleware.JSONWebTokenMiddleware",
-#         #  "graphene_django.debug.DjangoDebugMiddleware",
-#     ],
-# }
-
-DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SITE_ID = 1

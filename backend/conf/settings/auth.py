@@ -95,7 +95,7 @@ AUTH_COFIG = {
     "EXPIRATION_SECONDARY_EMAIL_ACTIVATION_TOKEN": datetime.timedelta(hours=1),
     "EXPIRATION_PASSWORD_SET_TOKEN": datetime.timedelta(hours=1),
     # email stuff
-    "EMAIL_FROM": getattr(django_settings, "DEFAULT_FROM_EMAIL", "test@email.com"),
+    "EMAIL_FROM": "test@email.com",
     "SEND_ACTIVATION_EMAIL": True,
     # client: example.com/activate/token
     "ACTIVATION_PATH_ON_EMAIL": "activate",

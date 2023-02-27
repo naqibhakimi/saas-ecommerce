@@ -1,3 +1,3 @@
 from . dev import *
 
-DEBUG = False
+DEBUG = True
