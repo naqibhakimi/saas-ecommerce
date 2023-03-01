@@ -8,9 +8,9 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_HOST_PASSWORD = "BOzFt10+tz7y6"
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = "admin@se.com"
-# FROM_EMAIL = "admin@se.com"
-# TO_EMAIL = "admin@se.com"
+# DEFAULT_FROM_EMAIL = "admin@exmaple.com"
+# FROM_EMAIL = "admin@exmaple.com"
+# TO_EMAIL = "admin@exmaple.com"
 
 
 EMAIL_HOST = env('EMAIL_HOST')

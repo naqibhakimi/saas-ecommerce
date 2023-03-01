@@ -1,8 +1,12 @@
+from graphene import InputObjectType, Mutation, String
 import graphene
 from django.contrib.auth import authenticate, login
 from graphql.error import GraphQLError
+from graphql_relay import from_global_id
 
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
+from .types import UserNode
+from .models import SEUser
 
 from .mixins import (
     ResendActivationEmailMixin,
@@ -80,6 +84,31 @@ class SendPasswordResetEmail(
 #     _required_inputs = ["email", "password"]
 
 
+class ActivateSecondaryEmailInput(InputObjectType):
+    user_id = String(required=True)
+    email = String(required=True)
+
+
+class ActivateSecondaryEmail(Mutation):
+    class Arguments:
+        input = ActivateSecondaryEmailInput(required=True)
+
+    user = graphene.Field(UserNode)
+
+    @classmethod
+    def mutate(cls, root, info, input):
+        user_id = from_global_id(input.user_id)[1]
+        user = SEUser.objects.get(pk=user_id)
+
+        user.secondary_email = input.email
+        user.save()
+
+        # Send the activation email to the user's secondary email address
+        user.status.send_secondary_email_activation(info, input.email)
+
+        return ActivateSecondaryEmail(user=user)
+
+
 class Active(graphene.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(root, info, *args, **kwargs):
@@ -94,3 +123,4 @@ class Mutation:
     active = Active.Field()
     resend_activation_email = ResendActivationEmail.Field()
     send_password_reset_email = SendPasswordResetEmail.Field()
+    activate_secondary_email = ActivateSecondaryEmail.Field()
