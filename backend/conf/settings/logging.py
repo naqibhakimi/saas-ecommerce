@@ -6,19 +6,22 @@ LOGLEVEL = env('DJANGO_LOG_LEVEL')
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": True,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
+            "format": "%(levelname)s %(asctime)s %(name)s %(module)s %(process)d %(thread)d %(message)s"
+        },
+        "debug": {
+            "format": "%(levelname)s %(asctime)s %(name)s %(module)s %(process)d %(thread)d %(message)s"
         },
     },
     "handlers": {
-        "console": {
+        "dev": {
             "level": "NOTSET",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "file": {
+        "prod": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
             "filename": "debug.log",
@@ -26,13 +29,14 @@ LOGGING = {
     },
     "loggers": {
         "": {
-            "handlers": ["console"],
-            "level": "NOTSET",
+            "handlers": ["dev"],
+            "propagate": True,
+            "level": "INFO",
         },
-        "django.request": {
-            "handlers": ["console"],
-            "propagate": False,
-            "level": "ERROR",
+        "daphne.server": {
+            "handlers": ["dev"],
+            "propagate": True,
+            "level": "NOTSET",
         },
     },
 }

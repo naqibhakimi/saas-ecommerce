@@ -31,7 +31,7 @@ env = environ.Env(SITE_ID=int, BROKER_URL=str, USE_S3=bool)
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-8j8k)&0lt3&mg79-=1vdw%y5r_v(^w=qpr^bnl!lm=vl2_1lgg"
+SECRET_KEY = env('SECRET_KEY')
 # SECRET_KEY = env("SECRET_KEY")
 
 # # SECURITY WARNING: don't run with debug turned on in production!

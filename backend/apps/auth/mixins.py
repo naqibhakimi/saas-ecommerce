@@ -1,34 +1,30 @@
+import logging
 import traceback
-import graphene
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import check_password
-from django.forms import ValidationError
-from django.core.signing import BadSignature, SignatureExpired
-from django.core.exceptions import ObjectDoesNotExist
 from smtplib import SMTPException
-from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 
-
+import graphene
+from graphql_relay import from_global_id
 from apps.core.mutations import Output
-from backend.apps.auth.utils import get_token_payload
-from backend.conf.settings.dev import AUTH
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.contrib.auth.hashers import check_password
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.signing import BadSignature, SignatureExpired
+from django.forms import ValidationError
+from graphql_jwt.shortcuts import get_token, get_user_by_token
 
 from .constants import EMAIL_MESSAGES, Messages, TokenAction
-from .exceptions import (
-    EmailAlreadyInUse,
-    InvalidCredentials,
-    UserAlreadyVerified,
-    TokenScopeError,
-    UserNotVerified,
-)
-from .forms import SignupForm, SingInForm, UpdateAccountForm, EmailForm
-from .models import UserStatus
-from .types import UserNode
-from django.conf import settings
-from .signals import user_registered
+from .exceptions import (EmailAlreadyInUse, InvalidCredentials,
+                         TokenScopeError, UserAlreadyVerified, UserNotVerified)
+from .forms import EmailForm, SignupForm, SingInForm, UpdateAccountForm
+from .models import SEUser, UserStatus
 from .shortcuts import get_user_by_email
+from .signals import user_registered
+from .types import UserNode
+from .utils import get_token_payload
 
-from graphql_jwt.shortcuts import get_token, get_user_by_token
+logger = logging.getLogger(__name__)
 
 UserModel = get_user_model()
 
@@ -38,6 +34,7 @@ class SignupMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, *args, **kwargs):
+
         try:
             form = cls.form(data=kwargs)
 
@@ -135,6 +132,7 @@ class VerifyAccountMixin(Output):
 class ResendActivationEmailMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
+        logger.info("Sending ResendActivationEmail")
         try:
             email = kwargs.get("email")
             f = EmailForm({"email": email})
@@ -144,9 +142,9 @@ class ResendActivationEmailMixin(Output):
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except ObjectDoesNotExist:
+            logger.warn(f"{email} ObjectDoesNotExist")
             return cls(success=True)  # even if user is not registred
         except SMTPException:
-            print(traceback.print_exc())
             return cls(success=False, errors=Messages.EMAIL_FAIL)
         except UserAlreadyVerified:
             return cls(success=False, errors=Messages.ALREADY_VERIFIED)
@@ -197,6 +195,20 @@ class SendPasswordResetEmailMixin(Output):
                 )
             except SMTPException:
                 return cls(success=False, errors=Messages.EMAIL_FAIL)
+
+class SendSecondaryEmailVerificationMixin(Output):
+    user = graphene.Field(UserNode)
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        user = info.context.user
+        user.secondary_email = kwargs.get('email')
+        user.save()
+
+        # Send the activation email to the user's secondary email address
+        user.status.send_secondary_email_activation(info, kwargs.get('email'))
+        return cls(success=True, user=user)
+
 
 
 # class PasswordResetMixin(Output):

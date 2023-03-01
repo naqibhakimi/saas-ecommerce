@@ -11,6 +11,7 @@ from .models import SEUser
 from .mixins import (
     ResendActivationEmailMixin,
     SendPasswordResetEmailMixin,
+    SendSecondaryEmailVerificationMixin,
     SignInMixin,
     SignupMixin,
     UpdateAccountMixin,
@@ -74,53 +75,18 @@ class SendPasswordResetEmail(
     _required_inputs = ["email"]
 
 
-# class SendSecondaryEmailActivation(
-#     RelayMutationMixin,
-#     DynamicInputMixin,
-#     SendSecondaryEmailActivationMixin,
-#     graphene.ClientIDMutation,
-# ):
-#     __doc__ = SendSecondaryEmailActivationMixin.__doc__
-#     _required_inputs = ["email", "password"]
-
-
-class ActivateSecondaryEmailInput(InputObjectType):
-    user_id = String(required=True)
-    email = String(required=True)
-
-
-class ActivateSecondaryEmail(Mutation):
-    class Arguments:
-        input = ActivateSecondaryEmailInput(required=True)
-
-    user = graphene.Field(UserNode)
-
-    @classmethod
-    def mutate(cls, root, info, input):
-        user_id = from_global_id(input.user_id)[1]
-        user = SEUser.objects.get(pk=user_id)
-
-        user.secondary_email = input.email
-        user.save()
-
-        # Send the activation email to the user's secondary email address
-        user.status.send_secondary_email_activation(info, input.email)
-
-        return ActivateSecondaryEmail(user=user)
-
-
-class Active(graphene.ClientIDMutation):
-    @classmethod
-    def mutate_and_get_payload(root, info, *args, **kwargs):
-        raise GraphQLError("sadfasdfsadf")
-
+class SendSecondaryEmailVerification(
+    DynamicInputMixin, RelayMutationMixin, SendSecondaryEmailVerificationMixin, graphene.ClientIDMutation
+):
+    _inputs = {
+        "email": graphene.String,
+    }
 
 class Mutation:
     signup = Signup.Field()
     signin = SignIn.Field()
     update_account = UpdateAccount.Field()
     verify_account = VerifyAccount.Field()
-    active = Active.Field()
     resend_activation_email = ResendActivationEmail.Field()
     send_password_reset_email = SendPasswordResetEmail.Field()
-    activate_secondary_email = ActivateSecondaryEmail.Field()
+    send_secondary_email_verification = SendSecondaryEmailVerification.Field()

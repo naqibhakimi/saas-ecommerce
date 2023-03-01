@@ -8,5 +8,4 @@ class SeAuthConfig(AppConfig):
 
     def ready(self) -> None:
         import apps.auth.signals
-
         return super().ready()
