@@ -196,6 +196,7 @@ class SendPasswordResetEmailMixin(Output):
             except SMTPException:
                 return cls(success=False, errors=Messages.EMAIL_FAIL)
 
+
 class SendSecondaryEmailVerificationMixin(Output):
     user = graphene.Field(UserNode)
 
@@ -210,6 +211,11 @@ class SendSecondaryEmailVerificationMixin(Output):
         return cls(success=True, user=user)
 
 
+class SwapEmailsMixin(Output):
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        info.context.user.status.swap_emails()
+        return cls(success=True)
 
 # class PasswordResetMixin(Output):
 #     """

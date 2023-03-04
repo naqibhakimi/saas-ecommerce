@@ -1,3 +1,4 @@
+from gettext import translation
 import time
 
 from apps.core.models import BaseModel
@@ -16,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 # from graphql_jwt.shortcuts import get_token
 
 from .constants import TokenAction
-from .exceptions import EmailAlreadyInUse, UserAlreadyVerified
+from .exceptions import EmailAlreadyInUse, UserAlreadyVerified, WrongUsage
 from .signals import user_verified
 from . utils import get_token_payload
 
@@ -170,7 +171,7 @@ class UserStatus(BaseModel):
             "token": token,
             "port": info.context.get_port(),
             "site_name": site.name,
-            "domain": settings.SITE_URLS,
+            "domain": settings.SITE_URL,
             "protocol": "https" if info.context.is_secure() else "http",
             "path": path,
             "timestamp": time.time(),
@@ -303,3 +304,11 @@ class UserStatus(BaseModel):
     #     with transaction.atomic():
     #         self.secondary_email = None
     #         self.save(update_fields=["secondary_email"])
+
+    def swap_emails(self):
+        if not self.secondary_email:
+            raise WrongUsage
+        with translation.atomic():
+            email1, email2 = self.user.email, self.user.secondary_email
+            self.user.email, self.user.secondary_email = email2, email1
+            self.user.save()

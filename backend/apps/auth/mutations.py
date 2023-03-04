@@ -1,12 +1,9 @@
 from graphene import InputObjectType, Mutation, String
 import graphene
 from django.contrib.auth import authenticate, login
-from graphql.error import GraphQLError
 from graphql_relay import from_global_id
 
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
-from .types import UserNode
-from .models import SEUser
 
 from .mixins import (
     ResendActivationEmailMixin,
@@ -14,6 +11,7 @@ from .mixins import (
     SendSecondaryEmailVerificationMixin,
     SignInMixin,
     SignupMixin,
+    SwapEmailsMixin,
     UpdateAccountMixin,
     VerifyAccountMixin,
 )
@@ -82,6 +80,12 @@ class SendSecondaryEmailVerification(
         "email": graphene.String,
     }
 
+
+class SwapEmails(DynamicInputMixin, RelayMutationMixin, SwapEmailsMixin, graphene.ClientIDMutation):
+    __doc__ = SwapEmailsMixin.__doc__
+    _inputs = ["password"]
+
+
 class Mutation:
     signup = Signup.Field()
     signin = SignIn.Field()
@@ -90,3 +94,4 @@ class Mutation:
     resend_activation_email = ResendActivationEmail.Field()
     send_password_reset_email = SendPasswordResetEmail.Field()
     send_secondary_email_verification = SendSecondaryEmailVerification.Field()
+    swap_emails = SwapEmails.Field()
