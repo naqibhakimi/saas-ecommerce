@@ -248,7 +248,6 @@ class UserStatus(BaseModel):
     @classmethod
     def verify(cls, token):
         user = get_user_by_token(token)
-        print(user)
         user_status = cls.objects.get(user=user)
         if user_status.verified is False:
             user_status.verified = True

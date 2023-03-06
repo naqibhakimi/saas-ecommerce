@@ -42,7 +42,6 @@ class ExpectedErrorType(GenericScalar):
 
     @staticmethod
     def serialize(errors):
-        print(errors)
         if isinstance(errors, dict):
             if errors.get("__all__", False):
                 errors["non_field_errors"] = errors.pop("__all__")
