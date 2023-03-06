@@ -6,6 +6,7 @@ from graphql_relay import from_global_id
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
 from .mixins import (
+    PasswordResetMixin,
     ResendActivationEmailMixin,
     SendPasswordResetEmailMixin,
     SendSecondaryEmailVerificationMixin,
@@ -86,6 +87,11 @@ class SwapEmails(DynamicInputMixin, RelayMutationMixin, SwapEmailsMixin, graphen
     _inputs = ["password"]
 
 
+class PasswordResetEmail(DynamicInputMixin, RelayMutationMixin, PasswordResetMixin, graphene.ClientIDMutation):
+    __doc__ = PasswordResetMixin.__doc__
+    _inputs = ["email"]
+
+
 class Mutation:
     signup = Signup.Field()
     signin = SignIn.Field()
@@ -95,3 +101,4 @@ class Mutation:
     send_password_reset_email = SendPasswordResetEmail.Field()
     send_secondary_email_verification = SendSecondaryEmailVerification.Field()
     swap_emails = SwapEmails.Field()
+    password_reset_email = PasswordResetEmail.Field()

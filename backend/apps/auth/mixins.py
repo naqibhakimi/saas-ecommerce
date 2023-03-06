@@ -95,7 +95,6 @@ class UpdateAccountMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        print(info.context.headers)
         user = info.context.user
         fields = cls.form.Meta.fields
         for field in fields:
@@ -215,6 +214,22 @@ class SwapEmailsMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         info.context.user.status.swap_emails()
+        return cls(success=True)
+
+
+class PasswordResetMixin(Output):
+    # form = SetPasswordForm
+    email = graphene.String(required=True)
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+
+        email = kwargs.get('email')
+        try:
+            user = SEUser.objects.get(email=email)
+            user.status.send_password_reset_email(info, [email])
+        except SEUser.DoesNotExist:
+            return cls(success=False, errors=Messages.INVALID_EMAIL)
         return cls(success=True)
 
 # class PasswordResetMixin(Output):
