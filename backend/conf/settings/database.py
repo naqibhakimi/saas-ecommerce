@@ -7,6 +7,11 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
         "ATOMIC_REQUESTS": True,
+    },
+    "read_only": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "read_only_db.sqlite3",
+        "ATOMIC_REQUESTS": True,
     }
 }
 

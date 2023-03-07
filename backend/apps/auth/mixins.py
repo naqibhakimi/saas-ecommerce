@@ -14,6 +14,8 @@ from django.core.signing import BadSignature, SignatureExpired
 from django.forms import ValidationError
 from graphql_jwt.shortcuts import get_token, get_user_by_token
 
+from apps.core.exceptions import WrongUsage
+
 from .constants import EMAIL_MESSAGES, Messages, TokenAction
 from .exceptions import (EmailAlreadyInUse, InvalidCredentials,
                          TokenScopeError, UserAlreadyVerified, UserNotVerified)
@@ -213,24 +215,29 @@ class SendSecondaryEmailVerificationMixin(Output):
 class SwapEmailsMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        info.context.user.status.swap_emails()
-        return cls(success=True)
+        try:
+            info.context.user.status.swap_emails()
+            return cls(success=True)
+        except WrongUsage as err:
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
 
 
 class PasswordResetMixin(Output):
-    # form = SetPasswordForm
     email = graphene.String(required=True)
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
 
         email = kwargs.get('email')
+
         try:
             user = SEUser.objects.get(email=email)
             user.status.send_password_reset_email(info, [email])
+            return cls(success=True)
+
         except SEUser.DoesNotExist:
             return cls(success=False, errors=Messages.INVALID_EMAIL)
-        return cls(success=True)
+
 
 # class PasswordResetMixin(Output):
 #     """

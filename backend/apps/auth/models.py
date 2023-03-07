@@ -1,6 +1,7 @@
-from gettext import translation
 import time
+from gettext import translation
 
+from apps.core.exceptions import WrongUsage
 from apps.core.models import BaseModel
 from django.conf import settings
 from django.conf import settings as django_settings
@@ -8,20 +9,22 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.db import models
+from django.db import models, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+from graphql_jwt.shortcuts import get_token, get_user_by_token
+
+from .constants import TokenAction
+from .exceptions import EmailAlreadyInUse, UserAlreadyVerified
+from .signals import user_verified
+from .utils import get_token_payload
 
 # from graphql_jwt.shortcuts import get_token
 
-from .constants import TokenAction
-from .exceptions import EmailAlreadyInUse, UserAlreadyVerified, WrongUsage
-from .signals import user_verified
-from . utils import get_token_payload
 
-from graphql_jwt.shortcuts import get_token, get_user_by_token
+
 
 
 class Oauth(BaseModel):
@@ -307,7 +310,8 @@ class UserStatus(BaseModel):
     def swap_emails(self):
         if not self.secondary_email:
             raise WrongUsage
-        with translation.atomic():
-            email1, email2 = self.user.email, self.user.secondary_email
-            self.user.email, self.user.secondary_email = email2, email1
-            self.user.save()
+        with transaction.atomic():
+            self.user.email, self.user.status.secondary_email = self.user.status.secondary_email, self.user.email
+            
+            self.user.save(update_fields=[SEUser.USERNAME_FIELD])
+            self.user.status.save(update_fields=['secondary_email'])
