@@ -33,3 +33,7 @@ class CustomerGroupQuery:
 class RegionQuery:
     regions = DjangoFilterConnectionField(RegionNode)
     region = graphene.Field(RegionNode, id=graphene.ID())
+
+
+class Query(CustomerQuery, CountryQuery, AddressQuery, CustomerGroupQuery, RegionQuery):
+    pass

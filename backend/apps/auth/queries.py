@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 
-from .types import UserNode, UserStatusNode
+from .types import UserNode
 
 import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField

@@ -96,8 +96,8 @@ class Country(BaseModel):
 
 class Address(BaseModel):
     company = models.CharField(max_length=255, null=True, blank=True)
-    first_name = models.CharField(max_length=255, null=True, blank=True)
-    last_name = models.CharField(max_length=255, null=True, blank=True)
+    # first_name = models.CharField(max_length=255, null=True, blank=True)
+    # last_name = models.CharField(max_length=255, null=True, blank=True)
     address_1 = models.CharField(max_length=255, null=True, blank=True)
     address_2 = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
@@ -112,7 +112,7 @@ class Address(BaseModel):
 class Region(BaseModel):
     name = models.CharField(max_length=100)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name="+")
-    tax_rate = models.FloatField()
+    # tax_rate = models.FloatField()
     tax_rates = models.ForeignKey(
         TaxRate, on_delete=models.SET_NULL, related_name="+", null=True, blank=True
     )
