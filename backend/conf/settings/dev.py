@@ -1,3 +1,6 @@
+import corsheaders.middleware
+corsheaders.middleware.CorsMiddleware.async_capable = False
+
 from .auth import *
 from .cors_header import *
 from .database import *

@@ -21,6 +21,8 @@ const Home = () => {
   if (error) return <p>Error :(</p>;
 
   return (
+    <>
+    <div class="bottom-5">Hello</div>
     <ul>
       {data!.users.map((user: User) => (
         <li key={user.id}>
@@ -28,6 +30,7 @@ const Home = () => {
         </li>
       ))}
     </ul>
+    </>
   );
 };
 

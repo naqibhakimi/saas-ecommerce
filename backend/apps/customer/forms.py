@@ -47,6 +47,7 @@ class UpdateCustomerForm(forms.ModelForm):
 
 class DeleteCustomerForm(forms.ModelForm):
     class Meta:
+        model= Customer
         fields = ("id",)
 
 
@@ -115,8 +116,6 @@ class CreateAddressForm(forms.ModelForm):
         model = Address
         fields = (
             "company",
-            "first_name",
-            "last_name",
             "address_1",
             "address_2",
             "city",
@@ -134,8 +133,6 @@ class UpdateAddressForm(forms.ModelForm):
         model = Address
         fields = (
             "company",
-            "first_name",
-            "last_name",
             "address_1",
             "address_2",
             "city",
