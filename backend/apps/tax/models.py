@@ -14,10 +14,10 @@ class TaxRate(BaseModel):
     rate = models.FloatField(null=True)
     code = models.CharField(max_length=255, null=True)
     name = models.CharField(max_length=255)
-    region = models.ForeignKey(
-        "customer.Region", on_delete=models.CASCADE, related_name="+"
-    )
-    metadata = models.JSONField(null=True)
+    # region = models.ForeignKey(
+    #     "customer.Region", on_delete=models.CASCADE, related_name="+"
+    # )
+    # metadata = models.JSONField(null=True, blank=True)
     product_count = models.IntegerField(null=True, blank=True)
     product_type_count = models.IntegerField(null=True, blank=True)
     shipping_option_count = models.IntegerField(null=True, blank=True)

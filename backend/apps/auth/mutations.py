@@ -1,4 +1,3 @@
-from graphene import InputObjectType, Mutation, String
 import graphene
 from django.contrib.auth import authenticate, login
 from graphql_relay import from_global_id

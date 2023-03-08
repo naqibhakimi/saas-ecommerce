@@ -45,25 +45,154 @@ class UpdateCustomerForm(forms.ModelForm):
         )
 
 
-# class CustomerGroupForm(forms.ModelForm):
-#     class Meta:
-#         model = CustomerGroup
-#         # fields = ("","")
+class DeleteCustomerForm(forms.ModelForm):
+    class Meta:
+        fields = ("id",)
 
 
-# class CountryForm(forms.ModelForm):
-#     class Meta:
-#         model = Country
-#         # fields = ("","")
+class CreateCustomerGroupForm(forms.ModelForm):
+    class Meta:
+        model = CustomerGroup
+        fields = (
+            "name"
+            "customers"
+            "price_lists"
+            "metadata"
+        )
 
 
-# class AddressForm(forms.ModelForm):
-#     class Meta:
-#         model = Address
-#         # fields = ("","")
+class UpdateCustomerGroupForm(forms.ModelForm):
+    class Meta:
+        model = CustomerGroup
+        fields = (
+            "name"
+            "customers"
+            "price_lists"
+            "metadata"
+        )
 
 
-# class RegionForm(forms.ModelForm):
-#     class Meta:
-#         model = Region
-#         fields = ("","")
+class DeleteCustomerGroupForm(forms.ModelForm):
+    class Meta:
+        model = CustomerGroup
+        fields = ("id",)
+
+
+class CreateCountryForm(forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = (
+            "iso_2"
+            "iso_3"
+            "num_code"
+            "name"
+            "display_name"
+            "region"
+        )
+
+
+class UpdateCountryForm(forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = (
+            "iso_2"
+            "iso_3"
+            "num_code"
+            "name"
+            "display_name"
+            "region"
+        )
+
+
+class DeleteCountryForm(forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = ("id",)
+
+
+class CreateAddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = (
+            "company"
+            "first_name"
+            "last_name"
+            "address_1"
+            "address_2"
+            "city"
+            "country_code"
+            "country"
+            "province"
+            "postal_code"
+            "phone"
+            "metadata"
+        )
+
+
+class UpdateAddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = (
+            "company"
+            "first_name"
+            "last_name"
+            "address_1"
+            "address_2"
+            "city"
+            "country_code"
+            "country"
+            "province"
+            "postal_code"
+            "phone"
+            "metadata"
+        )
+
+
+class DeleteAddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = ("id",)
+
+
+class CreateRegionForm(forms.ModelForm):
+    class Meta:
+        model = Region
+        fields = (
+            "name"
+            "currency"
+            # "tax_rates"
+            "tax_code"
+            "gift_cards_taxable"
+            "automatic_taxes"
+            "countries"
+            "tax_provider"
+            "payment_providers"
+            "fulfillment_providers"
+            "metadata"
+            "includes_tax"
+        )
+
+
+class UpdateRegionForm(forms.ModelForm):
+    class Meta:
+        model = Region
+        fields = (
+            "name"
+            "currency"
+            # "tax_rates"
+            "tax_code"
+            "gift_cards_taxable"
+            "automatic_taxes"
+            "countries"
+            "tax_provider"
+            "payment_providers"
+            "fulfillment_providers"
+            "metadata"
+            "includes_tax"
+        )
+
+
+class DeleteRegionForm(forms.ModelForm):
+    class Meta:
+        model = Region
+        fields = ("id",)

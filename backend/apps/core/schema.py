@@ -1,19 +1,21 @@
 import asyncio
 import datetime
-
-import graphene
-from apps.auth.mutations import Mutation as AuthMutations
-from apps.auth.queries import Query as AuthQueries
-from apps.customer.mutations import Mutation as CustomMutations
-from apps.store.mutations import Mutation as StoreMutations
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from graphene_django.debug import DjangoDebug
+import graphene
+
+from apps.auth.mutations import Mutation as AuthMutations
+from apps.auth.queries import Query as AuthQueries
+from apps.store.mutations import Mutation as StoreMutations
+
+from apps.customer.mutations import Mutation as CustomMutations
+from apps.customer.queries import Query as CustomerQuery
+
 
 channel_layer = get_channel_layer()
 
 
-class Query(AuthQueries, graphene.ObjectType):
+class Query(AuthQueries, CustomerQuery, graphene.ObjectType):
     test = graphene.String(name=graphene.String())
 
     def resolve_test(root, info, name):
