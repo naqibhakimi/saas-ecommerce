@@ -22,7 +22,7 @@ const Home = () => {
 
   return (
     <ul>
-      {data!.users.map(user => (
+      {data!.users.map((user: User) => (
         <li key={user.id}>
           {user.name} ({user.email})
         </li>

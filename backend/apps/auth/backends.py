@@ -1,3 +1,4 @@
+import contextlib
 from graphql_jwt.backends import JSONWebTokenBackend
 from graphql_jwt.exceptions import JSONWebTokenError
 from graphql_jwt.shortcuts import get_user_by_token, get_token
@@ -23,10 +24,7 @@ class GraphQLAuthBackend(JSONWebTokenBackend):
 
         token = get_credentials(request, **kwargs)
 
-        try:  # +++
+        with contextlib.suppress(JSONWebTokenError):
             if token is not None:
                 return get_user_by_token(token, request)
-        except JSONWebTokenError:  # +++
-            pass  # +++
-
         return None

@@ -5,7 +5,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 
 // Create an instance of the HttpLink that will be used for sending GraphQL requests over HTTP
 const httpLink = new HttpLink({
-  uri: 'https://your-api.com/graphql',
+  uri: process.env.GRAPHQL_HTTP_URI,
 });
 
 // Create an instance of the setContext function from apollo-link-context
@@ -24,7 +24,7 @@ const authLink = setContext((_, { headers }) => {
 
 // Create an instance of the WebSocketLink that will be used for sending GraphQL subscriptions over WebSockets
 const wsLink = new WebSocketLink({
-  uri: `ws://your-api.com/graphql`,
+  uri: process.env.GRAPHQL_WS_URI,
   options: {
     reconnect: true,
   },
