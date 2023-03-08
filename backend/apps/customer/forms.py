@@ -54,10 +54,10 @@ class CreateCustomerGroupForm(forms.ModelForm):
     class Meta:
         model = CustomerGroup
         fields = (
-            "name"
-            "customers"
-            "price_lists"
-            "metadata"
+            "name",
+            "customers",
+            "price_lists",
+            "metadata",
         )
 
 
@@ -65,10 +65,10 @@ class UpdateCustomerGroupForm(forms.ModelForm):
     class Meta:
         model = CustomerGroup
         fields = (
-            "name"
-            "customers"
-            "price_lists"
-            "metadata"
+            "name",
+            "customers",
+            "price_lists",
+            "metadata",
         )
 
 
@@ -82,12 +82,12 @@ class CreateCountryForm(forms.ModelForm):
     class Meta:
         model = Country
         fields = (
-            "iso_2"
-            "iso_3"
-            "num_code"
-            "name"
-            "display_name"
-            "region"
+            "iso_2",
+            "iso_3",
+            "num_code",
+            "name",
+            "display_name",
+            "region",
         )
 
 
@@ -95,12 +95,12 @@ class UpdateCountryForm(forms.ModelForm):
     class Meta:
         model = Country
         fields = (
-            "iso_2"
-            "iso_3"
-            "num_code"
-            "name"
-            "display_name"
-            "region"
+            "iso_2",
+            "iso_3",
+            "num_code",
+            "name",
+            "display_name",
+            "region",
         )
 
 
@@ -114,18 +114,18 @@ class CreateAddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = (
-            "company"
-            "first_name"
-            "last_name"
-            "address_1"
-            "address_2"
-            "city"
-            "country_code"
-            "country"
-            "province"
-            "postal_code"
-            "phone"
-            "metadata"
+            "company",
+            "first_name",
+            "last_name",
+            "address_1",
+            "address_2",
+            "city",
+            "country_code",
+            "country",
+            "province",
+            "postal_code",
+            "phone",
+            "metadata",
         )
 
 
@@ -133,18 +133,18 @@ class UpdateAddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = (
-            "company"
-            "first_name"
-            "last_name"
-            "address_1"
-            "address_2"
-            "city"
-            "country_code"
-            "country"
-            "province"
-            "postal_code"
-            "phone"
-            "metadata"
+            "company",
+            "first_name",
+            "last_name",
+            "address_1",
+            "address_2",
+            "city",
+            "country_code",
+            "country",
+            "province",
+            "postal_code",
+            "phone",
+            "metadata",
         )
 
 
@@ -158,18 +158,18 @@ class CreateRegionForm(forms.ModelForm):
     class Meta:
         model = Region
         fields = (
-            "name"
-            "currency"
-            # "tax_rates"
-            "tax_code"
-            "gift_cards_taxable"
-            "automatic_taxes"
-            "countries"
-            "tax_provider"
-            "payment_providers"
-            "fulfillment_providers"
-            "metadata"
-            "includes_tax"
+            "name",
+            "currency",
+            # "tax_rates",
+            "tax_code",
+            "gift_cards_taxable",
+            "automatic_taxes",
+            "countries",
+            "tax_provider",
+            "payment_providers",
+            "fulfillment_providers",
+            "metadata",
+            "includes_tax",
         )
 
 
@@ -177,18 +177,18 @@ class UpdateRegionForm(forms.ModelForm):
     class Meta:
         model = Region
         fields = (
-            "name"
-            "currency"
-            # "tax_rates"
-            "tax_code"
-            "gift_cards_taxable"
-            "automatic_taxes"
-            "countries"
-            "tax_provider"
-            "payment_providers"
-            "fulfillment_providers"
-            "metadata"
-            "includes_tax"
+            "name",
+            "currency",
+            # "tax_rates",
+            "tax_code",
+            "gift_cards_taxable",
+            "automatic_taxes",
+            "countries",
+            "tax_provider",
+            "payment_providers",
+            "fulfillment_providers",
+            "metadata",
+            "includes_tax",
         )
 
 
