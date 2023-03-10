@@ -1,4 +1,8 @@
+import traceback
+from django.forms import ValidationError
 from apps.core.mutations import Output
+from apps.customer.forms import CreateCustomerForm
+from .constant import Message
 from .models import (
     Customer,
     CustomerGroup,
@@ -6,6 +10,26 @@ from .models import (
     Address,
     Region,
 )
+
+
+class CreateCustomerMixin(Output):
+    form = CreateCustomerForm
+    # [TODO:] cls.form(data) --> where it's come form
+    #  Error handling --> how to add more
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            form = cls.form(data=kwargs)
+            if form.errors:
+                return cls(success=False, error=form.errors)
+            if form.is_valid():
+                form.save()
+                return cls(success=True)
+        except ValidationError:
+            return cls(success=False, error=Message.INVALID_INPUT)
+        except Exception:
+            return traceback.print_exc()
 
 
 class UpdateCustomerMixin(Output):
