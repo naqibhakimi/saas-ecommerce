@@ -2,140 +2,76 @@ import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
 
 
-from graphene_django.forms.mutation import DjangoModelFormMutation, ErrorType
-from apps.core.mutations import AbstractMutation
-
-from .types import CustomerNode
-
-from .forms import (
-    CreateCustomerForm,
-    UpdateCustomerForm,
-    DeleteCustomerForm,
-    CreateCustomerGroupForm,
-    UpdateCustomerGroupForm,
-    DeleteCustomerGroupForm,
-    CreateCountryForm,
-    UpdateCountryForm,
-    DeleteCountryForm,
-    CreateAddressForm,
-    UpdateAddressForm,
-    DeleteAddressForm,
-    CreateRegionForm,
-    UpdateRegionForm,
-    DeleteRegionForm,
+from apps.customer.mixins import (
+    CreateCustomerMixin,
+    CreateCustomerGroupMixin,
+    CreateCountryMixin,
+    CreateAddressMixin,
+    CreateRegionMixin
 )
+from apps.customer.mixins import UpdateCustomerMixin
+from apps.customer.types import (
+    CustomerNode,
+    CustomerGroupNode,
+    CountryNode,
+    AddressNode,
+    RegionNode,
+)
+from apps.customer.forms import DeleteCustomerForm
+from apps.customer.mixins import DeleteCustomerMixin
 
 
-class CreateCustomer(DjangoModelFormMutation):
-    class Meta:
-        form_class = CreateCustomerForm
+class CreateCustomer(DynamicInputMixin, RelayMutationMixin, CreateCustomerMixin, graphene.ClientIDMutation):
+    __doc__ = CreateCustomerMixin.__doc__
+    # [FIXME: This]
+    # _inputs = {'customer': CustomerNode}
+    _inputs = {"billing_address": graphene.String, "phone": graphene.String, "has_account": graphene.String,
+               "password_hash": graphene.String, "orders": graphene.String, "groups": graphene.String, "metadata": graphene.String}
+    _required_inputs = {"email": graphene.String,
+                        "first_name": graphene.String, "last_name": graphene.String, }
 
 
-class UpdateCustomer(DjangoModelFormMutation):
-    class Meta:
-        form_class = UpdateCustomerForm
+class UpdateCustomer(DynamicInputMixin, RelayMutationMixin, UpdateCustomerMixin, graphene.ClientIDMutation):
+    # [FIXME:]
+    # _inputs = {'customer': CustomerNode}
+    _inputs = {"billing_address": graphene.String, "phone": graphene.String, "has_account": graphene.String,
+               "password_hash": graphene.String, "order": graphene.String, "groups": graphene.String, "metadata": graphene.JSONString}
 
 
-class DeleteCustomer(DjangoModelFormMutation):
-    class Meta:
-        form_class = DeleteCustomerForm
+class DeleteCustomer(DynamicInputMixin, RelayMutationMixin, DeleteCustomerMixin, graphene.ClientIDMutation):
+    _required_inputs = {"id": graphene.ID}
 
 
-class CreateCustomerGroup(DjangoModelFormMutation):
-    class Meta:
-        form_class = CreateCustomerGroupForm
+class CreateCustomerGroup(DynamicInputMixin, RelayMutationMixin, CreateCustomerGroupMixin, graphene.ClientIDMutation):
+    _inputs = {"CustomerGroup": CustomerGroupNode}
 
 
-class UpdateCustomerGroup(DjangoModelFormMutation):
-    class Meta:
-        form_class = UpdateCustomerGroupForm
+class CreateCountry(DynamicInputMixin, RelayMutationMixin, CreateCountryMixin, graphene.ClientIDMutation):
+    _inputs = {"Country": CountryNode}
 
 
-class DeleteCustomerGroup(DjangoModelFormMutation):
-    class Meta:
-        form_class = DeleteCustomerGroupForm
+class CreateAddress(DynamicInputMixin, RelayMutationMixin, CreateAddressMixin, graphene.ClientIDMutation):
+    _inputs = {"Address": AddressNode}
 
 
-class CreateCountry(DjangoModelFormMutation):
-    class Meta:
-        form_class = CreateCountryForm
-
-
-class UpdateCountry(DjangoModelFormMutation):
-    class Meta:
-        form_class = UpdateCountryForm
-
-
-class DeleteCountry(DjangoModelFormMutation):
-    class Meta:
-        form_class = DeleteCountryForm
-
-
-class CreateAddress(DjangoModelFormMutation):
-    class Meta:
-        form_class = CreateAddressForm
-
-
-class UpdateAddress(DjangoModelFormMutation):
-    class Meta:
-        form_class = UpdateAddressForm
-
-
-class DeleteAddress(DjangoModelFormMutation):
-    class Meta:
-        form_class = DeleteAddressForm
-
-
-class CreateRegion(DjangoModelFormMutation):
-    class Meta:
-        form_class = CreateRegionForm
-
-
-class UpdateRegion(DjangoModelFormMutation):
-    class Meta:
-        form_class = UpdateRegionForm
-
-
-class DeleteRegion(DjangoModelFormMutation):
-    class Meta:
-        form_class = DeleteRegionForm
-
-
-# class UpdateCustomer(UpdateCustomerMixin, RelayMutationMixin, DynamicInputMixin, graphene.ClientIDMutation):
-#     _inputs = {'customer': CustomerNode}
-#     _inputs = {"id": graphene.ID , "email": graphene.String , "first_name": graphene.String }
-
-#     _required_inputs = {}
-
-
-# email
-# first_name
-# last_name
-# billing_address
-# phone
-# has_account
-# password_hash
-# orders
-# groups
-# metadata
-
-
-class Query(object):
-    pass
+class CreateRegion(DynamicInputMixin, RelayMutationMixin, CreateRegionMixin, graphene.ClientIDMutation):
+    _inputs = {"Region": RegionNode}
 
 
 class Mutation(object):
     create_customer = CreateCustomer.Field()
+    update_customer = UpdateCustomer.Field()
     delete_customer = DeleteCustomer.Field()
+    # delete_customer = DeleteCustomer.Field()
     create_customerGroup = CreateCustomerGroup.Field()
-    update_customerGroup = UpdateCustomerGroup.Field()
-    delete_customerGroup = DeleteCustomerGroup.Field()
+    # update_customerGroup = UpdateCustomerGroup.Field()
+    # delete_customerGroup = DeleteCustomerGroup.Field()
     create_country = CreateCountry.Field()
-    update_country = UpdateCountry.Field()
-    delete_country = DeleteCountry.Field()
+    # update_country = UpdateCountry.Field()
+    # delete_country = DeleteCountry.Field()
     create_address = CreateAddress.Field()
-    update_address = UpdateAddress.Field()
-    delete_address = DeleteAddress.Field()
+    # update_address = UpdateAddress.Field()
+    # delete_address = DeleteAddress.Field()
     create_region = CreateRegion.Field()
-    update_region = UpdateRegion.Field()
-    delete_region = DeleteRegion.Field()
+    # update_region = UpdateRegion.Field()
+    # delete_region = DeleteRegion.Field()
