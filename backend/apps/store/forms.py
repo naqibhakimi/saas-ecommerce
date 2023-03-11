@@ -9,6 +9,7 @@ class CreateNoteForm(BaseForm):
 
 
 class UpdateNoteForm(BaseForm):
+    # [TODO:] how it's work?
     def save(self, commit: bool = ...):
         Note._default_manager.by_author(self.user)
         return super().save(commit)
