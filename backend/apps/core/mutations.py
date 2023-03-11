@@ -1,3 +1,4 @@
+import traceback
 from apps.core.types import ExpectedErrorType
 import graphene
 from graphene_django.forms.mutation import DjangoModelFormMutation, ErrorType
@@ -21,7 +22,10 @@ class RelayMutationMixin:
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **kwargs):
-        return cls.resolve_mutation(root, info, **kwargs)
+        try:
+            return cls.resolve_mutation(root, info, **kwargs)
+        except Exception as e:
+             cls(success=False, errors=str(e))
 
     @classmethod
     def parent_resolve(cls, root, info, **kwargs):

@@ -52,12 +52,6 @@ class Customer(BaseModel):
         null=True,
         help_text="Hashed password of the customer, not required.",
     )
-    orders = models.ForeignKey(
-        "order.Order",
-        on_delete=models.CASCADE,
-        related_name="+",
-        help_text="Orders placed by the customer.",
-    )
     groups = models.ManyToManyField(
         "CustomerGroup", related_name="+", help_text="Groups the customer belongs to."
     )
