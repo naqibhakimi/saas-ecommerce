@@ -10,6 +10,7 @@ from apps.customer.forms import (
     CreateAddressForm,
     CreateRegionForm,
 )
+from .forms import UpdateCustomerForm
 from .constant import Message
 from .models import (
     Customer,
@@ -39,13 +40,22 @@ class CreateCustomerMixin(Output):
 
 
 class UpdateCustomerMixin(Output):
+    form = UpdateCustomerForm
+
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        id = kwargs.pop("id", None)
-        Customer.objects.filter(id=id).update(**kwargs)
-        return cls(success=True, errors="")
+        try:
+            form = cls.form(data=kwargs.get('customer'))
 
-
+            if form.is_valid():
+                form.save()
+                return cls(success=True, errors=form.errors)
+            return cls(success=False, errors=form.errors)
+        except ValidationError as err:
+             return cls(success=False, errors=form.errors)
+        except ValueError as err:
+             return cls(success=False, errors=form.errors)
+        
 class DeleteCustomerMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):

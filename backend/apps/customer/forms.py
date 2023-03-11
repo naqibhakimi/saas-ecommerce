@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import fields
-from django.forms.models import ModelForm
+from apps.core.forms import BaseForm
+from apps.core.forms import get_fields
 
 from .models import (
     Customer,
@@ -11,7 +12,7 @@ from .models import (
 )
 
 
-class CreateCustomerForm(forms.ModelForm):
+class CreateCustomerForm(BaseForm):
     class Meta:
         model = Customer
         fields = (
@@ -21,37 +22,47 @@ class CreateCustomerForm(forms.ModelForm):
             "billing_address",
             "phone",
             "has_account",
-            "password_hash",
-            "orders",
-            "groups",
             "metadata",
         )
 
 
-class UpdateCustomerForm(forms.ModelForm):
+class UpdateCustomerForm(BaseForm):
     class Meta:
         model = Customer
         fields = (
+            "id",
             "email",
             "first_name",
             "last_name",
             # "billing_address",
             "phone",
             "has_account",
-            "password_hash",
             # "orders",
             # "groups",
             # "metadata",
         )
+    # def __init__(self, *args, **kwargs):
+    #     data = kwargs.get("data", {})
+    #     data.update(get_fields(self, data))
+    #     print(args, kwargs)
+
+    #     if not data:
+    #         super().__init__(*args, **kwargs)
+
+    #     if data.get('id') and not data:
+    #         instace = self._meta.model.objects.get(id=data.get('id'))
+    #         super().__init__(data=data, instace=instace,  *args, **kwargs)
+    #     else:
+    #         super().__init__(data=data, *args, **kwargs)
 
 
-class DeleteCustomerForm(forms.ModelForm):
+class DeleteCustomerForm(BaseForm):
     class Meta:
         model= Customer
         fields = ("id",)
 
 
-class CreateCustomerGroupForm(forms.ModelForm):
+class CreateCustomerGroupForm(BaseForm):
     class Meta:
         model = CustomerGroup
         fields = (
@@ -62,7 +73,7 @@ class CreateCustomerGroupForm(forms.ModelForm):
         )
 
 
-class UpdateCustomerGroupForm(forms.ModelForm):
+class UpdateCustomerGroupForm(BaseForm):
     class Meta:
         model = CustomerGroup
         fields = (
@@ -73,13 +84,13 @@ class UpdateCustomerGroupForm(forms.ModelForm):
         )
 
 
-class DeleteCustomerGroupForm(forms.ModelForm):
+class DeleteCustomerGroupForm(BaseForm):
     class Meta:
         model = CustomerGroup
         fields = ("id",)
 
 
-class CreateCountryForm(forms.ModelForm):
+class CreateCountryForm(BaseForm):
     class Meta:
         model = Country
         fields = (
@@ -92,7 +103,7 @@ class CreateCountryForm(forms.ModelForm):
         )
 
 
-class UpdateCountryForm(forms.ModelForm):
+class UpdateCountryForm(BaseForm):
     class Meta:
         model = Country
         fields = (
@@ -105,13 +116,13 @@ class UpdateCountryForm(forms.ModelForm):
         )
 
 
-class DeleteCountryForm(forms.ModelForm):
+class DeleteCountryForm(BaseForm):
     class Meta:
         model = Country
         fields = ("id",)
 
 
-class CreateAddressForm(forms.ModelForm):
+class CreateAddressForm(BaseForm):
     class Meta:
         model = Address
         fields = (
@@ -128,7 +139,7 @@ class CreateAddressForm(forms.ModelForm):
         )
 
 
-class UpdateAddressForm(forms.ModelForm):
+class UpdateAddressForm(BaseForm):
     class Meta:
         model = Address
         fields = (
@@ -145,13 +156,13 @@ class UpdateAddressForm(forms.ModelForm):
         )
 
 
-class DeleteAddressForm(forms.ModelForm):
+class DeleteAddressForm(BaseForm):
     class Meta:
         model = Address
         fields = ("id",)
 
 
-class CreateRegionForm(forms.ModelForm):
+class CreateRegionForm(BaseForm):
     class Meta:
         model = Region
         fields = (
@@ -161,16 +172,13 @@ class CreateRegionForm(forms.ModelForm):
             "tax_code",
             "gift_cards_taxable",
             "automatic_taxes",
-            "countries",
             "tax_provider",
-            "payment_providers",
-            "fulfillment_providers",
             "metadata",
             "includes_tax",
         )
 
 
-class UpdateRegionForm(forms.ModelForm):
+class UpdateRegionForm(BaseForm):
     class Meta:
         model = Region
         fields = (
@@ -180,16 +188,13 @@ class UpdateRegionForm(forms.ModelForm):
             "tax_code",
             "gift_cards_taxable",
             "automatic_taxes",
-            "countries",
             "tax_provider",
-            "payment_providers",
-            "fulfillment_providers",
             "metadata",
             "includes_tax",
         )
 
 
-class DeleteRegionForm(forms.ModelForm):
+class DeleteRegionForm(BaseForm):
     class Meta:
         model = Region
         fields = ("id",)

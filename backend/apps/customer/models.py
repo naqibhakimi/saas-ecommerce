@@ -52,9 +52,7 @@ class Customer(BaseModel):
         null=True,
         help_text="Hashed password of the customer, not required.",
     )
-    groups = models.ManyToManyField(
-        "CustomerGroup", related_name="+", help_text="Groups the customer belongs to."
-    )
+
     metadata = models.JSONField(
         blank=True,
         null=True,
@@ -113,12 +111,11 @@ class Region(BaseModel):
     tax_code = models.CharField(max_length=100, null=True)
     gift_cards_taxable = models.BooleanField(default=True)
     automatic_taxes = models.BooleanField(default=True)
-    countries = models.ManyToManyField(Country, related_name="+")
     tax_provider = models.ForeignKey(TaxProvider, on_delete=models.SET_NULL, null=True)
-    payment_providers = models.ManyToManyField(PaymentProvider, related_name="+")
-    fulfillment_providers = models.ManyToManyField(
-        FulfillmentProvider, related_name="+"
-    )
+    # payment_providers = models.ManyToManyField(PaymentProvider, related_name="+")
+    # fulfillment_providers = models.ManyToManyField(
+    #     FulfillmentProvider, related_name="+"
+    # )
     metadata = models.JSONField(null=True)
     includes_tax = models.BooleanField(default=False)
 

@@ -2,10 +2,9 @@ import graphene
 
 
 class CustomerUpdateInput(graphene.InputObjectType):
-    billing_address = graphene.String(required = True)
-    hone =  graphene.String()
-    as_account =  graphene.String()
-    assword_hash =  graphene.String()
-    rder =  graphene.String()
-    roups =  graphene.String()
+    id = graphene.ID(required = True)
+    email = graphene.String(required = True)
+    billing_address = graphene.ID(required = True)
+    phone =  graphene.String()
+    has_account =  graphene.Boolean()
     metadata =  graphene.JSONString()
