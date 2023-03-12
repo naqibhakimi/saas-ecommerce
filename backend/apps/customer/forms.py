@@ -41,19 +41,6 @@ class UpdateCustomerForm(BaseForm):
             # "groups",
             # "metadata",
         )
-    # def __init__(self, *args, **kwargs):
-    #     data = kwargs.get("data", {})
-    #     data.update(get_fields(self, data))
-    #     print(args, kwargs)
-
-    #     if not data:
-    #         super().__init__(*args, **kwargs)
-
-    #     if data.get('id') and not data:
-    #         instace = self._meta.model.objects.get(id=data.get('id'))
-    #         super().__init__(data=data, instace=instace,  *args, **kwargs)
-    #     else:
-    #         super().__init__(data=data, *args, **kwargs)
 
 
 class DeleteCustomerForm(BaseForm):
