@@ -2,7 +2,7 @@ import graphene
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
 from .forms import DeleteCustomerForm
-from .inputs import CustomerUpdateInput
+from .inputs import CreateCustomerInput, UpdateCustomerGroupInput, UpdateCustomerInput
 from .mixins import (CreateAddressMixin, CreateCountryMixin,
                      CreateCustomerGroupMixin, CreateCustomerMixin,
                      CreateRegionMixin, DeleteCustomerMixin,
@@ -10,25 +10,26 @@ from .mixins import (CreateAddressMixin, CreateCountryMixin,
 from .types import (AddressNode, CountryNode, CustomerGroupNode, CustomerNode,
                     RegionNode)
 
-# class CreateCustomer(DynamicInputMixin, RelayMutationMixin, CreateCustomerMixin, graphene.ClientIDMutation):
-#     __doc__ = CreateCustomerMixin.__doc__
-#     # [FIXME: This]
-#     # _inputs = {'customer': CustomerNode}
-#     _inputs = {"customer": CustomerUpdateInput}
-#     _required_inputs = {"customer": CustomerUpdateInput}
+
+class CreateCustomer(DynamicInputMixin, RelayMutationMixin, CreateCustomerMixin, graphene.ClientIDMutation):
+    __doc__ = CreateCustomerMixin.__doc__
+    # [FIXME: This]
+    # _inputs = {'customer': CustomerNode}
+    _inputs = {}
+    _required_inputs = {"customer": CreateCustomerInput}
 
 
 class UpdateCustomer(DynamicInputMixin, RelayMutationMixin, UpdateCustomerMixin, graphene.ClientIDMutation):
     _inputs = {}
-    _required_inputs =  {"customer": CustomerUpdateInput}
+    _required_inputs = {"customer": UpdateCustomerInput}
 
 
-# class DeleteCustomer(DynamicInputMixin, RelayMutationMixin, DeleteCustomerMixin, graphene.ClientIDMutation):
-#     _required_inputs = {"id": graphene.ID}
+class DeleteCustomer(DynamicInputMixin, RelayMutationMixin, DeleteCustomerMixin, graphene.ClientIDMutation):
+    _required_inputs = {"id": graphene.ID}
 
 
-# class CreateCustomerGroup(DynamicInputMixin, RelayMutationMixin, CreateCustomerGroupMixin, graphene.ClientIDMutation):
-#     _inputs = {"CustomerGroup": graphene.Field(CustomerGroupNode)}
+class CreateCustomerGroup(DynamicInputMixin, RelayMutationMixin, CreateCustomerGroupMixin, graphene.ClientIDMutation):
+    _inputs = {"CustomerGroup": UpdateCustomerGroupInput}
 
 
 # class CreateCountry(DynamicInputMixin, RelayMutationMixin, CreateCountryMixin, graphene.ClientIDMutation):
