@@ -1,4 +1,3 @@
-import traceback
 from django.forms import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from apps.core.mutations import Output
@@ -10,6 +9,7 @@ from apps.customer.forms import (
     CreateAddressForm,
     CreateRegionForm,
 )
+from apps.core.utils import get_fields
 from .forms import UpdateCustomerForm
 from .constant import Message
 from .models import (
@@ -43,7 +43,7 @@ class UpdateCustomerMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
-            form = cls.form(data=kwargs.get('customer'))
+            form = cls.form(**get_fields(cls.form, kwargs.get('customer')))
 
             if form.is_valid():
                 form.save()

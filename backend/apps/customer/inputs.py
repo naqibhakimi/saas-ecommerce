@@ -1,6 +1,5 @@
 import graphene
 
-
 class CreateCustomerInput(graphene.InputObjectType):
     email = graphene.String(required=True)
     first_name = graphene.String(required=True)

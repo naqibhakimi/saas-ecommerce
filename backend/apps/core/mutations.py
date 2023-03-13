@@ -25,8 +25,8 @@ class RelayMutationMixin:
         try:
             return cls.resolve_mutation(root, info, **kwargs)
         except Exception as e:
-             traceback.print_exc(e)
-             return cls(success=False, errors=str(e))
+             print(traceback.print_exc())
+             return cls(success=False, errors={})
 
     @classmethod
     def parent_resolve(cls, root, info, **kwargs):
@@ -55,7 +55,7 @@ class DynamicInputMixin:
                     cls._meta.arguments["input"]._meta.fields.update(
                         {key: graphene.InputField(getattr(graphene, cls._inputs[key]))}
                     )
-                except:
+                except Exception:
                     cls._meta.arguments["input"]._meta.fields.update(
                         {key: graphene.InputField(cls._inputs[key])}
                     )
