@@ -23,8 +23,6 @@ from .models import (
 
 class CreateCustomerMixin(Output):
     form = CreateCustomerForm
-    # [TODO:] cls.form(data) --> where it's come form
-    #  Error handling --> how to add more
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -52,10 +50,11 @@ class UpdateCustomerMixin(Output):
                 return cls(success=True, errors=form.errors)
             return cls(success=False, errors=form.errors)
         except ValidationError as err:
-             return cls(success=False, errors=form.errors)
+            return cls(success=False, errors=form.errors)
         except ValueError as err:
-             return cls(success=False, errors=form.errors)
-        
+            return cls(success=False, errors=form.errors)
+
+
 class DeleteCustomerMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
