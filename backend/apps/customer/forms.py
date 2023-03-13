@@ -1,7 +1,6 @@
 from django import forms
 from django.forms import fields
 from apps.core.forms import BaseForm
-from apps.core.forms import get_fields
 
 from .models import (
     Customer,
@@ -27,6 +26,8 @@ class CreateCustomerForm(BaseForm):
 
 
 class UpdateCustomerForm(BaseForm):
+    email = forms.EmailField(required=False)
+    
     class Meta:
         model = Customer
         fields = (
@@ -34,7 +35,7 @@ class UpdateCustomerForm(BaseForm):
             "email",
             "first_name",
             "last_name",
-            # "billing_address",
+            "billing_address",
             "phone",
             "has_account",
             # "orders",

@@ -1,25 +1,24 @@
 import graphene
 
-class CreateCustomerInput(graphene.InputObjectType):
+class CreateCustomerInputField(graphene.InputObjectType):
     email = graphene.String(required=True)
     first_name = graphene.String(required=True)
     last_name = graphene.String(required=True)
-    billing_address = graphene.ID(required=True)
     phone = graphene.String()
     has_account = graphene.Boolean()
     metadata = graphene.JSONString()
 
 
-class UpdateCustomerInput(graphene.InputObjectType):
+class UpdateCustomerInputField(graphene.InputObjectType):
     id = graphene.ID(required=True)
-    email = graphene.String(required=True)
-    billing_address = graphene.ID(required=True)
+    email = graphene.String()
+    billing_address = graphene.ID()
     phone = graphene.String()
     has_account = graphene.Boolean()
     metadata = graphene.JSONString()
 
 
-class CreateCustomerGroupInput(graphene.InputObjectType):
+class CreateCustomerGroupInputField(graphene.InputObjectType):
     name = graphene.String(required=True)
     customers = graphene.String()
     price_lists = graphene.String()
@@ -27,7 +26,7 @@ class CreateCustomerGroupInput(graphene.InputObjectType):
     deleted_at = graphene.String()
 
 
-class UpdateCustomerGroupInput(graphene.InputObjectType):
+class UpdateCustomerGroupInputField(graphene.InputObjectType):
     id = graphene.ID(required=True)
     name = graphene.String(required=True)
     customers = graphene.String()
@@ -36,7 +35,7 @@ class UpdateCustomerGroupInput(graphene.InputObjectType):
     deleted_at = graphene.String()
 
 
-class CreateCountryInput(graphene.InputObjectType):
+class CreateCountryInputField(graphene.InputObjectType):
     iso_2 = graphene.String()
     iso_3 = graphene.String()
     num_code = graphene.String()
@@ -45,7 +44,7 @@ class CreateCountryInput(graphene.InputObjectType):
     region = graphene.ID()
 
 
-class UpdateCountryInput(graphene.InputObjectType):
+class UpdateCountryInputField(graphene.InputObjectType):
     id = graphene.ID(required=True)
     iso_2 = graphene.String()
     iso_3 = graphene.String()
@@ -55,7 +54,7 @@ class UpdateCountryInput(graphene.InputObjectType):
     region = graphene.ID()
 
 
-class CreateAddressInput(graphene.InputObjectType):
+class CreateAddressInputField(graphene.InputObjectType):
     company = graphene.String()
     address_1 = graphene.String(required=True)
     address_2 = graphene.String()
@@ -68,7 +67,7 @@ class CreateAddressInput(graphene.InputObjectType):
     metadata = graphene.String()
 
 
-class UpdateAddressInput(graphene.InputObjectType):
+class UpdateAddressInputField(graphene.InputObjectType):
     id = graphene.ID(required=True)
     company = graphene.String()
     address_1 = graphene.String(required=True)
@@ -82,7 +81,7 @@ class UpdateAddressInput(graphene.InputObjectType):
     metadata = graphene.String()
 
 
-class CreateRegionInput(graphene.InputObjectType):
+class CreateRegionInputField(graphene.InputObjectType):
     name = graphene.String(required=True)
     currency = graphene.String(required=True)
     tax_rates = graphene.String()
@@ -94,7 +93,7 @@ class CreateRegionInput(graphene.InputObjectType):
     includes_tax = graphene.String()
 
 
-class UpdateRegionInput(graphene.InputObjectType):
+class UpdateRegionInputField(graphene.InputObjectType):
     name = graphene.String(required=True)
     currency = graphene.String(required=True)
     tax_rates = graphene.String()

@@ -9,7 +9,6 @@ from apps.customer.forms import (
     CreateAddressForm,
     CreateRegionForm,
 )
-from apps.core.utils import get_fields
 from .forms import UpdateCustomerForm
 from .constant import Message
 from .models import (
@@ -27,14 +26,14 @@ class CreateCustomerMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
-            form = cls.form(data=kwargs)
+            form = cls.form(data=kwargs.get('customer'))
             if form.errors:
-                return cls(success=False, error=form.errors)
+                return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, error=Message.CUSTOMER_CREATED)
+                return cls(success=True, errors=Message.CUSTOMER_CREATED)
         except ValidationError:
-            return cls(success=False, error=Message.INVALID_INPUT)
+            return cls(success=False, errors=Message.INVALID_INPUT)
 
 
 class UpdateCustomerMixin(Output):
@@ -42,16 +41,21 @@ class UpdateCustomerMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
+        customer_data = kwargs.get('customer')
+
         try:
-            form = cls.form(**get_fields(cls.form, kwargs.get('customer')))
+            form = cls.form(data=customer_data,
+                            instance=Customer.objects.get(id=customer_data.pop('id')))
 
             if form.is_valid():
-                form.save()
+                instance = form.save(commit=False)
+                print(instance.billing_address)
+                instance.save(update_fields=customer_data.keys())
+
                 return cls(success=True, errors=form.errors)
+
             return cls(success=False, errors=form.errors)
-        except ValidationError as err:
-            return cls(success=False, errors=form.errors)
-        except ValueError as err:
+        except (ValidationError, ValueError) as err:
             return cls(success=False, errors=form.errors)
 
 

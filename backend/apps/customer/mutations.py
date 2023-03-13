@@ -2,7 +2,7 @@ import graphene
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
 from .forms import DeleteCustomerForm
-from .inputs import CreateCustomerInput, UpdateCustomerGroupInput, UpdateCustomerInput
+from .inputs import CreateCustomerInputField, UpdateCustomerGroupInputField, UpdateCustomerInputField
 from .mixins import (CreateAddressMixin, CreateCountryMixin,
                      CreateCustomerGroupMixin, CreateCustomerMixin,
                      CreateRegionMixin, DeleteCustomerMixin,
@@ -13,15 +13,13 @@ from .types import (AddressNode, CountryNode, CustomerGroupNode, CustomerNode,
 
 class CreateCustomer(DynamicInputMixin, RelayMutationMixin, CreateCustomerMixin, graphene.ClientIDMutation):
     __doc__ = CreateCustomerMixin.__doc__
-    # [FIXME: This]
-    # _inputs = {'customer': CustomerNode}
     _inputs = {}
-    _required_inputs = {"customer": CreateCustomerInput}
+    _required_inputs = {"customer": CreateCustomerInputField}
 
 
 class UpdateCustomer(DynamicInputMixin, RelayMutationMixin, UpdateCustomerMixin, graphene.ClientIDMutation):
     _inputs = {}
-    _required_inputs = {"customer": UpdateCustomerInput}
+    _required_inputs = {"customer": UpdateCustomerInputField}
 
 
 class DeleteCustomer(DynamicInputMixin, RelayMutationMixin, DeleteCustomerMixin, graphene.ClientIDMutation):
@@ -29,7 +27,7 @@ class DeleteCustomer(DynamicInputMixin, RelayMutationMixin, DeleteCustomerMixin,
 
 
 class CreateCustomerGroup(DynamicInputMixin, RelayMutationMixin, CreateCustomerGroupMixin, graphene.ClientIDMutation):
-    _inputs = {"CustomerGroup": UpdateCustomerGroupInput}
+    _inputs = {"CustomerGroup": UpdateCustomerGroupInputField}
 
 
 # class CreateCountry(DynamicInputMixin, RelayMutationMixin, CreateCountryMixin, graphene.ClientIDMutation):
@@ -45,9 +43,9 @@ class CreateCustomerGroup(DynamicInputMixin, RelayMutationMixin, CreateCustomerG
 
 
 class Mutation(object):
-    # create_customer = CreateCustomer.Field()
+    create_customer = CreateCustomer.Field()
     update_customer = UpdateCustomer.Field()
-    # delete_customer = DeleteCustomer.Field()
+    delete_customer = DeleteCustomer.Field()
     # delete_customer = DeleteCustomer.Field()
     # create_customerGroup = CreateCustomerGroup.Field()
     # update_customerGroup = UpdateCustomerGroup.Field()

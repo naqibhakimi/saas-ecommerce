@@ -1,10 +1,10 @@
-from django.core.validators import EmailValidator
 from django.db import models
 
 from apps.core.models import BaseModel
 from apps.inventory.models import FulfillmentProvider
 from apps.payment.models import Currency, PaymentProvider
 from apps.tax.models import TaxProvider, TaxRate
+from apps.customer.querysets import CustomerQuerSet
 
 
 class Customer(BaseModel):
@@ -13,7 +13,6 @@ class Customer(BaseModel):
     """
 
     email = models.EmailField(
-        validators=[EmailValidator()],
         unique=True,
         help_text="Email of the customer, must be unique.",
     )
@@ -31,7 +30,7 @@ class Customer(BaseModel):
     )
     billing_address = models.OneToOneField(
         "Address",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="+",
@@ -58,6 +57,8 @@ class Customer(BaseModel):
         null=True,
         help_text="Metadata related to the customer, not required.",
     )
+
+    objects = CustomerQuerSet.as_manager()
 
     def __str__(self):
         """
@@ -94,11 +95,11 @@ class Address(BaseModel):
     address_2 = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     country_code = models.CharField(max_length=255, null=True, blank=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="+")
+    country = models.ForeignKey(Country, on_delete=models.CASCADE,null=True, blank=True, related_name="+")
     province = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
-    metadata = models.JSONField()
+    metadata = models.JSONField(default={})
 
 
 class Region(BaseModel):

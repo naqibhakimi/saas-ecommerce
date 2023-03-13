@@ -1,8 +1,11 @@
+import contextlib
 import traceback
 from apps.core.types import ExpectedErrorType
 import graphene
 from graphene_django.forms.mutation import DjangoModelFormMutation, ErrorType
 from graphql_relay.node.node import from_global_id
+
+from apps.core.utils import to_database_id
 
 
 class Output:
@@ -21,7 +24,16 @@ class RelayMutationMixin:
     """
 
     @classmethod
+    def convert_to_database_id(cls, kwargs):
+        for key, value in kwargs.items():
+            with contextlib.suppress(Exception):
+                if isinstance(value, dict):
+                    cls.convert_to_database_id(value)
+                kwargs[key] = to_database_id(value)
+
+    @classmethod
     def mutate_and_get_payload(cls, root, info, **kwargs):
+        cls.convert_to_database_id(kwargs)
         try:
             return cls.resolve_mutation(root, info, **kwargs)
         except Exception as e:
