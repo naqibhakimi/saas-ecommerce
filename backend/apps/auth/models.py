@@ -16,15 +16,14 @@ from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from graphql_jwt.shortcuts import get_token, get_user_by_token
 
+from apps.core.background_tasks import BackgroundTask
+
 from .constants import TokenAction
 from .exceptions import EmailAlreadyInUse, UserAlreadyVerified
 from .signals import user_verified
 from .utils import get_token_payload
 
 # from graphql_jwt.shortcuts import get_token
-
-
-
 
 
 class Oauth(BaseModel):
@@ -130,7 +129,9 @@ class SEUser(BaseModel, AbstractBaseUser, PermissionsMixin):
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
-        send_mail(subject, message, from_email, [self.email], **kwargs)
+        task = BackgroundTask(send_mail, subject, message,
+                              from_email, [self.email], **kwargs)
+        task()
 
 
 class UserStatus(BaseModel):
@@ -149,19 +150,19 @@ class UserStatus(BaseModel):
         return f"{self.user} - status"
 
     def send(self, subject, template, context, recipient_list=None):
-        print(template)
+        # print(template)
         # _subject = render_to_string(subject, context).replace("\n", " ").strip()
         html_message = render_to_string(template, context)
         message = strip_tags(html_message)
 
-        return send_mail(
-            subject=subject,
-            from_email=settings.AUTH.EMAIL_FROM,
-            message=message,
-            html_message=html_message,
-            recipient_list=(recipient_list or [getattr(self.user, SEUser.EMAIL_FIELD)]),
-            fail_silently=False,
-        )
+        task = BackgroundTask(send_mail,  subject=subject,
+                              from_email=settings.AUTH.EMAIL_FROM,
+                              message=message,
+                              html_message=html_message,
+                              recipient_list=(recipient_list or [
+                                              getattr(self.user, SEUser.EMAIL_FIELD)]),
+                              fail_silently=False,)
+        task()
 
     def get_email_context(self, info, path, action, **kwargs):
         token = get_token(self.user, action, **kwargs)
@@ -312,6 +313,6 @@ class UserStatus(BaseModel):
             raise WrongUsage
         with transaction.atomic():
             self.user.email, self.user.status.secondary_email = self.user.status.secondary_email, self.user.email
-            
+
             self.user.save(update_fields=[SEUser.USERNAME_FIELD])
             self.user.status.save(update_fields=['secondary_email'])
