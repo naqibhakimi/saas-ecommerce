@@ -5,7 +5,7 @@ import graphene
 from graphene_django.forms.mutation import DjangoModelFormMutation, ErrorType
 from graphql_relay.node.node import from_global_id
 
-from apps.core.utils import to_database_id
+from apps.core.utils.graphql import to_database_id
 
 
 class Output:
