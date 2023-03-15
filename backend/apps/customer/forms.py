@@ -27,7 +27,7 @@ class CreateCustomerForm(BaseForm):
 
 class UpdateCustomerForm(BaseForm):
     email = forms.EmailField(required=False)
-    
+
     class Meta:
         model = Customer
         fields = (
@@ -46,7 +46,7 @@ class UpdateCustomerForm(BaseForm):
 
 class DeleteCustomerForm(BaseForm):
     class Meta:
-        model= Customer
+        model = Customer
         fields = ("id",)
 
 
@@ -56,7 +56,7 @@ class CreateCustomerGroupForm(BaseForm):
         fields = (
             "name",
             "customers",
-            "price_lists",
+            # "price_lists",
             "metadata",
         )
 
@@ -67,7 +67,7 @@ class UpdateCustomerGroupForm(BaseForm):
         fields = (
             "name",
             "customers",
-            "price_lists",
+            # "price_lists",
             "metadata",
         )
 

@@ -14,6 +14,10 @@ class Message:
     CUSTOMER_CREATED = [
         {"message": _("Customer created successfully"), "code": "customer_created"}
     ]
+    CUSTOMER_GROUP_CREATED = [
+        {"message": _("Customer Group created successfully"),
+         "code": "created_customer_group"}
+    ]
     COUNTRY_CREATED = [
         {"message": _("Country created successfully"), "code": "country_created"}
     ]
