@@ -21,7 +21,7 @@ class UpdateCustomerInputField(graphene.InputObjectType):
 
 class CreateCustomerGroupInputField(graphene.InputObjectType):
     name = graphene.String(required=True)
-    customers = graphene.String()
+    customers = graphene.List(graphene.ID)
     # price_lists = graphene.String()
     metadata = graphene.String()
     # deleted_at = graphene.String()

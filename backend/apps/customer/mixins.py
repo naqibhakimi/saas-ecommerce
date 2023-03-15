@@ -9,6 +9,7 @@ from apps.customer.forms import (
     CreateAddressForm,
     CreateRegionForm,
 )
+from apps.core.background_tasks import BackgroundTask
 from .forms import UpdateCustomerForm
 from .constant import Message
 from .models import (
@@ -79,15 +80,19 @@ class DeleteCustomerGroupMixin(Output):
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.CustomerGroup_NOT_FOUND)
 
-
+def heavy_calc(arg):
+    for i in range(arg):
+        print(i)
 class CreateCustomerGroupMixin(Output):
     form = CreateCustomerGroupForm
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        print(kwargs)
+        bg_tasks = BackgroundTask(heavy_calc, 400000)
+        bg_tasks()
         try:
-            form = cls.form(data=kwargs.get("customer_group"))
+            
+            form = cls.form(data=kwargs.get("CustomerGroup", {}))
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
@@ -153,22 +158,6 @@ class UpdateCountryMixin(Output):
         id = kwargs.pop("id", None)
         Country.objects.filter(id=id).update(**kwargs)
         return cls(success=True, errors="")
-
-
-class CreateCustomerGroupMixin(Output):
-    form = CreateCustomerGroupForm
-
-    @classmethod
-    def resolve_mutation(cls, root, info, **kwargs):
-        try:
-            form = cls.form(data=kwargs)
-            if form.errors:
-                return cls(success=False, error=form.errors)
-            if form.is_valid():
-                form.save()
-                return cls(success=True, error=Message.CUSTOMER_CREATED)
-        except ValidationError as err:
-            return cls(success=True, error=Message.CUSTOMER_CREATED)
 
 
 class CreateAddressMixin(Output):

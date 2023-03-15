@@ -29,6 +29,9 @@ class RelayMutationMixin:
             with contextlib.suppress(Exception):
                 if isinstance(value, dict):
                     cls.convert_to_database_id(value)
+                elif isinstance(value, list):
+                    for i, k in enumerate(value):
+                        value[i] = to_database_id(k)
                 kwargs[key] = to_database_id(value)
 
     @classmethod
@@ -37,7 +40,7 @@ class RelayMutationMixin:
         try:
             return cls.resolve_mutation(root, info, **kwargs)
         except Exception as e:
-            #  print(traceback.print_exc())
+            print(traceback.print_exc())
             return cls(success=False, errors={})
 
     @classmethod
