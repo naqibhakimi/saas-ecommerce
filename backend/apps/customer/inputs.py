@@ -1,5 +1,6 @@
 import graphene
 
+
 class CreateCustomerInputField(graphene.InputObjectType):
     email = graphene.String(required=True)
     first_name = graphene.String(required=True)
@@ -21,18 +22,18 @@ class UpdateCustomerInputField(graphene.InputObjectType):
 class CreateCustomerGroupInputField(graphene.InputObjectType):
     name = graphene.String(required=True)
     customers = graphene.String()
-    price_lists = graphene.String()
+    # price_lists = graphene.String()
     metadata = graphene.String()
-    deleted_at = graphene.String()
+    # deleted_at = graphene.String()
 
 
 class UpdateCustomerGroupInputField(graphene.InputObjectType):
     id = graphene.ID(required=True)
     name = graphene.String(required=True)
     customers = graphene.String()
-    price_lists = graphene.String()
+    # price_lists = graphene.String()
     metadata = graphene.String()
-    deleted_at = graphene.String()
+    # deleted_at = graphene.String()
 
 
 class CreateCountryInputField(graphene.InputObjectType):

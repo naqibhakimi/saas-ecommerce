@@ -37,8 +37,8 @@ class RelayMutationMixin:
         try:
             return cls.resolve_mutation(root, info, **kwargs)
         except Exception as e:
-             print(traceback.print_exc())
-             return cls(success=False, errors={})
+            #  print(traceback.print_exc())
+            return cls(success=False, errors={})
 
     @classmethod
     def parent_resolve(cls, root, info, **kwargs):
