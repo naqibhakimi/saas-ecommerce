@@ -49,7 +49,6 @@ class UpdateCustomerMixin(Output):
 
             if form.is_valid():
                 instance = form.save(commit=False)
-                print(instance.billing_address)
                 instance.save(update_fields=customer_data.keys())
 
                 return cls(success=True, errors=form.errors)
@@ -79,6 +78,23 @@ class DeleteCustomerGroupMixin(Output):
             return cls(success=True, errors=Message.CustomerGroup_DELETED)
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.CustomerGroup_NOT_FOUND)
+
+
+class CreateCustomerGroupMixin(Output):
+    form = CreateCustomerGroupForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        print(kwargs)
+        try:
+            form = cls.form(data=kwargs.get("customer_group"))
+            if form.errors:
+                return cls(success=False, errors=form.errors)
+            if form.is_valid():
+                form.save()
+                return cls(success=True, errors=Message.CUSTOMER_GROUP_CREATED)
+        except ValidationError:
+            return cls(success=False, errors=Message.INVALID_INPUT)
 
 
 class DeleteCountryMixin(Output):

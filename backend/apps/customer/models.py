@@ -71,7 +71,7 @@ class Customer(BaseModel):
 class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     customers = models.ManyToManyField(Customer, related_name="+")
-    price_lists = models.ManyToManyField("product.PriceList")
+    # price_lists = models.ManyToManyField("product.PriceList")
     metadata = models.JSONField(null=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
@@ -95,7 +95,8 @@ class Address(BaseModel):
     address_2 = models.CharField(max_length=255, null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     country_code = models.CharField(max_length=255, null=True, blank=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE,null=True, blank=True, related_name="+")
+    country = models.ForeignKey(Country, on_delete=models.CASCADE,
+                                null=True, blank=True, related_name="+")
     province = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
