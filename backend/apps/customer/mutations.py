@@ -5,7 +5,7 @@ from .forms import DeleteCustomerForm
 from .inputs import CreateCustomerGroupInputField, CreateCustomerInputField, UpdateCustomerGroupInputField, UpdateCustomerInputField
 from .mixins import (CreateAddressMixin, CreateCountryMixin,
                      CreateCustomerGroupMixin, CreateCustomerMixin,
-                     CreateRegionMixin, DeleteCustomerMixin,
+                     CreateRegionMixin, DeleteCustomerMixin, UpdateCustomerGroupMixin,
                      UpdateCustomerMixin)
 from .types import (AddressNode, CountryNode, CustomerGroupNode, CustomerNode,
                     RegionNode)
@@ -27,8 +27,14 @@ class DeleteCustomer(DynamicInputMixin, RelayMutationMixin, DeleteCustomerMixin,
 
 
 class CreateCustomerGroup(DynamicInputMixin, RelayMutationMixin, CreateCustomerGroupMixin, graphene.ClientIDMutation):
-    _inputs = {"CustomerGroup": CreateCustomerGroupInputField}
+    _inputs = {"customer_group": CreateCustomerGroupInputField}
     _required_inputs = {}
+
+
+class UpdateCustomerGroup(DynamicInputMixin, RelayMutationMixin, UpdateCustomerGroupMixin, graphene.ClientIDMutation):
+    _inputs = {"customer_group": UpdateCustomerGroupInputField}
+    _required_inputs = {}
+
 
 # class CreateCountry(DynamicInputMixin, RelayMutationMixin, CreateCountryMixin, graphene.ClientIDMutation):
 #     _inputs = {"Country": CountryNode}
@@ -46,7 +52,8 @@ class Mutation(object):
     create_customer = CreateCustomer.Field()
     update_customer = UpdateCustomer.Field()
     delete_customer = DeleteCustomer.Field()
-    create_customerGroup = CreateCustomerGroup.Field()
+    create_customer_group = CreateCustomerGroup.Field()
+    update_customer_group = UpdateCustomerGroup.Field()
     # update_customerGroup = UpdateCustomerGroup.Field()
     # delete_customerGroup = DeleteCustomerGroup.Field()
     # create_country = CreateCountry.Field()

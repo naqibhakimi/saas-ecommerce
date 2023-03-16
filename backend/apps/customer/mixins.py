@@ -10,7 +10,7 @@ from apps.customer.forms import (
     CreateRegionForm,
 )
 from apps.core.background_tasks import BackgroundTask
-from .forms import UpdateCustomerForm
+from .forms import UpdateCustomerForm, UpdateCustomerGroupForm
 from .constant import Message
 from .models import (
     Customer,
@@ -80,19 +80,22 @@ class DeleteCustomerGroupMixin(Output):
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.CustomerGroup_NOT_FOUND)
 
-def heavy_calc(arg):
-    for i in range(arg):
-        print(i)
+
+# def heavy_calc(arg):
+#     for i in range(arg):
+#         print(i)
+
+
 class CreateCustomerGroupMixin(Output):
     form = CreateCustomerGroupForm
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        bg_tasks = BackgroundTask(heavy_calc, 400000)
-        bg_tasks()
+        # bg_tasks = BackgroundTask(heavy_calc, 400000)
+        # bg_tasks()
         try:
-            
-            form = cls.form(data=kwargs.get("CustomerGroup", {}))
+
+            form = cls.form(data=kwargs.get("customer_group", {}))
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
@@ -100,6 +103,25 @@ class CreateCustomerGroupMixin(Output):
                 return cls(success=True, errors=Message.CUSTOMER_GROUP_CREATED)
         except ValidationError:
             return cls(success=False, errors=Message.INVALID_INPUT)
+
+
+class UpdateCustomerGroupMixin(Output):
+    form = UpdateCustomerGroupForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        customer_data = kwargs.get("customer_group", {})
+        print(customer_data)
+        try:
+            form = cls.form(data=customer_data, instance=Customer.objects.get(
+                id=customer_data.pop("id")))
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.save(update_fields=customer_data.keys())
+                return cls(success=True, errors=form.errors)
+            return cls(success=False, errors=form.errors)
+        except (ValidationError, ValueError) as err:
+            return cls(success=False, errors=form.errors)
 
 
 class DeleteCountryMixin(Output):
