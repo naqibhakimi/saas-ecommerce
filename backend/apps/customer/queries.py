@@ -16,12 +16,12 @@ class CustomerQuery:
 
 
 class CountryQuery:
-    countrys = DjangoFilterConnectionField(CountryNode)
+    countries = DjangoFilterConnectionField(CountryNode)
     country = graphene.Field(CountryNode, id=graphene.ID())
 
 
 class AddressQuery:
-    addresss = DjangoFilterConnectionField(AddressNode)
+    address = DjangoFilterConnectionField(AddressNode)
     address = graphene.Field(AddressNode, id=graphene.ID())
 
 

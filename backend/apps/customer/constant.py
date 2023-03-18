@@ -18,6 +18,22 @@ class Message:
         {"message": _("Customer Group created successfully"),
          "code": "created_customer_group"}
     ]
+    CustomerGroup_DELETED = [
+        {"message": _("Customer Group deleted successfully"),
+         "code": "customer_group_deleted"}
+    ]
+    CUSTOMER_GROUP_NOT_FOUND = [
+        {"message": _("Customer group not found"), "code": "customer_group_not_found"}
+    ]
     COUNTRY_CREATED = [
         {"message": _("Country created successfully"), "code": "country_created"}
+    ]
+    COUNTRY_DELETED = [
+        {"message": _("Country deleted successfully"), "code": "country_deleted"}
+    ]
+    COUNTRY_NOT_FOUND = [
+        {"message": _("Country doesn't found"), "code": "country_not_found"}
+    ]
+    ADDRESS_CREATED = [
+        {"message": _("Address created successfully"), "code": "address_created"}
     ]

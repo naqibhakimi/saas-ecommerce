@@ -65,6 +65,7 @@ class UpdateCustomerGroupForm(BaseForm):
     class Meta:
         model = CustomerGroup
         fields = (
+            "id",
             "name",
             "customers",
             # "price_lists",
