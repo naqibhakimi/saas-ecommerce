@@ -69,19 +69,11 @@ class DeleteCustomerMixin(Output):
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.CUSTOMER_NOT_FOUND)
 
-
-# def heavy_calc(arg):
-#     for i in range(arg):
-#         print(i)
-
-
 class CreateCustomerGroupMixin(Output):
     form = CreateCustomerGroupForm
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        # bg_tasks = BackgroundTask(heavy_calc, 400000)
-        # bg_tasks()
         try:
 
             form = cls.form(data=kwargs.get("customer_group", {}))
@@ -92,6 +84,14 @@ class CreateCustomerGroupMixin(Output):
                 return cls(success=True, errors=Message.CUSTOMER_GROUP_CREATED)
         except ValidationError:
             return cls(success=False, errors=Message.INVALID_INPUT)
+
+# model 
+## id
+## customer ->m2m -> group
+
+### customergroupset
+### customer_id
+### group_id
 
 
 class UpdateCustomerGroupMixin(Output):
@@ -106,7 +106,9 @@ class UpdateCustomerGroupMixin(Output):
                             instance=CustomerGroup.objects.get(id=customer_group_data.pop('id')))
             if form.is_valid():
                 instance = form.save(commit=False)
+                customers = customer_group_data.pop('customers')
                 instance.save(update_fields=customer_group_data.keys())
+                instance.customers.set(customers, clear=True)
 
                 return cls(success=True, errors=form.errors)
             return cls(success=False, errors=form.errors)
