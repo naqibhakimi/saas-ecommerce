@@ -21,7 +21,7 @@ class CountryQuery:
 
 
 class AddressQuery:
-    address = DjangoFilterConnectionField(AddressNode)
+    addresses = DjangoFilterConnectionField(AddressNode)
     address = graphene.Field(AddressNode, id=graphene.ID())
 
 

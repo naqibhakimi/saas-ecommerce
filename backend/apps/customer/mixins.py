@@ -10,7 +10,7 @@ from apps.customer.forms import (
     CreateRegionForm,
 )
 from apps.core.background_tasks import BackgroundTask
-from .forms import UpdateCountryForm, UpdateCustomerForm, UpdateCustomerGroupForm
+from .forms import UpdateAddressForm, UpdateCountryForm, UpdateCustomerForm, UpdateCustomerGroupForm
 from .constant import Message
 from .models import (
     Customer,
@@ -69,6 +69,7 @@ class DeleteCustomerMixin(Output):
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.CUSTOMER_NOT_FOUND)
 
+
 class CreateCustomerGroupMixin(Output):
     form = CreateCustomerGroupForm
 
@@ -85,13 +86,13 @@ class CreateCustomerGroupMixin(Output):
         except ValidationError:
             return cls(success=False, errors=Message.INVALID_INPUT)
 
-# model 
-## id
-## customer ->m2m -> group
+# model
+# id
+# customer ->m2m -> group
 
-### customergroupset
-### customer_id
-### group_id
+# customergroupset
+# customer_id
+# group_id
 
 
 class UpdateCustomerGroupMixin(Output):
@@ -106,6 +107,8 @@ class UpdateCustomerGroupMixin(Output):
                             instance=CustomerGroup.objects.get(id=customer_group_data.pop('id')))
             if form.is_valid():
                 instance = form.save(commit=False)
+                # because it's many to many(m2m) field so we don't need to update
+                # first I I'll pop customers then update the form then I'll add customers to the form
                 customers = customer_group_data.pop('customers')
                 instance.save(update_fields=customer_group_data.keys())
                 instance.customers.set(customers, clear=True)
@@ -144,7 +147,6 @@ class CreateCountryMixin(Output):
 
 
 class UpdateCountryMixin(Output):
-    # [FIXME:]
     form = UpdateCountryForm
 
     @classmethod
@@ -154,12 +156,11 @@ class UpdateCountryMixin(Output):
             form = cls.form(data=country_data, instance=Country.objects.get(
                 id=country_data.pop("id")))
             if form.is_valid:
-                print("is_valid")
                 instance = form.save(commit=False)
                 instance.save(update_fields=country_data.keys())
                 return cls(success=True, errors=form.errors)
             return cls(success=False, errors=form.errors)
-        except (ValidationError, ValueError) as e:
+        except (ValidationError, ValidationError) as e:
             return cls(success=False, errors=e)
 
 
@@ -168,7 +169,7 @@ class DeleteCountryMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         try:
             id = kwargs.pop("id", None)
-            Country.objects.filter(id=id).delete()
+            Country.objects.get(id=id).delete()
             return cls(success=True, errors=Message.COUNTRY_DELETED)
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.COUNTRY_NOT_FOUND)
@@ -179,16 +180,15 @@ class CreateAddressMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        print(kwargs)
         try:
             form = cls.form(data=kwargs.get("Address"))
             if form.errors:
                 return cls(success=False, errors=form.errors)
-            if form.is_valid():
+            if form.is_valid:
                 form.save()
                 return cls(success=True, errors=Message.ADDRESS_CREATED)
         except ValidationError:
-            return cls(success=False, errors=Message.INVALID_INPUT)
+            return cls(sum=False, errors=Message.INVALID_INPUT)
 
 
 class DeleteAddressMixin(Output):
@@ -197,9 +197,9 @@ class DeleteAddressMixin(Output):
         try:
             id = kwargs.pop("id", None)
             Address.objects.filter(id=id).delete()
-            return cls(success=True, errors=Message.Address_DELETED)
+            return cls(success=True, errors=Message.ADDRESS_DELETED)
         except ObjectDoesNotExist:
-            return cls(success=False, errors=Message.Address_NOT_FOUND)
+            return cls(success=False, errors=Message.ADDRESS_NOT_FOUND)
 
 
 class DeleteRegionMixin(Output):
@@ -214,11 +214,21 @@ class DeleteRegionMixin(Output):
 
 
 class UpdateAddressMixin(Output):
+    form = UpdateAddressForm
+
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        id = kwargs.pop("id", None)
-        Address.objects.filter(id=id).update(**kwargs)
-        return cls(success=True, errors="")
+        address_data = kwargs.get("Address")
+
+        try:
+            form = cls.form(data=address_data, instance=Address.objects.get(
+                id=address_data.pop("id")))
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.save(update_fields=address_data.keys())
+                return cls(success=True, errors=form.errors)
+        except ValidationError:
+            pass
 
 
 class CreateRegionMixin(Output):

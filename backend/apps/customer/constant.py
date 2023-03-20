@@ -37,3 +37,9 @@ class Message:
     ADDRESS_CREATED = [
         {"message": _("Address created successfully"), "code": "address_created"}
     ]
+    ADDRESS_DELETED = [
+        {"message": _("Address deleted successfully"), "code": "address_deleted"}
+    ]
+    ADDRESS_NOT_FOUND = [
+        {"message": _("Address not found"), "code": "address_not_found"}
+    ]
