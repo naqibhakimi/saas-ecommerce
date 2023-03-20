@@ -50,7 +50,7 @@ class UpdateCountryInputField(graphene.InputObjectType):
     iso_2 = graphene.String()
     iso_3 = graphene.String()
     num_code = graphene.Int()
-    name = graphene.String(required=True)
+    name = graphene.String()
     display_name = graphene.String()
     region = graphene.ID()
 
@@ -61,7 +61,7 @@ class CreateAddressInputField(graphene.InputObjectType):
     address_2 = graphene.String()
     city = graphene.String(required=True)
     country_code = graphene.String()
-    country = graphene.String(required=True)
+    country = graphene.ID()
     province = graphene.String()
     postal_code = graphene.String(required=True)
     phone = graphene.String()

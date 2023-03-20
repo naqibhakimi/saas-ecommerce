@@ -72,7 +72,7 @@ class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     customers = models.ManyToManyField(Customer, related_name="+")
     # price_lists = models.ManyToManyField("product.PriceList")
-    metadata = models.JSONField(null=True)
+    metadata = models.JSONField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
 
