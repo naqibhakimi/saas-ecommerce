@@ -100,12 +100,13 @@ class Address(BaseModel):
     province = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
-    metadata = models.JSONField(default={})
+    metadata = models.JSONField(default={}, null=True, blank=True)
 
 
 class Region(BaseModel):
     name = models.CharField(max_length=100)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name="+")
+    currency = models.ForeignKey(
+        Currency, on_delete=models.CASCADE, related_name="+", null=True, blank=True)
     # tax_rate = models.FloatField()
     tax_rates = models.ForeignKey(
         TaxRate, on_delete=models.SET_NULL, related_name="+", null=True, blank=True
@@ -113,12 +114,13 @@ class Region(BaseModel):
     tax_code = models.CharField(max_length=100, null=True)
     gift_cards_taxable = models.BooleanField(default=True)
     automatic_taxes = models.BooleanField(default=True)
-    tax_provider = models.ForeignKey(TaxProvider, on_delete=models.SET_NULL, null=True)
+    tax_provider = models.ForeignKey(
+        TaxProvider, on_delete=models.SET_NULL, null=True, blank=True)
     # payment_providers = models.ManyToManyField(PaymentProvider, related_name="+")
     # fulfillment_providers = models.ManyToManyField(
     #     FulfillmentProvider, related_name="+"
     # )
-    metadata = models.JSONField(null=True)
+    metadata = models.JSONField(null=True, blank=True)
     includes_tax = models.BooleanField(default=False)
 
 

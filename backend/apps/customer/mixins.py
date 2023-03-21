@@ -10,7 +10,7 @@ from apps.customer.forms import (
     CreateRegionForm,
 )
 from apps.core.background_tasks import BackgroundTask
-from .forms import UpdateAddressForm, UpdateCountryForm, UpdateCustomerForm, UpdateCustomerGroupForm
+from .forms import UpdateAddressForm, UpdateCountryForm, UpdateCustomerForm, UpdateCustomerGroupForm, UpdateRegionForm
 from .constant import Message
 from .models import (
     Customer,
@@ -160,7 +160,7 @@ class UpdateCountryMixin(Output):
                 instance.save(update_fields=country_data.keys())
                 return cls(success=True, errors=form.errors)
             return cls(success=False, errors=form.errors)
-        except (ValidationError, ValidationError) as e:
+        except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
 
 
@@ -191,28 +191,6 @@ class CreateAddressMixin(Output):
             return cls(sum=False, errors=Message.INVALID_INPUT)
 
 
-class DeleteAddressMixin(Output):
-    @ classmethod
-    def resolve_mutation(cls, root, info, **kwargs):
-        try:
-            id = kwargs.pop("id", None)
-            Address.objects.filter(id=id).delete()
-            return cls(success=True, errors=Message.ADDRESS_DELETED)
-        except ObjectDoesNotExist:
-            return cls(success=False, errors=Message.ADDRESS_NOT_FOUND)
-
-
-class DeleteRegionMixin(Output):
-    @ classmethod
-    def resolve_mutation(cls, root, info, **kwargs):
-        try:
-            id = kwargs.pop("id", None)
-            Region.objects.filter(id=id).delete()
-            return cls(success=True, errors=Message.Region_DELETED)
-        except ObjectDoesNotExist:
-            return cls(success=False, errors=Message.Region_NOT_FOUND)
-
-
 class UpdateAddressMixin(Output):
     form = UpdateAddressForm
 
@@ -227,29 +205,61 @@ class UpdateAddressMixin(Output):
                 instance = form.save(commit=False)
                 instance.save(update_fields=address_data.keys())
                 return cls(success=True, errors=form.errors)
-        except ValidationError:
-            pass
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)
 
 
-class CreateRegionMixin(Output):
-    form = CreateRegionForm
-
+class DeleteAddressMixin(Output):
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
-            form = cls.form(data=kwargs)
+            id = kwargs.pop("id", None)
+            Address.objects.filter(id=id).delete()
+            return cls(success=True, errors=Message.ADDRESS_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.ADDRESS_NOT_FOUND)
+
+
+class CreateRegionMixin(Output):
+    # [FIXME: query the region and call currency]
+    form = CreateRegionForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            form = cls.form(data=kwargs.get("Region"))
             if form.errors:
-                return cls(success=False, error=form.errors)
-            if form.is_valid():
+                return cls(success=False, errors=form.errors)
+            if form.is_valid:
                 form.save()
-                return cls(success=True, error=Message.COUNTRY_CREATED)
-        except ValidationError as err:
-            return cls(success=True, error=Message.COUNTRY_CREATED)
+                return cls(success=True, errors=Message.REGION_CREATED)
+        except ValidationError:
+            return cls(success=False, errors=Message.INVALID_INPUT)
 
 
 class UpdateRegionMixin(Output):
-    @ classmethod
+    form = UpdateRegionForm
+
+    @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        id = kwargs.pop("id", None)
-        Region.objects.filter(id=id).update(**kwargs)
-        return cls(success=True, errors="")
+        region_data = kwargs.get("Region")
+        try:
+            form = cls.form(data=region_data, instance=Region.objects.get(
+                id=region_data.pop("id")))
+            if form.is_valid:
+                instance = form.save(commit=False)
+                instance.save(update_fields=region_data.keys())
+                return cls(success=True, errors=form.errors)
+        except (ValidationError, ValueError) as e:
+            return cls(success=True, errors=e)
+
+
+class DeleteRegionMixin(Output):
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            id = kwargs.pop("id", None)
+            Region.objects.filter(id=id).delete()
+            return cls(success=True, errors=Message.REGION_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.REGION_NOT_FOUND)
