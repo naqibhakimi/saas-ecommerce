@@ -6,6 +6,7 @@ from apps.core.models import BaseModel
 from apps.core.models import BaseModel
 from apps.store.models import SalesChannel
 from apps.tax.models import TaxRate
+from apps.shipping.models import ShippingProfile
 
 
 class PriceList(BaseModel):
@@ -56,6 +57,13 @@ class Image(BaseModel):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
 
+class ProductCollection(BaseModel):
+    title = models.CharField(max_length=255)
+    handle = models.CharField(max_length=255, unique=True, null=True)
+    # products = models.ManyToManyField(Product, related_name="+")
+    metadata = models.JSONField(null=True)
+
+
 class Product(BaseModel):
     Product_Status = (
         ("draft", "DRAFT"),
@@ -69,10 +77,10 @@ class Product(BaseModel):
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
     status = models.CharField(max_length=255, choices=Product_Status, default="draft")
-    images = models.ManyToManyField(Image, related_name="+")
+    images = models.ManyToManyField(Image, related_name="+", null=True, blank=True)
     thumbnail = models.TextField(null=True, blank=True)
     profile = models.ForeignKey(
-        "shipping.ShippingProfile", on_delete=models.CASCADE, related_name="+"
+        ShippingProfile, on_delete=models.CASCADE, related_name="+", null=True, blank=True
     )
     weight = models.PositiveIntegerField(null=True, blank=True)
     length = models.PositiveIntegerField(null=True, blank=True)
@@ -83,7 +91,7 @@ class Product(BaseModel):
     mid_code = models.TextField(null=True, blank=True)
     material = models.TextField(null=True, blank=True)
     collection = models.ForeignKey(
-        "ProductCollection",
+        ProductCollection,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -92,11 +100,11 @@ class Product(BaseModel):
     type = models.ForeignKey(
         ProductType, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
     )
-    tags = models.ManyToManyField(ProductTag, related_name="+")
+    tags = models.ManyToManyField(ProductTag, related_name="+", null=True, blank=True)
     discountable = models.BooleanField(default=True)
     external_id = models.TextField(null=True, blank=True)
-    sales_channels = models.ManyToManyField(SalesChannel, related_name="+")
-    # deleted_at = models.DateTimeField(null=True, blank=True)
+    sales_channels = models.ManyToManyField(
+        SalesChannel, related_name="+", null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
 
 
@@ -108,13 +116,6 @@ class ProductCategory(BaseModel):
     parent_category = models.ForeignKey(
         "self", on_delete=models.SET_NULL, null=True, blank=True
     )
-
-
-class ProductCollection(BaseModel):
-    title = models.CharField(max_length=255)
-    handle = models.CharField(max_length=255, unique=True, null=True)
-    products = models.ManyToManyField(Product, related_name="+")
-    metadata = models.JSONField(null=True)
 
 
 class ProductOption(BaseModel):

@@ -86,14 +86,6 @@ class CreateCustomerGroupMixin(Output):
         except ValidationError:
             return cls(success=False, errors=Message.INVALID_INPUT)
 
-# model
-# id
-# customer ->m2m -> group
-
-# customergroupset
-# customer_id
-# group_id
-
 
 class UpdateCustomerGroupMixin(Output):
     form = UpdateCustomerGroupForm

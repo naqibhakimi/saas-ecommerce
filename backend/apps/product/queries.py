@@ -35,6 +35,7 @@ class ProductTagQuery:
 
 
 class ProductQuery:
+    # [FIXME: doesn't query profile in products]
     products = DjangoFilterConnectionField(ProductNode)
     product = graphene.Field(ProductNode, id=graphene.ID())
 
@@ -91,3 +92,12 @@ class ProductVariantInventoryItemQuery:
 class ProductVariantQuery:
     product_variants = DjangoFilterConnectionField(ProductVariantNode)
     product_variant = graphene.Field(ProductVariantNode, id=graphene.ID())
+
+
+class Query(PriceListQuery, ProductTypeQuery, ProductTagQuery,
+            ProductQuery, ImageQuery, MoneyAmountQuery,
+            ProductCategoryQuery, ProductCollectionQuery,
+            ProductOptionValueQuery, ProductOptionQuery, ProductTaxRateQuery,
+            ProductTypeTaxRateQuery, ProductVariantInventoryItemQuery, ProductVariantQuery,
+            ):
+    pass
