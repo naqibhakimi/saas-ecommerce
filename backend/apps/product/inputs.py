@@ -54,3 +54,26 @@ class UpdateProductInputField(graphene.InputObjectType):
     external_id = graphene.String()
     sales_channels = graphene.List(graphene.ID)
     metadata = graphene.String()
+
+
+class createPriceListInputField(graphene.InputObjectType):
+    name = graphene.String()
+    description = graphene.String()
+    type = graphene.String()
+    status = graphene.String()
+    starts_at = graphene.DateTime()
+    ends_at = graphene.DateTime()
+    # customer_groups = graphene.String()
+    includes_tax = graphene.Boolean()
+
+
+class UpdatePriceListInputField(graphene.InputObjectType):
+    id = graphene.ID()
+    name = graphene.String()
+    description = graphene.String()
+    type = graphene.String()
+    status = graphene.String()
+    starts_at = graphene.DateTime()
+    ends_at = graphene.DateTime()
+    # customer_groups = graphene.String()
+    includes_tax = graphene.Boolean()

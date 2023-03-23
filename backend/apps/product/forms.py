@@ -1,4 +1,4 @@
-from .models import Product
+from .models import PriceList, Product
 from apps.core.forms import BaseForm
 
 
@@ -62,4 +62,26 @@ class UpdateProductFrom(BaseForm):
             "external_id",
             "sales_channels",
             "metadata"
+        )
+
+
+class CreatePriceListFrom(BaseForm):
+    class Meta:
+        model = PriceList
+        fields = "__all__"
+
+
+class UpdatePriceListForm(BaseForm):
+    class Meta:
+        model = PriceList
+        fields = (
+            "id",
+            "name",
+            "description",
+            "type",
+            "status",
+            "starts_at",
+            "ends_at",
+            # "customer_groups",
+            "includes_tax"
         )

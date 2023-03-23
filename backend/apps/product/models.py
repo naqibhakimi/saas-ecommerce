@@ -1,8 +1,5 @@
 from django.db import models
-from apps.core.models import BaseModel
 
-
-from apps.core.models import BaseModel
 from apps.core.models import BaseModel
 from apps.store.models import SalesChannel
 from apps.tax.models import TaxRate
@@ -10,14 +7,19 @@ from apps.shipping.models import ShippingProfile
 
 
 class PriceList(BaseModel):
+    """Price Lists represents a set of prices that overrides the
+        default price for one or more product variants.
+    """
+    # [FIXME: circular import ]
+    # from apps.customer.models import CustomerGroup
     name = models.CharField(max_length=255)
     description = models.TextField()
     type = models.CharField(max_length=255, default="sale")
     status = models.CharField(max_length=255, default="draft")
     starts_at = models.DateTimeField(null=True, blank=True)
     ends_at = models.DateTimeField(null=True, blank=True)
-    customer_groups = models.ManyToManyField("customer.CustomerGroup", related_name="+")
-    # prices = models.OneToManyField('MoneyAmount', related_name='+', on_delete=models.CASCADE)
+    # description: The Customer Groups that the Price List applies to. Available if the relation `customer_groups` is expanded.
+    # customer_groups = models.ManyToManyField("CustomerGroup", related_name="+")
     includes_tax = models.BooleanField(default=False)
 
 
@@ -77,7 +79,7 @@ class Product(BaseModel):
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
     status = models.CharField(max_length=255, choices=Product_Status, default="draft")
-    images = models.ManyToManyField(Image, related_name="+", null=True, blank=True)
+    images = models.ManyToManyField(Image, related_name="+")
     thumbnail = models.TextField(null=True, blank=True)
     profile = models.ForeignKey(
         ShippingProfile, on_delete=models.CASCADE, related_name="+", null=True, blank=True
@@ -100,11 +102,11 @@ class Product(BaseModel):
     type = models.ForeignKey(
         ProductType, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
     )
-    tags = models.ManyToManyField(ProductTag, related_name="+", null=True, blank=True)
+    tags = models.ManyToManyField(ProductTag, related_name="+")
     discountable = models.BooleanField(default=True)
     external_id = models.TextField(null=True, blank=True)
     sales_channels = models.ManyToManyField(
-        SalesChannel, related_name="+", null=True, blank=True)
+        SalesChannel, related_name="+")
     metadata = models.JSONField(null=True, blank=True)
 
 

@@ -100,7 +100,7 @@ class Address(BaseModel):
     province = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
-    metadata = models.JSONField(default={}, null=True, blank=True)
+    metadata = models.JSONField(dict, null=True, blank=True)
 
 
 class Region(BaseModel):
