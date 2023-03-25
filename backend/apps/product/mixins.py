@@ -1,9 +1,9 @@
 from apps.core.mutations import Output
 from django.forms import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import CreatePriceListFrom, CreateProductFrom, UpdatePriceListForm, UpdateProductFrom
+from .forms import CreateImageForm, CreatePriceListFrom, CreateProductCollectionForm, CreateProductFrom, CreateProductTagForm, UpdatePriceListForm, UpdateProductFrom, CreateProductTypeForm, UpdateProductTypeForm
 from .constant import Message
-from .models import PriceList, Product
+from .models import PriceList, Product, ProductType
 
 
 class CreateProductMixin(Output):
@@ -103,3 +103,104 @@ class DeletePriceListMixin(Output):
             return cls(success=True, errors=Message.PRICE_LIST_DELETED)
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.PRICE_LIST_NOT_FOUND)
+
+
+class CreateProductTypeMixin(Output):
+    form = CreateProductTypeForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            form = cls.form(data=kwargs.get('product_type'))
+            if form.errors:
+                return cls(success=False, errors=form.errors)
+            if form.is_valid():
+                form.save()
+                return cls(success=True, errors=Message.PRODUCT_TYPE_CREATED)
+            return cls(success=False, errors=form.errors)
+
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)
+
+
+class UpdateProductTypeMixin(Output):
+    form = UpdateProductTypeForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        product_type_data = kwargs.get('product_type')
+        try:
+            form = cls.form(data=product_type_data, instance=ProductType.objects.get(
+                id=product_type_data.pop('id')))
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.save(update_fields=product_type_data.keys())
+                return cls(success=True, errors=Message.PRODUCT_TYPE_UPDATED)
+            return cls(success=False, errors=form.errors)
+
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=form.errors)
+
+
+class DeleteProductTypeMixin(Output):
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductType.objects.get(id=kwargs.get("id")).delete()
+            return cls(success=True, errors=Message.PRODUCT_TYPE_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.PRODUCT_TYPE_NOT_EXIST)
+
+
+class CreateProductTagMixin(Output):
+    form = CreateProductTagForm
+
+    @staticmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        product_tag_data = kwargs.get("product_tag")
+        try:
+            form = cls.form(data=product_tag_data)
+            if form.errors:
+                return cls(success=False, errors=form.errors)
+            if form.is_valid():
+                form.save()
+                return cls(success=True, errors=Message.PRODUCT_TAG_CREATED)
+            return cls(success=False, errors=form.errors)
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)
+
+
+class CreateImageMixin(Output):
+    form = CreateImageForm
+
+    @staticmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        image_data = kwargs.get("")
+        try:
+            form = cls.form(data=image_data)
+            if form.errors:
+                return cls(success=False, errors=form.errors)
+            if form.is_valid():
+                form.save()
+                return cls(success=True, errors=Message.IMAGE_CREATED)
+            return cls(success=False, errors=form.errors)
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)
+
+
+class CreateProductCollectionMixin(Output):
+    form = CreateProductCollectionForm
+
+    @staticmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        product_collection_data = kwargs.get("")
+        try:
+            form = cls.form(data=product_collection_data)
+            if form.errors:
+                return cls(success=False, errors=form.errors)
+            if form.is_valid():
+                form.save()
+                return cls(success=True, errors=Message.sd)
+            return cls(success=False, errors=form.errors)
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)

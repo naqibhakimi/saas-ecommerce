@@ -29,3 +29,15 @@ class Message:
     PRICE_LIST_NOT_FOUND = [
         {"message": _("Price list not found"), "code": "price_list_not_found"}
     ]
+    PRODUCT_TYPE_CREATED = [
+        {"message": _("Product type created"), "code": "product_type_created"}
+    ]
+    PRODUCT_TYPE_UPDATED = [
+        {"message": _("Product type updated"), "code": "product_type_updated"}
+    ]
+    PRODUCT_TYPE_DELETED = [
+        {"message": _("Product type deleted"), "code": "product_type_deleted"}
+    ]
+    PRODUCT_TYPE_NOT_EXIST = [
+        {"message": _("Product type not exist"), "code": "product_type_not_exist"}
+    ]

@@ -1,4 +1,4 @@
-from .models import PriceList, Product
+from .models import Image, PriceList, Product, ProductCollection, ProductTag, ProductType
 from apps.core.forms import BaseForm
 
 
@@ -84,4 +84,81 @@ class UpdatePriceListForm(BaseForm):
             "ends_at",
             # "customer_groups",
             "includes_tax"
+        )
+
+
+class CreateProductTypeForm(BaseForm):
+    class Meta:
+        model = ProductType
+        fields = (
+            "value",
+            "metadata"
+        )
+
+
+class UpdateProductTypeForm(BaseForm):
+    class Meta:
+        model = ProductType
+        fields = (
+            "id",
+            "value",
+            "metadata",
+        )
+
+
+class CreateProductTagForm(BaseForm):
+    class Meta:
+        model = ProductTag
+        fields = (
+            "value",
+            "metadata"
+        )
+
+
+class UpdateProductTagForm(BaseForm):
+    class Meta:
+        model = ProductTag
+        fields = (
+            "id",
+            "value",
+            "metadata"
+        )
+
+
+class CreateImageForm(BaseForm):
+    class Meta:
+        model = Image
+        fields = (
+            "url",
+            "metadata"
+        )
+
+
+class UpdateImageForm(BaseForm):
+    class Meta:
+        model = Image
+        fields = (
+            "id",
+            "metadata"
+        )
+
+
+class CreateProductCollectionForm(BaseForm):
+    class Meta:
+        model = ProductCollection
+        fields = (
+            "title",
+            "handle",
+            "metadata"
+        )
+
+
+class UpdateProductCollectionForm(BaseForm):
+    class Meta:
+        model = ProductCollection
+        fields = (
+            "id",
+            "title",
+            "handle",
+            "metadata"
         )
