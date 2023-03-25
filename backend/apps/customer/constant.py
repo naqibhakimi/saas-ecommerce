@@ -43,3 +43,12 @@ class Message:
     ADDRESS_NOT_FOUND = [
         {"message": _("Address not found"), "code": "address_not_found"}
     ]
+    REGION_CREATED = [
+        {"message": _("Region created successfully"), "code": "region_created"}
+    ]
+    REGION_DELETED = [
+        {"message": _("Region deleted successfully"), "code": "region_delete"}
+    ]
+    REGION_NOT_FOUND = [
+        {"message": _("Region not found"), "code": "region_not_found"}
+    ]

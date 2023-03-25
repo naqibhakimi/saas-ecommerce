@@ -1,5 +1,4 @@
 from django import forms
-from django.forms import fields
 from apps.core.forms import BaseForm
 
 from .models import (

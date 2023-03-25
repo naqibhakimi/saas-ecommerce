@@ -56,7 +56,7 @@ from .connections import (
 class PriceListNode(Node, DjangoObjectType):
     class Meta:
         model = PriceList
-        filter_class = PriceListFilter
+        filterset_class = PriceListFilter
         interfaces = (graphene.Node,)
         connection_class = PriceListConnection
 
@@ -64,7 +64,7 @@ class PriceListNode(Node, DjangoObjectType):
 class MoneyAmountNode(Node, DjangoObjectType):
     class Meta:
         model = MoneyAmount
-        filter_class = MoneyAmountFilter
+        filterset_class = MoneyAmountFilter
         interfaces = (graphene.Node,)
         connection_class = MoneyAmountConnection
 
@@ -72,7 +72,7 @@ class MoneyAmountNode(Node, DjangoObjectType):
 class ProductTypeNode(Node, DjangoObjectType):
     class Meta:
         model = ProductType
-        filter_class = ProductTypeFilter
+        filterset_class = ProductTypeFilter
         interfaces = (graphene.Node,)
         connection_class = ProductTypeConnection
 
@@ -80,7 +80,7 @@ class ProductTypeNode(Node, DjangoObjectType):
 class ProductTagNode(Node, DjangoObjectType):
     class Meta:
         model = ProductTag
-        filter_class = ProductTagFilter
+        filterset_class = ProductTagFilter
         interfaces = (graphene.Node,)
         connection_class = ProductTagConnection
 
@@ -88,7 +88,7 @@ class ProductTagNode(Node, DjangoObjectType):
 class ImageNode(Node, DjangoObjectType):
     class Meta:
         model = Image
-        filter_class = ImageFilter
+        filterset_class = ImageFilter
         interfaces = (graphene.Node,)
         connection_class = ImageConnection
 
@@ -96,7 +96,7 @@ class ImageNode(Node, DjangoObjectType):
 class ProductNode(Node, DjangoObjectType):
     class Meta:
         model = Product
-        filter_class = ProductFilter
+        filterset_class = ProductFilter
         interfaces = (graphene.Node,)
         connection_class = ProductConnection
 
@@ -104,7 +104,7 @@ class ProductNode(Node, DjangoObjectType):
 class ProductCategoryNode(Node, DjangoObjectType):
     class Meta:
         model = ProductCategory
-        filter_class = ProductCategoryFilter
+        filterset_class = ProductCategoryFilter
         interfaces = (graphene.Node,)
         connection_class = ProductCategoryConnection
 
@@ -112,7 +112,7 @@ class ProductCategoryNode(Node, DjangoObjectType):
 class ProductCollectionNode(Node, DjangoObjectType):
     class Meta:
         model = ProductCollection
-        filter_class = ProductCollectionFilter
+        filterset_class = ProductCollectionFilter
         interfaces = (graphene.Node,)
         connection_class = ProductCollectionConnection
 
@@ -120,7 +120,7 @@ class ProductCollectionNode(Node, DjangoObjectType):
 class ProductOptionNode(Node, DjangoObjectType):
     class Meta:
         model = ProductOption
-        filter_class = ProductOptionFilter
+        filterset_class = ProductOptionFilter
         interfaces = (graphene.Node,)
         connection_class = ProductOptionConnection
 
@@ -128,7 +128,7 @@ class ProductOptionNode(Node, DjangoObjectType):
 class ProductOptionValueNode(Node, DjangoObjectType):
     class Meta:
         model = ProductOptionValue
-        filter_class = ProductOptionValueFilter
+        filterset_class = ProductOptionValueFilter
         interfaces = (graphene.Node,)
         connection_class = ProductOptionValueConnection
 
@@ -136,7 +136,7 @@ class ProductOptionValueNode(Node, DjangoObjectType):
 class ProductTaxRateNode(Node, DjangoObjectType):
     class Meta:
         model = ProductTaxRate
-        filter_class = ProductTaxRateFilter
+        filterset_class = ProductTaxRateFilter
         interfaces = (graphene.Node,)
         connection_class = ProductTaxRateConnection
 
@@ -144,7 +144,7 @@ class ProductTaxRateNode(Node, DjangoObjectType):
 class ProductTypeTaxRateNode(Node, DjangoObjectType):
     class Meta:
         model = ProductTypeTaxRate
-        filter_class = ProductTypeTaxRateFilter
+        filterset_class = ProductTypeTaxRateFilter
         interfaces = (graphene.Node,)
         connection_class = ProductTypeTaxRateConnection
 
@@ -152,7 +152,7 @@ class ProductTypeTaxRateNode(Node, DjangoObjectType):
 class ProductVariantInventoryItemNode(Node, DjangoObjectType):
     class Meta:
         model = ProductVariantInventoryItem
-        filter_class = ProductVariantInventoryItemFilter
+        filterset_class = ProductVariantInventoryItemFilter
         interfaces = (graphene.Node,)
         connection_class = ProductVariantInventoryItemConnection
 
@@ -160,6 +160,6 @@ class ProductVariantInventoryItemNode(Node, DjangoObjectType):
 class ProductVariantNode(Node, DjangoObjectType):
     class Meta:
         model = ProductVariant
-        filter_class = ProductVariantFilter
+        filterset_class = ProductVariantFilter
         interfaces = (graphene.Node,)
         connection_class = ProductVariantConnection
