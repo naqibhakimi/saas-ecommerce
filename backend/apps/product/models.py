@@ -55,6 +55,7 @@ class ProductTag(BaseModel):
 
 
 class Image(BaseModel):
+    # [FIXME: how to upload images]
     url = models.CharField(max_length=255, null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
