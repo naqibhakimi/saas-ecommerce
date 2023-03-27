@@ -35,7 +35,6 @@ class ProductTagQuery:
 
 
 class ProductQuery:
-    # [FIXME: doesn't query profile in products]
     products = DjangoFilterConnectionField(ProductNode)
     product = graphene.Field(ProductNode, id=graphene.ID())
 

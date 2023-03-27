@@ -10,8 +10,6 @@ class PriceList(BaseModel):
     """Price Lists represents a set of prices that overrides the
         default price for one or more product variants.
     """
-    # [FIXME: circular import ]
-    # from apps.customer.models import CustomerGroup
     name = models.CharField(max_length=255)
     description = models.TextField()
     type = models.CharField(max_length=255, default="sale")
@@ -19,7 +17,7 @@ class PriceList(BaseModel):
     starts_at = models.DateTimeField(null=True, blank=True)
     ends_at = models.DateTimeField(null=True, blank=True)
     # description: The Customer Groups that the Price List applies to. Available if the relation `customer_groups` is expanded.
-    # customer_groups = models.ManyToManyField("CustomerGroup", related_name="+")
+    customer_groups = models.ManyToManyField("customer.CustomerGroup", related_name="+")
     includes_tax = models.BooleanField(default=False)
 
 

@@ -82,7 +82,7 @@ class Cart(BaseModel):
     payment_authorized_at = models.DateTimeField(blank=True, null=True)
     idempotency_key = models.CharField(max_length=255, blank=True, null=True)
     context = models.JSONField(blank=True, null=True)
-    metadata = models.JSONField()  # [FIXME] do we even need this ?
+    metadata = models.JSONField()
     sales_channel = models.ForeignKey(
         SalesChannel, related_name="+", on_delete=models.SET_NULL, null=True
     )

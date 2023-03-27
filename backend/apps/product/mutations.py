@@ -27,9 +27,6 @@ class DeleteProduct(DynamicInputMixin, RelayMutationMixin, DeleteProductMixin, g
 class CreatePriceList(DynamicInputMixin, RelayMutationMixin, CreatePriceListMixin, graphene.ClientIDMutation):
     __doc__ = CreatePriceListMixin.__doc__
     _inputs = {"price_list": createPriceListInputField}
-    # [FIXME: HOW we can put in a LIST]
-    # _inputs = [createPriceListInputField]
-
 
 class UpdatePriceList(DynamicInputMixin, RelayMutationMixin, UpdatePriceListMixin, graphene.ClientIDMutation):
     __doc__ = UpdatePriceListMixin.__doc__

@@ -35,7 +35,6 @@ class CreateCustomerGroup(DynamicInputMixin, RelayMutationMixin, CreateCustomerG
 
 
 class UpdateCustomerGroup(DynamicInputMixin, RelayMutationMixin, UpdateCustomerGroupMixin, graphene.ClientIDMutation):
-   # [FIXME: ]
     _inputs = {"customer_group": UpdateCustomerGroupInputField}
     _required_inputs = {}
 
@@ -53,8 +52,6 @@ class CreateCountry(DynamicInputMixin, RelayMutationMixin, CreateCountryMixin, g
 class UpdateCountry(DynamicInputMixin, RelayMutationMixin, UpdateCountryMixin, graphene.ClientIDMutation):
     _inputs = {"country": UpdateCountryInputField}
     _required_inputs = {}
-    # [FIXME:]
-
 
 class DeleteCountry(DynamicInputMixin, RelayMutationMixin, DeleteCountryMixin, graphene.ClientIDMutation):
     _required_inputs = {"id": graphene.ID}

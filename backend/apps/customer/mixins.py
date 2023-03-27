@@ -211,7 +211,6 @@ class DeleteAddressMixin(Output):
 
 
 class CreateRegionMixin(Output):
-    # [FIXME: query the region and call currency]
     form = CreateRegionForm
 
     @classmethod
