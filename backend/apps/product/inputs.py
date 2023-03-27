@@ -99,3 +99,14 @@ class UpdateProductTagInputField(graphene.InputObjectType):
     id = graphene.ID()
     value = graphene.String()
     metadata = graphene.String()
+
+
+class CreateImageInputField(graphene.InputObjectType):
+    url = graphene.String()
+    metadata = graphene.String()
+
+
+class UpdateImageInputField(graphene.InputObjectType):
+    id = graphene.ID()
+    url = graphene.String()
+    metadata = graphene.String()

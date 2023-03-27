@@ -139,6 +139,7 @@ class UpdateImageForm(BaseForm):
         model = Image
         fields = (
             "id",
+            "url",
             "metadata"
         )
 
@@ -157,7 +158,6 @@ class UpdateProductCollectionForm(BaseForm):
     class Meta:
         model = ProductCollection
         fields = (
-            "id",
             "title",
             "handle",
             "metadata"

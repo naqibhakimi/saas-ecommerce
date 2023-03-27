@@ -1,9 +1,9 @@
 from apps.core.mutations import Output
 from django.forms import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import CreateImageForm, CreatePriceListFrom, CreateProductCollectionForm, CreateProductFrom, CreateProductTagForm, UpdatePriceListForm, UpdateProductFrom, CreateProductTypeForm, UpdateProductTypeForm
+from .forms import CreateImageForm, CreatePriceListFrom, CreateProductCollectionForm, CreateProductFrom, CreateProductTagForm, UpdateImageForm, UpdatePriceListForm, UpdateProductCollectionForm, UpdateProductFrom, CreateProductTypeForm, UpdateProductTagForm, UpdateProductTypeForm
 from .constant import Message
-from .models import PriceList, Product, ProductType
+from .models import Image, PriceList, Product, ProductCollection, ProductTag, ProductType
 
 
 class CreateProductMixin(Output):
@@ -28,7 +28,6 @@ class UpdateProductMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         product_data = kwargs.get("Product")
-        print(product_data)
         try:
             form = cls.form(data=product_data, instance=Product.objects.get(
                 id=product_data.pop("id")))
@@ -53,6 +52,7 @@ class DeleteProductMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
+            # [FIXME: filter or get]
             Product.objects.filter(id=kwargs.get("id")).delete()
             return cls(success=True, errors=Message.PRODUCT_DELETED)
         except ObjectDoesNotExist:
@@ -155,7 +155,7 @@ class DeleteProductTypeMixin(Output):
 class CreateProductTagMixin(Output):
     form = CreateProductTagForm
 
-    @staticmethod
+    @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         product_tag_data = kwargs.get("product_tag")
         try:
@@ -168,6 +168,35 @@ class CreateProductTagMixin(Output):
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
+
+
+class UpdateProductTagMixin(Output):
+    form = UpdateProductTagForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        product_tag_date = kwargs.get("product_tag")
+        try:
+            form = cls.form(data=product_tag_date,
+                            instance=ProductTag.objects.get(id=product_tag_date.pop('id')))
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.save(update_fields=product_tag_date.keys())
+                return cls(success=True, errors=Message.PRODUCT_TAG_UPDATED)
+            return cls(success=False, errors=form.errors)
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)
+
+
+class DeleteProductTagMixin(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductTag.objects.get(id=kwargs.get('id')).delete()
+            return cls(success=True, errors=Message.PRODUCT_TAG_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.PRODUCT_TAG_NOT_FOUND)
 
 
 class CreateImageMixin(Output):
@@ -188,6 +217,35 @@ class CreateImageMixin(Output):
             return cls(success=False, errors=e)
 
 
+class UpdateImageMixin(Output):
+    form = UpdateImageForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        image_data = kwargs.get("image")
+        try:
+            form = cls.form(data=image_data, instance=Image.objects.get(
+                id=image_data.pop("id")))
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.save(update_fields=image_data.keys())
+                return cls(success=True, errors=Message.IMAGE_CREATED)
+            return cls(success=False, errors=form.errors)
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)
+
+
+class DeleteImage(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            Image.objects.get(id=kwargs.get('id')).delete()
+            return cls(success=True, errors=Message.Image_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.Image_NOT_FOUND)
+
+
 class CreateProductCollectionMixin(Output):
     form = CreateProductCollectionForm
 
@@ -204,3 +262,32 @@ class CreateProductCollectionMixin(Output):
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
+
+
+class UpdateProductCollectionMixin(Output):
+    form = UpdateProductCollectionForm
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        product_collection_data = kwargs.get("product_collection")
+        try:
+            form = cls.form(data=product_collection_data,
+                            instance=ProductCollection.objects.get(id=product_collection_data.pop('id')))
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.save(update_fields=product_collection_data.keys())
+                return cls(success=True, errors=Message.PRODUCT_COLLECTION_UPDATED)
+            return cls(success=False, errors=form.errors)
+        except (ValidationError, ValueError) as e:
+            return cls(success=False, errors=e)
+
+
+class DeleteProductCollection(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductCollection.objects.get(id=kwargs.get('id')).delete()
+            return cls(success=True, errors=Message.PRODUCT_COLLECTION_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.PRODUCT_COLLECTION_NOT_FOUND)

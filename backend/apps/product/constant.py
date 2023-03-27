@@ -41,3 +41,15 @@ class Message:
     PRODUCT_TYPE_NOT_EXIST = [
         {"message": _("Product type not exist"), "code": "product_type_not_exist"}
     ]
+    PRODUCT_TAG_CREATED = [
+        {"message": _("Product tag created"), "code": "product_tag_created"}
+    ]
+    PRODUCT_TAG_UPDATED = [
+        {"message": _("Product tag updated"), "code": "product_tag_updated"}
+    ]
+    PRODUCT_TAG_DELETED = [
+        {"message": _("Product tag deleted"), "code": "product_tag_deleted"}
+    ]
+    PRODUCT_TAG_NOT_FOUND = [
+        {"message": _("Product tag not found"), "code": "product_tag_not_found"}
+    ]

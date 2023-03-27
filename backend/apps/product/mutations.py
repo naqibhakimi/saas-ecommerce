@@ -1,9 +1,9 @@
 import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
-from .mixins import (CreatePriceListMixin, CreateProductMixin, CreateProductTagMixin, CreateProductTypeMixin,
-                     DeletePriceListMixin, DeleteProductTypeMixin, UpdatePriceListMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductTypeMixin)
-from .inputs import (CreateProductInputField, CreateProductTagInputField, UpdateProductInputField, UpdateProductTypeInputField,
-                     createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField)
+from .mixins import (CreateImageMixin, CreatePriceListMixin, CreateProductMixin, CreateProductTagMixin, CreateProductTypeMixin,
+                     DeletePriceListMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdatePriceListMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
+from .inputs import (CreateProductInputField, CreateProductTagInputField, UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
+                     createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField, CreateImageInputField, CreateProductTypeInputField)
 
 
 class CreateProduct(DynamicInputMixin, RelayMutationMixin, CreateProductMixin, graphene.ClientIDMutation):
@@ -58,7 +58,23 @@ class DeleteProductType(DynamicInputMixin, RelayMutationMixin, DeleteProductType
 
 class CreateProductTag(DynamicInputMixin, RelayMutationMixin, CreateProductTagMixin, graphene.ClientIDMutation):
     __doc__ = CreateProductTagMixin.__doc__
-    inputs = {"product_type": CreateProductTagInputField}
+    _inputs = {"product_tag": CreateProductTagInputField}
+
+
+class UpdateProductTag(DynamicInputMixin, RelayMutationMixin, UpdateProductTagMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateProductTagMixin.__doc__
+    _inputs = {"product_tag": UpdateProductTagInputField}
+    _required_inputs = {}
+
+
+class DeleteProductTag(DynamicInputMixin, RelayMutationMixin, DeleteProductTagMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteProductTagMixin.__doc__
+    _required_inputs = {"id": graphene.ID}
+
+
+class CreateProductImage(DynamicInputMixin, RelayMutationMixin, CreateImageMixin, graphene.ClientIDMutation):
+    __doc__ = CreateImageMixin.__doc__
+    _inputs = {"image": CreateImageInputField}
 
 
 class Mutation:
@@ -72,3 +88,6 @@ class Mutation:
     update_product_type = UpdateProductType.Field()
     delete_product_type = DeleteProductType.Field()
     create_product_tag = CreateProductTag.Field()
+    update_product_tag = UpdateProductTag.Field()
+    delete_product_tag = DeleteProductTag.Field()
+    # create_product_image = CreateProductImage.Field()
