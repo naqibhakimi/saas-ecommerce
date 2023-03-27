@@ -84,19 +84,20 @@ class UpdateAddressInputField(graphene.InputObjectType):
 
 class CreateRegionInputField(graphene.InputObjectType):
     name = graphene.String(required=True)
-    currency = graphene.String(required=True)
+    currency = graphene.String()
     tax_rates = graphene.String()
     tax_code = graphene.String()
     gift_cards_taxable = graphene.String()
     automatic_taxes = graphene.String()
-    tax_provider = graphene.String()
-    metadata = graphene.String()
+    tax_provider = graphene.ID()
+    metadata = graphene.String(required=False)
     includes_tax = graphene.String()
 
 
 class UpdateRegionInputField(graphene.InputObjectType):
-    name = graphene.String(required=True)
-    currency = graphene.String(required=True)
+    id = graphene.ID(required=True)
+    name = graphene.String()
+    currency = graphene.String()
     tax_rates = graphene.String()
     tax_code = graphene.String()
     gift_cards_taxable = graphene.String()

@@ -7,22 +7,25 @@ import graphene
 from apps.auth.mutations import Mutation as AuthMutations
 from apps.auth.queries import Query as AuthQueries
 from apps.store.mutations import Mutation as StoreMutations
-
 from apps.customer.mutations import Mutation as CustomMutations
 from apps.customer.queries import Query as CustomerQuery
+from apps.product.queries import Query as ProductQuery
+from apps.product.mutations import Mutation as ProductMutations
 
 
 channel_layer = get_channel_layer()
 
 
-class Query(AuthQueries, CustomerQuery, graphene.ObjectType):
+class Query(AuthQueries, CustomerQuery, ProductQuery, graphene.ObjectType):
     test = graphene.String(name=graphene.String())
 
     def resolve_test(root, info, name):
         async_to_sync(channel_layer.group_send)("new_message", {"data": name})
 
 
-class Mutatation(AuthMutations, StoreMutations, CustomMutations, graphene.ObjectType):
+class Mutatation(AuthMutations, StoreMutations,
+                 CustomMutations, ProductMutations,
+                 graphene.ObjectType):
     test_object = graphene.String()
 
 

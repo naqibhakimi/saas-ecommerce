@@ -2,11 +2,14 @@ import graphene
 from apps.core.mutations import DynamicInputMixin, RelayMutationMixin
 
 from .forms import DeleteCustomerForm
-from .inputs import CreateAddressInputField, CreateCountryInputField, CreateCustomerGroupInputField, CreateCustomerInputField, UpdateAddressInputField, UpdateCountryInputField, UpdateCustomerGroupInputField, UpdateCustomerInputField
+from .inputs import (CreateAddressInputField, CreateCountryInputField,
+                     CreateCustomerGroupInputField, CreateCustomerInputField,
+                     UpdateAddressInputField, UpdateCountryInputField,
+                     UpdateCustomerGroupInputField, UpdateCustomerInputField, CreateRegionInputField, UpdateRegionInputField)
 from .mixins import (CreateAddressMixin, CreateCountryMixin,
                      CreateCustomerGroupMixin, CreateCustomerMixin,
-                     CreateRegionMixin, DeleteAddressMixin, DeleteCountryMixin, DeleteCustomerGroupMixin, DeleteCustomerMixin, UpdateAddressMixin, UpdateCountryMixin, UpdateCustomerGroupMixin,
-                     UpdateCustomerMixin)
+                     CreateRegionMixin, DeleteAddressMixin, DeleteCountryMixin, DeleteCustomerGroupMixin, DeleteCustomerMixin, DeleteRegionMixin, UpdateAddressMixin, UpdateCountryMixin, UpdateCustomerGroupMixin,
+                     UpdateCustomerMixin, UpdateRegionMixin)
 from .types import (AddressNode, CountryNode, CustomerGroupNode, CustomerNode,
                     RegionNode)
 
@@ -62,18 +65,31 @@ class CreateAddress(DynamicInputMixin, RelayMutationMixin, CreateAddressMixin, g
     _inputs = {"Address": CreateAddressInputField}
 
 
-class DeleteAddress(DynamicInputMixin, RelayMutationMixin, DeleteAddressMixin, graphene.ClientIDMutation):
-    __docs__ = DeleteAddressMixin.__doc__
-    _required_inputs = {"id": graphene.ID}
-
-
 class UpdateAddress(DynamicInputMixin, RelayMutationMixin, UpdateAddressMixin, graphene.ClientIDMutation):
     _inputs = {"Address": UpdateAddressInputField}
     _required_inputs = {}
 
 
-# class CreateRegion(DynamicInputMixin, RelayMutationMixin, CreateRegionMixin, graphene.ClientIDMutation):
-#     _inputs = {"Region": RegionNode}
+class DeleteAddress(DynamicInputMixin, RelayMutationMixin, DeleteAddressMixin, graphene.ClientIDMutation):
+    __docs__ = DeleteAddressMixin.__doc__
+    _required_inputs = {"id": graphene.ID}
+
+
+class CreateRegion(DynamicInputMixin, RelayMutationMixin, CreateRegionMixin, graphene.ClientIDMutation):
+    __docs__ = CreateRegionMixin.__doc__
+    _required_inputs = {}
+    _inputs = {"Region": CreateRegionInputField}
+
+
+class UpdateRegion(DynamicInputMixin, RelayMutationMixin, UpdateRegionMixin, graphene.ClientIDMutation):
+    __docs__ = UpdateRegionMixin.__doc__
+    _required_inputs = {}
+    _inputs = {"Region": UpdateRegionInputField}
+
+
+class DeleteRegion(DynamicInputMixin, RelayMutationMixin, DeleteRegionMixin, graphene.ClientIDMutation):
+    __docs__ = DeleteRegionMixin
+    _required_inputs = {"id": graphene.ID}
 
 
 class Mutation(object):
@@ -89,6 +105,6 @@ class Mutation(object):
     create_address = CreateAddress.Field()
     update_address = UpdateAddress.Field()
     delete_address = DeleteAddress.Field()
-    # create_region = CreateRegion.Field()
-    # update_region = UpdateRegion.Field()
-    # delete_region = DeleteRegion.Field()
+    create_region = CreateRegion.Field()
+    update_region = UpdateRegion.Field()
+    delete_region = DeleteRegion.Field()
