@@ -1,9 +1,9 @@
 import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
-from .mixins import (CreateImageMixin, CreatePriceListMixin, CreateProductMixin, CreateProductTagMixin, CreateProductTypeMixin,
-                     DeletePriceListMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdatePriceListMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
-from .inputs import (CreateProductInputField, CreateProductTagInputField, UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
-                     createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField, CreateImageInputField, CreateProductTypeInputField)
+from .mixins import (CreateImageMixin, CreatePriceListMixin, CreateProductCollectionMixin, CreateProductMixin, CreateProductTagMixin, CreateProductTypeMixin, DeleteImageMixin,
+                     DeletePriceListMixin, DeleteProductCollectionMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdateImageMixin, UpdatePriceListMixin, UpdateProductCollectionMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
+from .inputs import (CreateProductInputField, CreateProductTagInputField, UpdateImageInputField, UpdateProductCollectionInputField, UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
+                     createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField, CreateImageInputField, CreateProductTypeInputField, CreateProductCollectionInputField)
 
 
 class CreateProduct(DynamicInputMixin, RelayMutationMixin, CreateProductMixin, graphene.ClientIDMutation):
@@ -27,6 +27,7 @@ class DeleteProduct(DynamicInputMixin, RelayMutationMixin, DeleteProductMixin, g
 class CreatePriceList(DynamicInputMixin, RelayMutationMixin, CreatePriceListMixin, graphene.ClientIDMutation):
     __doc__ = CreatePriceListMixin.__doc__
     _inputs = {"price_list": createPriceListInputField}
+
 
 class UpdatePriceList(DynamicInputMixin, RelayMutationMixin, UpdatePriceListMixin, graphene.ClientIDMutation):
     __doc__ = UpdatePriceListMixin.__doc__
@@ -74,6 +75,32 @@ class CreateProductImage(DynamicInputMixin, RelayMutationMixin, CreateImageMixin
     _inputs = {"image": CreateImageInputField}
 
 
+class UpdateProductImage(DynamicInputMixin, RelayMutationMixin, UpdateImageMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateImageMixin.__doc__
+    _inputs = {"image": UpdateImageInputField}
+
+
+class DeleteProductImage(DynamicInputMixin, RelayMutationMixin, DeleteImageMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteImageMixin.__doc__
+    _inputs = {"id": graphene.ID}
+
+
+class CreateProductCollection(DynamicInputMixin, RelayMutationMixin, CreateProductCollectionMixin, graphene.ClientIDMutation):
+    __doc__ = CreateProductCollectionMixin.__doc__
+    _inputs = {"collection": CreateProductCollectionInputField}
+
+
+class UpdateProductCollection(DynamicInputMixin, RelayMutationMixin, UpdateProductCollectionMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateProductCollectionMixin.__doc__
+    _inputs = {"collection": UpdateProductCollectionInputField}
+
+
+class DeleteProductCollection(DynamicInputMixin, RelayMutationMixin, DeleteProductCollectionMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteProductCollectionMixin.__doc__
+    # FIXME: Whey here we use just ID but in inputs we use ID()
+    _inputs = {"id": graphene.ID}
+
+
 class Mutation:
     create_product = CreateProduct.Field()
     update_product = UpdateProduct.Field()
@@ -87,4 +114,9 @@ class Mutation:
     create_product_tag = CreateProductTag.Field()
     update_product_tag = UpdateProductTag.Field()
     delete_product_tag = DeleteProductTag.Field()
-    # create_product_image = CreateProductImage.Field()
+    create_product_image = CreateProductImage.Field()
+    update_product_image = UpdateProductImage.Field()
+    delete_product_image = DeleteProductImage.Field()
+    create_product_collection = CreateProductCollection.Field()
+    update_product_collection = UpdateProductCollection.Field()
+    delete_product_collection = DeleteProductCollection.Field()

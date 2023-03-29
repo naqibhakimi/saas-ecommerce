@@ -110,3 +110,18 @@ class UpdateImageInputField(graphene.InputObjectType):
     id = graphene.ID()
     url = graphene.String()
     metadata = graphene.String()
+
+
+class CreateProductCollectionInputField(graphene.InputObjectType):
+    title = graphene.String()
+    handle = graphene.String()
+    # products =
+    metadata = graphene.String()
+
+
+class UpdateProductCollectionInputField(graphene.InputObjectType):
+    id = graphene.ID()
+    title = graphene.String()
+    handle = graphene.String()
+    # products =
+    metadata = graphene.String()

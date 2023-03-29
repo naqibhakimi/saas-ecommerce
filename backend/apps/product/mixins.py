@@ -202,16 +202,16 @@ class DeleteProductTagMixin(Output):
 class CreateImageMixin(Output):
     form = CreateImageForm
 
-    @staticmethod
+    @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        image_data = kwargs.get("")
+        image_data = kwargs.get("image")
         try:
             form = cls.form(data=image_data)
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.IMAGE_CREATED)
+                return cls(success=True, errors=Message.PRODUCT_IMAGE_CREATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
@@ -228,14 +228,16 @@ class UpdateImageMixin(Output):
                 id=image_data.pop("id")))
             if form.is_valid():
                 instance = form.save(commit=False)
+                # FIXME: how do you use (update_fields) and where actually it is?
+                # inside save we have only one argument which is commit so where this update_fields
                 instance.save(update_fields=image_data.keys())
-                return cls(success=True, errors=Message.IMAGE_CREATED)
+                return cls(success=True, errors=Message.PRODUCT_IMAGE_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
 
 
-class DeleteImage(Output):
+class DeleteImageMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -243,22 +245,22 @@ class DeleteImage(Output):
             Image.objects.get(id=kwargs.get('id')).delete()
             return cls(success=True, errors=Message.Image_DELETED)
         except ObjectDoesNotExist:
-            return cls(success=False, errors=Message.Image_NOT_FOUND)
+            return cls(success=False, errors=Message.PRODUCT_IMAGE_NOT_FOUND)
 
 
 class CreateProductCollectionMixin(Output):
     form = CreateProductCollectionForm
 
-    @staticmethod
+    @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        product_collection_data = kwargs.get("")
+        product_collection_data = kwargs.get("collection")
         try:
             form = cls.form(data=product_collection_data)
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.sd)
+                return cls(success=True, errors=Message.PRODUCT_COLLECTION_CREATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
@@ -269,7 +271,7 @@ class UpdateProductCollectionMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        product_collection_data = kwargs.get("product_collection")
+        product_collection_data = kwargs.get("collection")
         try:
             form = cls.form(data=product_collection_data,
                             instance=ProductCollection.objects.get(id=product_collection_data.pop('id')))
@@ -282,7 +284,7 @@ class UpdateProductCollectionMixin(Output):
             return cls(success=False, errors=e)
 
 
-class DeleteProductCollection(Output):
+class DeleteProductCollectionMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
