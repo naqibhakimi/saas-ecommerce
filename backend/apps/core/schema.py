@@ -11,12 +11,17 @@ from apps.customer.mutations import Mutation as CustomMutations
 from apps.customer.queries import Query as CustomerQuery
 from apps.product.queries import Query as ProductQuery
 from apps.product.mutations import Mutation as ProductMutations
+from apps.payment.queries import Query as PaymentQuery
+from apps.payment.mutations import Mutation as PaymentMutations
 
 
 channel_layer = get_channel_layer()
 
 
-class Query(AuthQueries, CustomerQuery, ProductQuery, graphene.ObjectType):
+class Query(AuthQueries, CustomerQuery,
+            ProductQuery,
+            PaymentQuery,
+            graphene.ObjectType):
     test = graphene.String(name=graphene.String())
 
     def resolve_test(root, info, name):
@@ -25,6 +30,7 @@ class Query(AuthQueries, CustomerQuery, ProductQuery, graphene.ObjectType):
 
 class Mutatation(AuthMutations, StoreMutations,
                  CustomMutations, ProductMutations,
+                 PaymentMutations,
                  graphene.ObjectType):
     test_object = graphene.String()
 

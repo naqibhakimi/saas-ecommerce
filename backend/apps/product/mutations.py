@@ -1,8 +1,9 @@
 import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
-from .mixins import (CreateImageMixin, CreatePriceListMixin, CreateProductCollectionMixin, CreateProductMixin, CreateProductTagMixin, CreateProductTypeMixin, DeleteImageMixin,
-                     DeletePriceListMixin, DeleteProductCollectionMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdateImageMixin, UpdatePriceListMixin, UpdateProductCollectionMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
-from .inputs import (CreateProductInputField, CreateProductTagInputField, UpdateImageInputField, UpdateProductCollectionInputField, UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
+from .mixins import (CreateImageMixin, CreateMoneyAmountMixin, CreatePriceListMixin, CreateProductCollectionMixin, CreateProductMixin, CreateProductTagMixin, CreateProductTypeMixin, DeleteImageMixin,
+                     DeletePriceListMixin, DeleteProductCollectionMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdateImageMixin,
+                     UpdatePriceListMixin, UpdateProductCollectionMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
+from .inputs import (CreateMoneyAmountInputField, CreateProductInputField, CreateProductTagInputField, UpdateImageInputField, UpdateProductCollectionInputField, UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
                      createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField, CreateImageInputField, CreateProductTypeInputField, CreateProductCollectionInputField)
 
 
@@ -101,6 +102,11 @@ class DeleteProductCollection(DynamicInputMixin, RelayMutationMixin, DeleteProdu
     _inputs = {"id": graphene.ID}
 
 
+class CreateMoneyAmount(DynamicInputMixin, RelayMutationMixin, CreateMoneyAmountMixin, graphene.ClientIDMutation):
+    __doc__ = CreateMoneyAmountMixin.__doc__
+    _inputs = {"money_amount": CreateMoneyAmountInputField}
+
+
 class Mutation:
     create_product = CreateProduct.Field()
     update_product = UpdateProduct.Field()
@@ -120,3 +126,4 @@ class Mutation:
     create_product_collection = CreateProductCollection.Field()
     update_product_collection = UpdateProductCollection.Field()
     delete_product_collection = DeleteProductCollection.Field()
+    create_money_amount = CreateMoneyAmount.Field()

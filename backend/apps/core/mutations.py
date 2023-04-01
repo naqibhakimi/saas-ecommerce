@@ -67,6 +67,7 @@ class DynamicInputMixin:
         if isinstance(cls._inputs, dict):
             for key in cls._inputs:
                 try:
+                    # TODO: from where this first second ._meta.fields.update comes from?
                     cls._meta.arguments["input"]._meta.fields.update(
                         {key: graphene.InputField(getattr(graphene, cls._inputs[key]))}
                     )

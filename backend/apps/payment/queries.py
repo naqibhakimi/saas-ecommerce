@@ -23,7 +23,7 @@ class PaymentSessionQuery:
 
 
 class CurrencyQuery:
-    currencys = DjangoFilterConnectionField(CurrencyNode)
+    currencies = DjangoFilterConnectionField(CurrencyNode)
     currency = graphene.Field(CurrencyNode, id=graphene.ID())
 
 
@@ -45,3 +45,10 @@ class PaymentProviderQuery:
 class RefundQuery:
     refunds = DjangoFilterConnectionField(RefundNode)
     refund = graphene.Field(RefundNode, id=graphene.ID())
+
+
+class Query(PaymentQuery, PaymentSessionQuery,
+            CurrencyQuery, IdempotencyKeyQuery, PaymentCollectionQuery,
+            PaymentProviderQuery, RefundQuery
+            ):
+    pass

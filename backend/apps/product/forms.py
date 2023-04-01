@@ -1,4 +1,4 @@
-from .models import Image, PriceList, Product, ProductCollection, ProductTag, ProductType
+from .models import Image, MoneyAmount, PriceList, Product, ProductCategory, ProductCollection, ProductOption, ProductTag, ProductType
 from apps.core.forms import BaseForm
 
 
@@ -87,6 +87,35 @@ class UpdatePriceListForm(BaseForm):
         )
 
 
+class CreateMoneyAmountForm(BaseForm):
+    class Meta:
+        model = MoneyAmount
+        fields = (
+            "currency",
+            "amount",
+            "min_quantity",
+            "max_quantity",
+            "price_list",
+            "variant",
+            "region",
+        )
+
+
+class UpdateMoneyAmountForm(BaseForm):
+    class Meta:
+        model = MoneyAmount
+        fields = (
+            "id",
+            "currency",
+            "amount",
+            "min_quantity",
+            "max_quantity",
+            "price_list",
+            "variant",
+            "region",
+        )
+
+
 class CreateProductTypeForm(BaseForm):
     class Meta:
         model = ProductType
@@ -158,7 +187,183 @@ class UpdateProductCollectionForm(BaseForm):
     class Meta:
         model = ProductCollection
         fields = (
+            "id",
             "title",
             "handle",
             "metadata"
+        )
+
+
+class CreateProductCategoryForm(BaseForm):
+    class Meta:
+        model = ProductCategory
+        fields = (
+            "name",
+            "handle",
+            "is_active",
+            "is_internal",
+            "parent_category",
+        )
+
+
+class UpdateProductCategoryForm(BaseForm):
+    class Meta:
+        model = ProductCategory
+        fields = (
+            "id",
+            "name",
+            "handle",
+            "is_active",
+            "is_internal",
+            "parent_category",
+        )
+
+
+class CreateProductOptionForm(BaseForm):
+    class Meta:
+        model = ProductOption
+        fields = (
+            "title",
+            "product",
+            "metadata",
+        )
+
+
+class UpdateProductOptionForm(BaseForm):
+    class Meta:
+        model = ProductOption
+        fields = (
+            "id",
+            "title",
+            "product",
+            "metadata",
+        )
+
+
+class CreateProductOptionValueForm(BaseForm):
+    class Meta:
+        fields = (
+            "value",
+            "option",
+            "variant",
+            "metadata",
+        )
+
+
+class UpdateProductOptionValueForm(BaseForm):
+    class Meta:
+        fields = (
+            "id",
+            "value",
+            "option",
+            "variant",
+            "metadata",
+        )
+
+
+class CreateProductTaxRateForm(BaseForm):
+    class Meta:
+        fields = (
+            "product",
+            "tax_rate",
+            "metadata",
+        )
+
+
+class UpdateProductTaxRateForm(BaseForm):
+    class Meta:
+        fields = (
+            "id",
+            "product",
+            "tax_rate",
+            "metadata",
+        )
+
+
+class CreateProductTypeTaxRateForm(BaseForm):
+    class Meta:
+        fields = (
+            "product_type",
+            "tax_rate",
+            "metadata",
+        )
+
+
+class UpdateProductTypeTaxRateForm(BaseForm):
+    class Meta:
+        fields = (
+            "id",
+            "product_type",
+            "tax_rate",
+            "metadata",
+        )
+
+
+class CreateVariantInventoryItemForm(BaseForm):
+    class Meta:
+        fields = (
+            "inventory_item_id",
+            "variant_id",
+            "required_quantity",
+        )
+
+
+class UpdateVariantInventoryItemForm(BaseForm):
+    class Meta:
+        fields = (
+            "id",
+            "inventory_item_id",
+            "variant_id",
+            "required_quantity",
+        )
+
+
+class CreateProductVariantForm(BaseForm):
+    class Meta:
+        fields = (
+            "title",
+            "product",
+            "sku",
+            "barcode",
+            "ean",
+            "upc",
+            "variant_rank",
+            "inventory_quantity",
+            "allow_back_order",
+            "manage_inventory",
+            "hs_code",
+            "origin_country",
+            "mid_code",
+            "material",
+            "weight",
+            "length",
+            "height",
+            "width",
+            "metadata",
+        )
+
+
+class UpdateProductVariantForm(BaseForm):
+    class Meta:
+        fields = (
+            "id",
+            "title",
+            "product",
+            "sku",
+            "barcode",
+            "ean",
+            "upc",
+            "variant_rank",
+            "inventory_quantity",
+            "allow_back_order",
+            "manage_inventory",
+            "hs_code",
+            "origin_country",
+            "mid_code",
+            "material",
+            "weight",
+            "length",
+            "height",
+            "width",
+            "metadata",
         )
