@@ -53,3 +53,33 @@ class Message:
     PRODUCT_TAG_NOT_FOUND = [
         {"message": _("Product tag not found"), "code": "product_tag_not_found"}
     ]
+    PRODUCT_IMAGE_CREATED = [
+        {"message": _("Product Image created"), "code": "product_image_created"}
+    ]
+    PRODUCT_IMAGE_UPDATED = [
+        {"message": _("Product Image Updated"), "code": "product_image_updated"}
+    ]
+
+    PRODUCT_IMAGE_DELETED = [
+        {"message": _("Product Image Deleted"), "code": "product_image_deleted"}
+    ]
+
+    PRODUCT_IMAGE_NOT_FOUND = [
+        {"message": _("Product Image Not Found"), "code": "product_image_not_found"}
+    ]
+    PRODUCT_COLLECTION_CREATED = [
+        {"message": _("Product Collection Created"),
+         "code": "product_collection_created"}
+    ]
+    PRODUCT_COLLECTION_UPDATED = [
+        {"message": _("Product Collection Updated"),
+         "code": "product_collection_updated"}
+    ]
+    PRODUCT_COLLECTION_DELETED = [
+        {"message": _("Product Collection Deleted"),
+         "code": "product_collection_deleted"}
+    ]
+    PRODUCT_COLLECTION_NOT_FOUND = [
+        {"message": _("Product Collection Not Found"),
+         "code": "product_collection_not_found"}
+    ]

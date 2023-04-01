@@ -22,7 +22,7 @@ class PriceList(BaseModel):
 
 
 class MoneyAmount(BaseModel):
-    # [TODO: build mixin and mutation ]
+    # todo:
     # do we need this ?
     # currency_code = models.CharField(max_length=255, null=True, blank=True)
     currency = models.ForeignKey(
@@ -53,7 +53,7 @@ class ProductTag(BaseModel):
 
 
 class Image(BaseModel):
-    # [FIXME: how to upload images]
+    # FIXME: how to upload images or do even need image here to upload
     url = models.CharField(max_length=255, null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -167,7 +167,7 @@ class ProductVariant(BaseModel):
     upc = models.CharField(max_length=255, null=True, unique=True)
     variant_rank = models.PositiveIntegerField(default=0)
     inventory_quantity = models.PositiveIntegerField()
-    allow_backorder = models.BooleanField(default=False)
+    allow_back_order = models.BooleanField(default=False)
     manage_inventory = models.BooleanField(default=True)
     hs_code = models.CharField(max_length=255, null=True)
     origin_country = models.CharField(max_length=255, null=True)
