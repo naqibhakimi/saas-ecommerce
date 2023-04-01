@@ -65,8 +65,7 @@ class DeleteProductMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
-            # [FIXME: filter or get]
-            Product.objects.filter(id=kwargs.get("id")).delete()
+            Product.objects.get(id=kwargs.get("id")).delete()
             return cls(success=True, errors=Message.PRODUCT_DELETED)
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.PRODUCT_NOT_FOUND)
