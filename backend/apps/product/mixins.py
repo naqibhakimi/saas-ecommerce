@@ -320,29 +320,41 @@ class CreateMoneyAmountMixin(Output):
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.MoneyAmount_CREATED)
+                return cls(success=True, errors=Message.MONEY_AMOUNT_CREATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
 
 
-class UpdateMoneyAmountForm(Output):
+class UpdateMoneyAmountMixin(Output):
     form = UpdateMoneyAmountForm
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        MoneyAmount_data = kwargs.get("MoneyAmount")
+        money_amount_data = kwargs.get("money_amount")
         try:
-            form = cls.form(data=MoneyAmount.objects.get(id=MoneyAmount_data.pop("id")))
-            if form.is_error:
+            form = cls.form(data=money_amount_data, instance=MoneyAmount.objects.get(
+                id=money_amount_data.pop("id")))
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
-                instance.save(update_fields="")
-                return cls(success=True, errors=Message.asdf_UPDATED)
+                instance.save(update_fields=money_amount_data.keys())
+                return cls(success=True, errors=Message.MONEY_AMOUNT_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
+
+
+class DeleteMoneyAmountMixin(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            MoneyAmount.objects.get(id=kwargs.get('id')).delete()
+            return cls(success=True, errors=Message.MONEY_AMOUNT_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.MONEY_AMOUNT_DOES_NOT_EXIST)
 
 
 class CreateProductCategoryMixin(Output):
@@ -350,37 +362,48 @@ class CreateProductCategoryMixin(Output):
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductCategory_data = kwargs.get("ProductCategory")
+        product_category_data = kwargs.get("product_category")
         try:
-            form = cls.form(data=ProductCategory_data)
+            form = cls.form(data=product_category_data)
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.ProductCategory_CREATED)
+                return cls(success=True, errors=Message.PRODUCT_CATEGORY_CREATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
 
 
-class UpdateProductCategoryForm(Output):
+class UpdateProductCategoryMixin(Output):
     form = UpdateProductCategoryForm
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductCategory_data = kwargs.get("ProductCategory")
+        product_category_data = kwargs.get("product_category")
         try:
-            form = cls.form(data=ProductCategory.objects.get(
-                id=ProductCategory_data.pop("id")))
-            if form.is_error:
+            form = cls.form(data=product_category_data, instance=ProductCategory.objects.get(
+                id=product_category_data.pop("id")))
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
-                instance.save(update_fields="")
-                return cls(success=True, errors=Message.asdf_UPDATED)
+                instance.save(update_fields=product_category_data.keys())
+                return cls(success=True, errors=Message.PRODUCT_CATEGORY_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
+
+
+class DeleteProductCategoryMixin(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductCategory.objects.get(id=kwargs.get("id")).delete()
+            return cls(success=True, errors=Message.PRODUCT_CATEGORY_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.PRODUCT_CATEGORY_DOES_NOT_EXIST)
 
 
 class CreateProductOptionMixin(Output):
@@ -388,37 +411,49 @@ class CreateProductOptionMixin(Output):
 
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductOption_data = kwargs.get("ProductOption")
+        product_option_data = kwargs.get("product_option")
         try:
-            form = cls.form(data=ProductOption_data)
+            form = cls.form(data=product_option_data)
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.ProductOption_CREATED)
+                return cls(success=True, errors=Message.PRODUCT_OPTION_CREATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
 
 
-class UpdateProductOptionForm(Output):
+class UpdateProductOptionMixin(Output):
     form = UpdateProductOptionForm
 
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductOption_data = kwargs.get("ProductOption")
+        product_option_data = kwargs.get(
+            "product_option")
         try:
-            form = cls.form(data=ProductOption.objects.get(
-                id=ProductOption_data.pop("id")))
-            if form.is_error:
+            form = cls.form(data=product_option_data, instance=ProductOption.objects.get(
+                id=product_option_data.pop("id")))
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
-                instance.save(update_fields="")
-                return cls(success=True, errors=Message.asdf_UPDATED)
+                instance.save(update_fields=product_option_data.keys())
+                return cls(success=True, errors=Message.PRODUCT_OPTION_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
+
+
+class DeleteProductOptionMixin(Output):
+
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductOption.objects.get(id=kwargs.get('id')).delete()
+            return cls(success=True, errors=Message.PRODUCT_OPTION_DELETED)
+        except ObjectDoesNotExist:
+            return cls(success=False, errors=Message.PRODUCT_OPTION_DOES_NOT_EXIST)
 
 
 class CreateProductOptionValueMixin(Output):
@@ -426,37 +461,47 @@ class CreateProductOptionValueMixin(Output):
 
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductOptionValue_data = kwargs.get("ProductOptionValue")
+        product_option_value_data = kwargs.get("product_option_value")
         try:
-            form = cls.form(data=ProductOptionValue_data)
+            form = cls.form(data=product_option_value_data)
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.ProductOptionValue_CREATED)
+                return cls(success=True, errors=Message.PRODUCT_OPTION_VALUE_CREATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
 
 
-class UpdateProductOptionValueForm(Output):
+class UpdateProductOptionValueMixin(Output):
     form = UpdateProductOptionValueForm
 
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductOptionValue_data = kwargs.get("ProductOptionValue")
+        product_option_value_data = kwargs.get("product_option_value")
         try:
-            form = cls.form(data=ProductOptionValue.objects.get(
-                id=ProductOptionValue_data.pop("id")))
-            if form.is_error:
+            form = cls.form(data=product_option_value_data, instance=ProductOptionValue.objects.get(
+                id=product_option_value_data.pop("id")))
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
-                instance.save(update_fields="")
-                return cls(success=True, errors=Message.asdf_UPDATED)
+                instance.save(update_fields=product_option_value_data.keys())
+                return cls(success=True, errors=Message.PRODUCT_OPTION_VALUE_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
+
+
+class DeleteProductOptionValueMixin(Output):
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductOptionValue.objects.get(id=kwargs.get("id")).delete()
+            return cls(success=True, errors=Message.PRODUCT_OPTION_VALUE_DELETED)
+        except ProductOptionValue.DoesNotExist:
+            return cls(success=False, errors=Message.PRODUCT_OPTION_VALUE_DOES_NOT_EXIST)
 
 
 class CreateProductTaxRateMixin(Output):
@@ -464,34 +509,34 @@ class CreateProductTaxRateMixin(Output):
 
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductTaxRate_data = kwargs.get("ProductTaxRate")
+        product_tax_rate_data = kwargs.get("product_tax_rate")
         try:
-            form = cls.form(data=ProductTaxRate_data)
+            form = cls.form(data=product_tax_rate_data)
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.ProductTaxRate_CREATED)
+                return cls(success=True, errors=Message.PRODUCT_TAX_RATE_CREATED)
             return cls(success=False, errors=form.errors)
         except (ValidationError, ValueError) as e:
             return cls(success=False, errors=e)
 
 
-class UpdateProductTaxRateForm(Output):
+class UpdateProductTaxRateMixin(Output):
     form = UpdateProductTaxRateForm
 
     @ classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-        ProductTaxRate_data = kwargs.get("ProductTaxRate")
+        product_tax_rate_data = kwargs.get("product_tax_rate")
         try:
             form = cls.form(data=ProductTaxRate.objects.get(
-                id=ProductTaxRate_data.pop("id")))
-            if form.is_error:
+                id=product_tax_rate_data.pop("id")))
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
                 instance.save(update_fields="")
-                return cls(success=True, errors=Message.asdf_UPDATED)
+                return cls(success=True, errors=Message.PRODUCT_TAX_RATE_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
@@ -524,7 +569,7 @@ class UpdateProductTypeTaxRateForm(Output):
         try:
             form = cls.form(data=ProductTypeTaxRate.objects.get(
                 id=ProductTypeTaxRate_data.pop("id")))
-            if form.is_error:
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
@@ -562,7 +607,7 @@ class UpdateProductVariantInventoryItemForm(Output):
         try:
             form = cls.form(data=ProductVariantInventoryItem.objects.get(
                 id=ProductVariantInventoryItem_data.pop("id")))
-            if form.is_error:
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
@@ -600,7 +645,7 @@ class UpdateProductVariantForm(Output):
         try:
             form = cls.form(data=ProductVariant.objects.get(
                 id=ProductVariant_data.pop("id")))
-            if form.is_error:
+            if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)

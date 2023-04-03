@@ -1,10 +1,16 @@
 import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
-from .mixins import (CreateImageMixin, CreateMoneyAmountMixin, CreatePriceListMixin, CreateProductCollectionMixin, CreateProductMixin, CreateProductTagMixin, CreateProductTypeMixin, DeleteImageMixin,
-                     DeletePriceListMixin, DeleteProductCollectionMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdateImageMixin,
-                     UpdatePriceListMixin, UpdateProductCollectionMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
-from .inputs import (CreateMoneyAmountInputField, CreateProductInputField, CreateProductTagInputField, UpdateImageInputField, UpdateProductCollectionInputField, UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
-                     createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField, CreateImageInputField, CreateProductTypeInputField, CreateProductCollectionInputField)
+from .mixins import (CreateImageMixin, CreateMoneyAmountMixin, CreatePriceListMixin, CreateProductCategoryMixin, CreateProductCollectionMixin, CreateProductMixin, CreateProductOptionMixin, CreateProductOptionValueMixin, CreateProductTagMixin, CreateProductTaxRateMixin, CreateProductTypeMixin, DeleteImageMixin, DeleteMoneyAmountMixin,
+                     DeletePriceListMixin, DeleteProductCategoryMixin, DeleteProductCollectionMixin, DeleteProductOptionMixin, DeleteProductOptionValueMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdateImageMixin, UpdateMoneyAmountMixin,
+                     UpdatePriceListMixin, UpdateProductCategoryMixin, UpdateProductCollectionMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductOptionMixin, UpdateProductOptionValueMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
+from .inputs import (CreateMoneyAmountInputField, CreateProductInputField, CreateProductOptionValueInputField, CreateProductTagInputField, CreateProductTypeTaxRateInputField, UpdateImageInputField,
+                     UpdateProductCategoryInputField, UpdateProductCollectionInputField,
+                     UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
+                     createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField,
+                     CreateImageInputField, CreateProductTypeInputField, CreateProductCollectionInputField,
+                     UpdateMoneyAmountInputField, CreateProductCategoryInputField,
+                     CreateProductOptionInputField, UpdateProductOptionInputField,
+                     UpdateProductOptionValueInputField, CreateProductTaxRateInputField)
 
 
 class CreateProduct(DynamicInputMixin, RelayMutationMixin, CreateProductMixin, graphene.ClientIDMutation):
@@ -107,6 +113,66 @@ class CreateMoneyAmount(DynamicInputMixin, RelayMutationMixin, CreateMoneyAmount
     _inputs = {"money_amount": CreateMoneyAmountInputField}
 
 
+class UpdateMoneyAmount(DynamicInputMixin, RelayMutationMixin, UpdateMoneyAmountMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateMoneyAmountMixin.__doc__
+    _inputs = {"money_amount": UpdateMoneyAmountInputField}
+
+
+class DeleteMoneyAmount(DynamicInputMixin, RelayMutationMixin, DeleteMoneyAmountMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteMoneyAmountMixin.__doc__
+    _inputs = {"id": graphene.ID}
+
+
+class CreateProductCategory(DynamicInputMixin, RelayMutationMixin, CreateProductCategoryMixin, graphene.ClientIDMutation):
+    __doc__ = CreateProductCategoryMixin.__doc__
+    _inputs = {"product_category": CreateProductCategoryInputField}
+
+
+class UpdateProductCategory(DynamicInputMixin, RelayMutationMixin, UpdateProductCategoryMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateProductCategoryMixin.__doc__
+    _inputs = {"product_category": UpdateProductCategoryInputField}
+
+
+class DeleteProductCategory(DynamicInputMixin, RelayMutationMixin, DeleteProductCategoryMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteProductCategoryMixin.__doc__
+    _inputs = {"id": graphene.ID}
+
+
+class CreateProductOption(DynamicInputMixin, RelayMutationMixin, CreateProductOptionMixin, graphene.ClientIDMutation):
+    __doc__ = CreateProductOptionMixin.__doc__
+    _inputs = {"product_option": CreateProductOptionInputField}
+
+
+class UpdateProductOption(DynamicInputMixin, RelayMutationMixin, UpdateProductOptionMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateProductOptionMixin.__doc__
+    _inputs = {"product_option": UpdateProductOptionInputField}
+
+
+class DeleteProductOption(DynamicInputMixin, RelayMutationMixin, DeleteProductOptionMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteProductOptionMixin.__doc__
+    _inputs = {"id": graphene.ID}
+
+
+class CreateProductOptionValue(DynamicInputMixin, RelayMutationMixin, CreateProductOptionValueMixin, graphene.ClientIDMutation):
+    __doc__ = CreateProductOptionValueMixin.__doc__
+    _inputs = {"product_option_value": CreateProductOptionValueInputField}
+
+
+class UpdateProductOptionValue(DynamicInputMixin, RelayMutationMixin, UpdateProductOptionValueMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateProductOptionValueMixin.__doc__
+    _inputs = {"product_option_value": UpdateProductOptionValueInputField}
+
+
+class DeleteProductOptionValue(DynamicInputMixin, RelayMutationMixin, DeleteProductOptionValueMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteProductOptionValueMixin.__doc__
+    _inputs = {"id": graphene.ID}
+
+
+class CreateProductTaxRate(DynamicInputMixin, RelayMutationMixin, CreateProductTaxRateMixin, graphene.ClientIDMutation):
+    __doc__ = CreateProductTaxRateMixin.__doc__
+    _inputs = {"product_tax_rate": CreateProductTaxRateInputField}
+
+
 class Mutation:
     create_product = CreateProduct.Field()
     update_product = UpdateProduct.Field()
@@ -127,3 +193,15 @@ class Mutation:
     update_product_collection = UpdateProductCollection.Field()
     delete_product_collection = DeleteProductCollection.Field()
     create_money_amount = CreateMoneyAmount.Field()
+    update_money_amount = UpdateMoneyAmount.Field()
+    delete_money_amount = DeleteMoneyAmount.Field()
+    create_product_category = CreateProductCategory.Field()
+    update_product_category = UpdateProductCategory.Field()
+    delete_product_category = DeleteProductCategory.Field()
+    create_product_option = CreateProductOption.Field()
+    update_product_option = UpdateProductOption.Field()
+    delete_product_option = DeleteProductOption.Field()
+    create_product_option_value = CreateProductOptionValue.Field()
+    update_product_option_value = UpdateProductOptionValue.Field()
+    delete_product_option_value = DeleteProductOptionValue.Field()
+    create_product_tax_rate = CreateProductTaxRate.Field()
