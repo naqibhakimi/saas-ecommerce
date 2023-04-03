@@ -83,3 +83,59 @@ class Message:
         {"message": _("Product Collection Not Found"),
          "code": "product_collection_not_found"}
     ]
+    MONEY_AMOUNT_CREATED = [
+        {"message": _("money account created"),
+         "code": "money_account_created"}
+    ]
+    MONEY_AMOUNT_UPDATED = [
+        {"message": _("money amount updated"),
+         "code": "money_amount_updated"}
+    ]
+    MONEY_AMOUNT_DELETED = [
+        {"message": _("money account deleted"),
+         "code": "money_amount_deleted"}
+    ]
+    MONEY_AMOUNT_DOES_NOT_EXIST = [
+        {"message": _("money amount does not exist"),
+         "code": "money_amount_does_not_exist"}
+    ]
+    PRODUCT_CATEGORY_CREATED = [
+        {"message": _("product category created"),
+         "code": "product_category_created"}
+    ]
+    PRODUCT_CATEGORY_UPDATED = [
+        {"message": _("product category updated"),
+         "code": "product category_updated"}
+    ]
+    PRODUCT_CATEGORY_DELETED = [
+        {"message": _("product category deleted"),
+         "code": "product_category_deleted"}
+    ]
+    PRODUCT_CATEGORY_DOES_NOT_EXIST = [
+        {"message": _("product category does not exist"),
+         "code": "product_category_does_not_exist"}
+    ]
+    PRODUCT_OPTION_CREATED = [
+        {"message": _("product option created"),
+         "code": "product_option_created"}
+    ]
+    PRODUCT_OPTION_UPDATED = [
+        {"message": _("product option updated"),
+         "code": "product_option_updated"}
+    ]
+    PRODUCT_OPTION_DELETED = [
+        {"message": _("product option deleted"),
+         "code": "product_option_deleted"}
+    ]
+    PRODUCT_OPTION_DOES_NOT_EXIST = [
+        {"message": _("product option does not exist"),
+         "code": "product_option_does_not_exist"}
+    ]
+    PRODUCT_OPTION_VALUE_CREATED = [
+        {"message": _("product option value created"),
+         "code": "product_option_value_created"}
+    ]
+    PRODUCT_OPTION_VALUE_UPDATED = [
+        {"message": _("product option value updated"),
+         "code": "product_option_value_updated"}
+    ]

@@ -1,4 +1,4 @@
-from .models import Image, MoneyAmount, PriceList, Product, ProductCategory, ProductCollection, ProductOption, ProductTag, ProductType
+from .models import Image, MoneyAmount, PriceList, Product, ProductCategory, ProductCollection, ProductOption, ProductOptionValue, ProductTag, ProductTaxRate, ProductType
 from apps.core.forms import BaseForm
 
 
@@ -242,6 +242,7 @@ class UpdateProductOptionForm(BaseForm):
 
 class CreateProductOptionValueForm(BaseForm):
     class Meta:
+        model = ProductOptionValue
         fields = (
             "value",
             "option",
@@ -252,6 +253,7 @@ class CreateProductOptionValueForm(BaseForm):
 
 class UpdateProductOptionValueForm(BaseForm):
     class Meta:
+        model = ProductOptionValue
         fields = (
             "id",
             "value",
@@ -263,6 +265,7 @@ class UpdateProductOptionValueForm(BaseForm):
 
 class CreateProductTaxRateForm(BaseForm):
     class Meta:
+        model = ProductTaxRate
         fields = (
             "product",
             "tax_rate",
