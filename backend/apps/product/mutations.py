@@ -15,15 +15,14 @@ from .inputs import (CreateMoneyAmountInputField, CreateProductInputField, Creat
 
 class CreateProduct(DynamicInputMixin, RelayMutationMixin, CreateProductMixin, graphene.ClientIDMutation):
     __doc__ = CreateProductMixin.__doc__
-    # [FIXME: What if we need some of required fields as well?]
     _inputs = {"Product": CreateProductInputField}
-    _required_inputs = {}
+    # This way it will make the product itself as required
+    # _required_inputs = {"Product": CreateProductInputField}
 
 
 class UpdateProduct(DynamicInputMixin, RelayMutationMixin, UpdateProductMixin, graphene.ClientIDMutation):
     __doc__ = UpdateProductMixin.__doc__
     _inputs = {"Product": UpdateProductInputField}
-    _required_inputs = {}
 
 
 class DeleteProduct(DynamicInputMixin, RelayMutationMixin, DeleteProductMixin, graphene.ClientIDMutation):
@@ -105,6 +104,7 @@ class UpdateProductCollection(DynamicInputMixin, RelayMutationMixin, UpdateProdu
 class DeleteProductCollection(DynamicInputMixin, RelayMutationMixin, DeleteProductCollectionMixin, graphene.ClientIDMutation):
     __doc__ = DeleteProductCollectionMixin.__doc__
     # FIXME: Whey here we use just ID but in inputs we use ID()
+    # TODO: MAKE THIS ID REQUIRED IN DELETE IN ALL APPS
     _inputs = {"id": graphene.ID}
 
 
