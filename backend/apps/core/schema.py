@@ -13,6 +13,8 @@ from apps.product.queries import Query as ProductQuery
 from apps.product.mutations import Mutation as ProductMutations
 from apps.payment.queries import Query as PaymentQuery
 from apps.payment.mutations import Mutation as PaymentMutations
+from apps.tax.queries import Query as TaxQuery
+from apps.tax.mutations import Mutation as TaxMutations
 
 
 channel_layer = get_channel_layer()
@@ -21,6 +23,7 @@ channel_layer = get_channel_layer()
 class Query(AuthQueries, CustomerQuery,
             ProductQuery,
             PaymentQuery,
+            TaxQuery,
             graphene.ObjectType):
     test = graphene.String(name=graphene.String())
 
@@ -31,6 +34,7 @@ class Query(AuthQueries, CustomerQuery,
 class Mutatation(AuthMutations, StoreMutations,
                  CustomMutations, ProductMutations,
                  PaymentMutations,
+                 TaxMutations,
                  graphene.ObjectType):
     test_object = graphene.String()
 

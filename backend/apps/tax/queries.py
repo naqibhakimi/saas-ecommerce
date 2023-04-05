@@ -21,3 +21,7 @@ class TaxRateQuery:
 class TaxProviderQuery:
     tax_providers = DjangoFilterConnectionField(TaxProviderNode)
     tax_provider = graphene.Field(TaxProviderNode, id=graphene.ID())
+
+
+class Query(TaxLineQuery, TaxRateQuery, TaxProviderQuery):
+    pass

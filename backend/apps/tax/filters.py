@@ -10,19 +10,16 @@ from .models import (
 class TaxLineFilter(django_filters.FilterSet):
     class Meta:
         model = TaxLine
-
-    exclude = "metadata"
+        exclude = "metadata"
 
 
 class TaxRateFilter(django_filters.FilterSet):
     class Meta:
         model = TaxRate
-
-    exclude = "metadata"
+        exclude = "metadata"
 
 
 class TaxProviderFilter(django_filters.FilterSet):
     class Meta:
         model = TaxProvider
-
-    exclude = "metadata"
+        exclude = "metadata"

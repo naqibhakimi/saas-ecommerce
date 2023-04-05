@@ -526,16 +526,26 @@ class UpdateProductTaxRateMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         product_tax_rate_data = kwargs.get("product_tax_rate")
         try:
-            form = cls.form(data=ProductTaxRate.objects.get(
+            form = cls.form(data=product_tax_rate_data, instance=ProductTaxRate.objects.get(
                 id=product_tax_rate_data.pop("id")))
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
-                instance.save(update_fields="")
+                instance.save(update_fields=product_tax_rate_data.keys())
                 return cls(success=True, errors=Message.PRODUCT_TAX_RATE_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
+            return cls(success=False, errors=e)
+
+
+class DeleteProductTaxRateMixin(Output):
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductTaxRate.objects.get(id=kwargs.get('id')).delete()
+            return cls(success=True, errors=Message.PRODUCT_TAX_RATE_DELETED)
+        except ProductTaxRate.DoesNotExist as e:
             return cls(success=False, errors=e)
 
 
