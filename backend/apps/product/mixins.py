@@ -110,7 +110,6 @@ class DeletePriceListMixin(Output):
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         try:
-            # [FIXME: it should be all get not filter to avoid api fetch problem]
             PriceList.objects.get(id=kwargs.get("id", None)).delete()
             return cls(success=True, errors=Message.PRICE_LIST_DELETED)
         except ObjectDoesNotExist:
@@ -240,8 +239,6 @@ class UpdateImageMixin(Output):
                 id=image_data.pop("id")))
             if form.is_valid():
                 instance = form.save(commit=False)
-                # FIXME: how do you use (update_fields) and where actually it is?
-                # inside save we have only one argument which is commit so where this update_fields
                 instance.save(update_fields=image_data.keys())
                 return cls(success=True, errors=Message.PRODUCT_IMAGE_UPDATED)
             return cls(success=False, errors=form.errors)
@@ -529,16 +526,26 @@ class UpdateProductTaxRateMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         product_tax_rate_data = kwargs.get("product_tax_rate")
         try:
-            form = cls.form(data=ProductTaxRate.objects.get(
+            form = cls.form(data=product_tax_rate_data, instance=ProductTaxRate.objects.get(
                 id=product_tax_rate_data.pop("id")))
             if form.errors:
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 instance = form.save(commit=False)
-                instance.save(update_fields="")
+                instance.save(update_fields=product_tax_rate_data.keys())
                 return cls(success=True, errors=Message.PRODUCT_TAX_RATE_UPDATED)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
+            return cls(success=False, errors=e)
+
+
+class DeleteProductTaxRateMixin(Output):
+    @classmethod
+    def resolve_mutation(cls, root, info, **kwargs):
+        try:
+            ProductTaxRate.objects.get(id=kwargs.get('id')).delete()
+            return cls(success=True, errors=Message.PRODUCT_TAX_RATE_DELETED)
+        except ProductTaxRate.DoesNotExist as e:
             return cls(success=False, errors=e)
 
 

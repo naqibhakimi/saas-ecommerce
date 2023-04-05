@@ -1,11 +1,11 @@
 import graphene
 from apps.core.mutations import RelayMutationMixin, DynamicInputMixin
 from .mixins import (CreateImageMixin, CreateMoneyAmountMixin, CreatePriceListMixin, CreateProductCategoryMixin, CreateProductCollectionMixin, CreateProductMixin, CreateProductOptionMixin, CreateProductOptionValueMixin, CreateProductTagMixin, CreateProductTaxRateMixin, CreateProductTypeMixin, DeleteImageMixin, DeleteMoneyAmountMixin,
-                     DeletePriceListMixin, DeleteProductCategoryMixin, DeleteProductCollectionMixin, DeleteProductOptionMixin, DeleteProductOptionValueMixin, DeleteProductTagMixin, DeleteProductTypeMixin, UpdateImageMixin, UpdateMoneyAmountMixin,
-                     UpdatePriceListMixin, UpdateProductCategoryMixin, UpdateProductCollectionMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductOptionMixin, UpdateProductOptionValueMixin, UpdateProductTagMixin, UpdateProductTypeMixin)
+                     DeletePriceListMixin, DeleteProductCategoryMixin, DeleteProductCollectionMixin, DeleteProductOptionMixin, DeleteProductOptionValueMixin, DeleteProductTagMixin, DeleteProductTaxRateMixin, DeleteProductTypeMixin, UpdateImageMixin, UpdateMoneyAmountMixin,
+                     UpdatePriceListMixin, UpdateProductCategoryMixin, UpdateProductCollectionMixin, UpdateProductMixin, DeleteProductMixin, UpdateProductOptionMixin, UpdateProductOptionValueMixin, UpdateProductTagMixin, UpdateProductTaxRateMixin, UpdateProductTypeMixin)
 from .inputs import (CreateMoneyAmountInputField, CreateProductInputField, CreateProductOptionValueInputField, CreateProductTagInputField, CreateProductTypeTaxRateInputField, UpdateImageInputField,
                      UpdateProductCategoryInputField, UpdateProductCollectionInputField,
-                     UpdateProductInputField, UpdateProductTagInputField, UpdateProductTypeInputField,
+                     UpdateProductInputField, UpdateProductTagInputField, UpdateProductTaxRateInputField, UpdateProductTypeInputField,
                      createPriceListInputField, UpdatePriceListInputField, CreateProductTypeInputField,
                      CreateImageInputField, CreateProductTypeInputField, CreateProductCollectionInputField,
                      UpdateMoneyAmountInputField, CreateProductCategoryInputField,
@@ -15,15 +15,14 @@ from .inputs import (CreateMoneyAmountInputField, CreateProductInputField, Creat
 
 class CreateProduct(DynamicInputMixin, RelayMutationMixin, CreateProductMixin, graphene.ClientIDMutation):
     __doc__ = CreateProductMixin.__doc__
-    # [FIXME: What if we need some of required fields as well?]
     _inputs = {"Product": CreateProductInputField}
-    _required_inputs = {}
+    # This way it will make the product itself as required
+    # _required_inputs = {"Product": CreateProductInputField}
 
 
 class UpdateProduct(DynamicInputMixin, RelayMutationMixin, UpdateProductMixin, graphene.ClientIDMutation):
     __doc__ = UpdateProductMixin.__doc__
     _inputs = {"Product": UpdateProductInputField}
-    _required_inputs = {}
 
 
 class DeleteProduct(DynamicInputMixin, RelayMutationMixin, DeleteProductMixin, graphene.ClientIDMutation):
@@ -105,6 +104,7 @@ class UpdateProductCollection(DynamicInputMixin, RelayMutationMixin, UpdateProdu
 class DeleteProductCollection(DynamicInputMixin, RelayMutationMixin, DeleteProductCollectionMixin, graphene.ClientIDMutation):
     __doc__ = DeleteProductCollectionMixin.__doc__
     # FIXME: Whey here we use just ID but in inputs we use ID()
+    # TODO: MAKE THIS ID REQUIRED IN DELETE IN ALL APPS
     _inputs = {"id": graphene.ID}
 
 
@@ -173,6 +173,16 @@ class CreateProductTaxRate(DynamicInputMixin, RelayMutationMixin, CreateProductT
     _inputs = {"product_tax_rate": CreateProductTaxRateInputField}
 
 
+class UpdateProductTaxRate(DynamicInputMixin, RelayMutationMixin, UpdateProductTaxRateMixin, graphene.ClientIDMutation):
+    __doc__ = UpdateProductTaxRateMixin.__doc__
+    _inputs = {"product_tax_rate": UpdateProductTaxRateInputField}
+
+
+class DeleteProductTaxRate(DynamicInputMixin, RelayMutationMixin, DeleteProductTaxRateMixin, graphene.ClientIDMutation):
+    __doc__ = DeleteProductTaxRateMixin.__doc__
+    _inputs = {"id": graphene.ID}
+
+
 class Mutation:
     create_product = CreateProduct.Field()
     update_product = UpdateProduct.Field()
@@ -205,3 +215,5 @@ class Mutation:
     update_product_option_value = UpdateProductOptionValue.Field()
     delete_product_option_value = DeleteProductOptionValue.Field()
     create_product_tax_rate = CreateProductTaxRate.Field()
+    update_product_tax_rate = UpdateProductTaxRate.Field()
+    delete_product_tax_rate = DeleteProductTaxRate.Field()

@@ -139,3 +139,15 @@ class Message:
         {"message": _("product option value updated"),
          "code": "product_option_value_updated"}
     ]
+    PRODUCT_TAX_RATE_CREATED = [
+        {"message": _("Product tax rate created"),
+         "code": "product_tax_rate_created"}
+    ]
+    PRODUCT_TAX_RATE_UPDATED = [
+        {"message": _("Product tax rate updated"),
+         "code": "Product tax rate_updated"}
+    ]
+    PRODUCT_TAX_RATE_DELETED = [
+        {"message": _("Product tax rate deleted"),
+         "code": "Product tax rate_deleted"}
+    ]

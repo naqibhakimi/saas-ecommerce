@@ -48,7 +48,6 @@ class UpdateCurrencyMixin(Output):
                 id=currency_data.pop('id')))
             if form.is_valid():
                 instance = form.save(commit=False)
-                # FIXME: WHEY we do't make the commit = True after it becomes False
                 instance.save(update_fields=currency_data.keys())
                 return cls(success=True, errors=Message.CURRENCY_UPDATED)
             return cls(success=False, errors=form.errors)

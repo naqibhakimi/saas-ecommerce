@@ -275,6 +275,7 @@ class CreateProductTaxRateForm(BaseForm):
 
 class UpdateProductTaxRateForm(BaseForm):
     class Meta:
+        model = ProductTaxRate
         fields = (
             "id",
             "product",
