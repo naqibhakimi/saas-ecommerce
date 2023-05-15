@@ -217,3 +217,6 @@ class Mutation:
     create_product_tax_rate = CreateProductTaxRate.Field()
     update_product_tax_rate = UpdateProductTaxRate.Field()
     delete_product_tax_rate = DeleteProductTaxRate.Field()
+    # TODO :  permission: admin, customer, staff --> MAKE DECORATOR
+    # resolve mutation ---> decorator should be apply on top of
+    # auth make permission a custom permission
