@@ -1,6 +1,9 @@
 import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 
+from apps.core.permissions import AllowAuthenticatedFilter
+
+
 from .types import (
     PriceListNode,
     MoneyAmountNode,
@@ -35,8 +38,10 @@ class ProductTagQuery:
 
 
 class ProductQuery:
-    products = DjangoFilterConnectionField(ProductNode)
-    product = graphene.Field(ProductNode, id=graphene.ID())
+    products = AllowAuthenticatedFilter(ProductNode)
+    # product = graphene.Field(ProductNode, id=graphene.ID())
+    product = graphene.relay.Node.Field(ProductNode)
+    
 
 
 class ImageQuery:

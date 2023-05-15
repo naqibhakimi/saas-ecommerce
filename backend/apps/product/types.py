@@ -2,6 +2,8 @@ from graphene_django import DjangoObjectType
 import graphene
 
 from apps.core.types import Node
+from apps.core.permissions import AllowAuthenticated
+from apps.core.permissions import AuthNode, AuthFilter
 
 from .models import (
     PriceList,
@@ -93,7 +95,9 @@ class ImageNode(Node, DjangoObjectType):
         connection_class = ImageConnection
 
 
-class ProductNode(Node, DjangoObjectType):
+class ProductNode(AuthNode, Node, DjangoObjectType):
+    permission_classes = (AllowAuthenticated,)
+    
     class Meta:
         model = Product
         filterset_class = ProductFilter
