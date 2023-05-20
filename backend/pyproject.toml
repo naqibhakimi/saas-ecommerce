@@ -26,6 +26,7 @@ twisted = {extras = ["http2", "tls"], version = "^22.10.0"}
 django-environ = "^0.9.0"
 django-cors-headers = "^3.14.0"
 uvicorn = "^0.21.0"
+graphene-permissions = {git = "https://github.com/redzej/graphene-permissions.git"}
 
 
 [tool.poetry.dev-dependencies]

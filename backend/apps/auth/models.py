@@ -1,5 +1,4 @@
 import time
-from gettext import translation
 
 from apps.core.exceptions import WrongUsage
 from apps.core.models import BaseModel
