@@ -38,7 +38,7 @@ class ProductTagQuery:
 
 
 class ProductQuery:
-    products = AllowAuthenticatedFilter(ProductNode)
+    products = DjangoFilterConnectionField(ProductNode)
     # product = graphene.Field(ProductNode, id=graphene.ID())
     product = graphene.relay.Node.Field(ProductNode)
     
