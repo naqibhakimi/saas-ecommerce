@@ -1,23 +1,28 @@
-import ListTopics from '@/components/listTopic';
+import Topic from '@/components/topic';
 
 import Layout from '@/components/layout/Layout';
 
-import Breadcrumbs from '@/components/Breadcrumbs';
 export default function Index() {
     return (
         <>
             <Layout>
-            <Breadcrumbs title="Home" />
-                <h2>Welcome Home!</h2>
+                <Topic></Topic>
             </Layout>
         </>
     );
 }
 
-export async function getStaticProps() {
+export async function getStaticProps(context) {
     return {
         props: {
             protected: true,
         },
+    };
+}
+
+export async function getStaticPaths(context) {
+    return {
+        paths: [],
+        fallback: true,
     };
 }

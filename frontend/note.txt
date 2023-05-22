@@ -1,2 +1,0 @@
-npx tailwindcss -i ./src/styles/global.css -o ./src/styles/global_.css --watch
-

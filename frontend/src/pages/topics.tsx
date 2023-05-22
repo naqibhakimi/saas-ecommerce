@@ -7,8 +7,8 @@ export default function Index() {
     return (
         <>
             <Layout>
-            <Breadcrumbs title="Home" />
-                <h2>Welcome Home!</h2>
+            <Breadcrumbs title="Topics" />
+                <ListTopics></ListTopics>
             </Layout>
         </>
     );

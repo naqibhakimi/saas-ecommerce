@@ -1,5 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    html {
+        font-family: 'Open Sans';
+        @apply scrollbar-hide;
+    }
+    .css-1ue2u30 {
+        @apply top-0 z-1 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white shadow-sm sm:gap-x-6;
+        position: fixed !important;
+        top: 65px;
+        width: 100%;
+        left: 290px;
+    }
+}
 
+.css-1ue2u30[data-test-id='menu'] {
+    position: fixed !important;
+    width: 100%;
+    z-index: 1;
+    opacity: 1;
+    background: white;
+    top: -10px;
+    padding-top: 100px;
+}
+
+
+.list-image-\[double_arrow\.svg\] > li {
+    background: url(/doublearrow.svg) no-repeat left top;
+    padding: 1px 10px 30px 20px;
+    list-style: none;
+    margin: 0;
+    line-height: 1;
+  }
