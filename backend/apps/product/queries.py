@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.filter.fields import DjangoFilterConnectionField
 
-from apps.core.permissions import AllowAuthenticatedFilter
+from apps.core.permissions import AllowAuthenticated
 
 
 from .types import (
@@ -24,39 +24,38 @@ from .types import (
 
 class PriceListQuery:
     price_lists = DjangoFilterConnectionField(PriceListNode)
-    price_list = graphene.Field(PriceListNode, id=graphene.ID())
+    price_list = graphene.relay.Node(PriceListNode)
 
 
 class ProductTypeQuery:
     product_types = DjangoFilterConnectionField(ProductTypeNode)
-    product_type = graphene.Field(ProductTypeNode, id=graphene.ID())
+    product_type = graphene.relay.Node.Field(ProductTypeNode)
+    
 
 
 class ProductTagQuery:
     product_tags = DjangoFilterConnectionField(ProductTagNode)
-    product_tag = graphene.Field(ProductTagNode, id=graphene.ID())
+    product_tag = graphene.relay.Node.Field(ProductTagNode)
 
 
 class ProductQuery:
     products = DjangoFilterConnectionField(ProductNode)
-    # product = graphene.Field(ProductNode, id=graphene.ID())
     product = graphene.relay.Node.Field(ProductNode)
     
 
 
 class ImageQuery:
     images = DjangoFilterConnectionField(ImageNode)
-    image = graphene.Field(ImageNode, id=graphene.ID())
+    image = graphene.relay.Node.Field(ImageNode)
 
 
 class MoneyAmountQuery:
     money_amounts = DjangoFilterConnectionField(MoneyAmountNode)
-    money_amount = graphene.Field(MoneyAmountNode, id=graphene.ID())
-
+    money_amount = graphene.relay.Node.Field(MoneyAmountNode)
 
 class ProductCategoryQuery:
-    product_categorys = DjangoFilterConnectionField(ProductCategoryNode)
-    product_category = graphene.Field(ProductCategoryNode, id=graphene.ID())
+    product_categories = DjangoFilterConnectionField(ProductCategoryNode)
+    product_category = graphene.relay.Node.Field(ProductCategoryNode)
 
 
 class ProductCollectionQuery:
@@ -66,36 +65,34 @@ class ProductCollectionQuery:
 
 class ProductOptionValueQuery:
     product_option_values = DjangoFilterConnectionField(ProductOptionValueNode)
-    product_option_value = graphene.Field(ProductOptionValueNode, id=graphene.ID())
+    product_option_value = graphene.relay.Node.Field(ProductOptionValueNode)
 
 
 class ProductOptionQuery:
     product_options = DjangoFilterConnectionField(ProductOptionNode)
-    product_option = graphene.Field(ProductOptionNode, id=graphene.ID())
+    product_option = graphene.relay.Node.Field(ProductOptionNode)
 
 
 class ProductTaxRateQuery:
     product_tax_rates = DjangoFilterConnectionField(ProductTaxRateNode)
-    product_tax_rate = graphene.Field(ProductTaxRateNode, id=graphene.ID())
+    product_tax_rate = graphene.relay.Node.Field(ProductTaxRateNode)
 
 
 class ProductTypeTaxRateQuery:
     product_type_tax_rates = DjangoFilterConnectionField(ProductTypeTaxRateNode)
-    product_type_tax_rate = graphene.Field(ProductTypeTaxRateNode, id=graphene.ID())
+    product_type_tax_rate = graphene.relay.Node.Field(ProductTypeTaxRateNode)
 
 
 class ProductVariantInventoryItemQuery:
     product_variant_inventory_items = DjangoFilterConnectionField(
         ProductVariantInventoryItemNode
     )
-    product_variant_inventory_item = graphene.Field(
-        ProductVariantInventoryItemNode, id=graphene.ID()
-    )
+    product_variant_inventory_item = graphene.relay.Node.Field(ProductVariantInventoryItemNode)
 
 
 class ProductVariantQuery:
     product_variants = DjangoFilterConnectionField(ProductVariantNode)
-    product_variant = graphene.Field(ProductVariantNode, id=graphene.ID())
+    product_variant = graphene.relay.Node.Field(ProductVariantNode)
 
 
 class Query(PriceListQuery, ProductTypeQuery, ProductTagQuery,

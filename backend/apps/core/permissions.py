@@ -1,11 +1,27 @@
 from graphene import ResolveInfo
-from graphene_permissions.permissions import AllowAuthenticated, AllowStaff, AllowSuperuser, AllowAny
-from graphene_permissions.mixins import AuthNode, AuthFilter
+# from graphene_permissions.permissions import AllowAuthenticated, AllowStaff, AllowSuperuser, AllowAny
+# from graphene_permissions.mixins import AuthNode, AuthFilter
 from graphql_jwt.shortcuts import get_user_by_token
 from typing import Optional, Any 
 from django.db.models import Model
 
 
+class AllowAny(object):
+    """
+    Default authentication class.
+    Allows any user for any action.
+    """
+    
+    @classmethod
+    def has_permission(cls, info: ResolveInfo) -> bool:
+        return True
+    
+    # FIXME: dosn't work
+    # @classmethod
+    # def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
+    #     return True
+
+    
 
 class BasePermission:
     """
@@ -64,19 +80,53 @@ class PermissionNode:
         return queryset
 
 
+class AllowAuthenticated(object):
+    """
+    Allows performing action only for logged in users.
+    """
+    
+    @classmethod
+    def has_permission(cls, info: ResolveInfo) -> bool:
+        return info.context.user.is_authenticated
+    
+    # FIXME: DO we need to have filter_permission in here and superuser too?
+    @classmethod
+    def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
+        return info.context.user.is_authenticated
+    
+    
+    
+# class AllowStaffFilter(AuthFilter):
+#     permission_classes = (AllowStaff,)
+    
+class AllowStaff(object):
+    """
+    Allow performing action only for staff users.
+    """
+    @classmethod
+    def has_permission(cls, info: ResolveInfo) -> bool:
+        return info.context.user.is_staff
+    
+    @classmethod
+    def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
+        return info.context.user.is_staff
 
-class AllowAuthenticatedFilter(AuthFilter):
-    permission_classes = (AllowAuthenticated,)
+
     
+class AllowSuperuser(object):
+    """
+    Allow performing action only for superusers.
+    """
     
-class AllowStaffFilter(AuthFilter):
-    permission_classes = (AllowStaff,)
+    @classmethod
+    def has_permission(cls, info: ResolveInfo) -> bool:
+        return info.context.user.is_superuser
     
-    
-class AllowSuperuserFilter:
-    permission_classes = (AllowSuperuser,)
-    
-        
+    @classmethod
+    def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
+        return info.context.user.is_superuser
+
+
 class AllowOwner(object):
     
     @classmethod
@@ -87,8 +137,6 @@ class AllowOwner(object):
     def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
         return queryset.filter(created_by=info.context.user)
     
-    
-
 
 class AllowUpdateBy:
     
@@ -99,4 +147,3 @@ class AllowUpdateBy:
     @classmethod
     def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
         return queryset.filter(updated_by=info.context.user)
-    

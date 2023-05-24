@@ -2,8 +2,14 @@ from graphene_django import DjangoObjectType
 import graphene
 
 from apps.core.types import Node
-from apps.core.permissions import AllowAuthenticated, AllowOwner, AllowUpdateBy
-from apps.core.permissions import AuthFilter, PermissionNode
+from apps.core.permissions import (
+    AllowAuthenticated, 
+    AllowOwner, 
+    AllowUpdateBy,
+    AllowStaff,
+    AllowSuperuser,
+)
+from apps.core.permissions import PermissionNode
 
 from .models import (
     PriceList,
@@ -63,7 +69,10 @@ class PriceListNode(Node, DjangoObjectType):
         connection_class = PriceListConnection
 
 
-class MoneyAmountNode(Node, DjangoObjectType):
+class MoneyAmountNode(PermissionNode ,Node, DjangoObjectType):
+    # permission_classes = (AllowOwner, AllowUpdateBy, AllowStaff, AllowSuperuser)
+    permission_classes = (AllowOwner, AllowUpdateBy)
+
     class Meta:
         model = MoneyAmount
         filterset_class = MoneyAmountFilter
@@ -87,7 +96,8 @@ class ProductTagNode(Node, DjangoObjectType):
         connection_class = ProductTagConnection
 
 
-class ImageNode(Node, DjangoObjectType):
+class ImageNode(PermissionNode ,Node, DjangoObjectType):
+    permission_classes = (AllowOwner, AllowUpdateBy)
     class Meta:
         model = Image
         filterset_class = ImageFilter

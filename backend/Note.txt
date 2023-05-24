@@ -1,3 +1,6 @@
+to activate shir env:
+  source /Users/shirhussaindanishyar/Data/Code/personal_project/saas-ecommerce/.v
+env/bin/activate
 mutation createCustomer($input: CreateCustomerInput!){
  createCustomer(input: $input){
   customer{
