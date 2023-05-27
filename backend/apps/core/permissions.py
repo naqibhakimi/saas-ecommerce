@@ -11,15 +11,16 @@ class AllowAny(object):
     Default authentication class.
     Allows any user for any action.
     """
-    
     @classmethod
-    def has_permission(cls, info: ResolveInfo) -> bool:
-        return True
+    def has_permission(cls, info: ResolveInfo, model, id):
+        return model.objects.filter(pk=id)
+
+
+    @classmethod
+    def has_filter_permission(cls, info: ResolveInfo, queryset):
+        return queryset
+
     
-    # FIXME: dosn't work
-    # @classmethod
-    # def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
-    #     return True
 
     
 
@@ -86,31 +87,31 @@ class AllowAuthenticated(object):
     """
     
     @classmethod
-    def has_permission(cls, info: ResolveInfo) -> bool:
-        return info.context.user.is_authenticated
-    
-    # FIXME: DO we need to have filter_permission in here and superuser too?
+    def has_permission(cls, info: ResolveInfo, model, id):
+        if info.context.user.is_authenticated:
+            return model.objects.filter(pk=id)
+        return model.objects.none()
+
     @classmethod
-    def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
-        return info.context.user.is_authenticated
+    def has_filter_permission(cls, info: ResolveInfo, queryset):
+        return queryset if info.context.user.is_authenticated else queryset.none()
+
     
-    
-    
-# class AllowStaffFilter(AuthFilter):
-#     permission_classes = (AllowStaff,)
-    
+
 class AllowStaff(object):
     """
     Allow performing action only for staff users.
     """
-    @classmethod
-    def has_permission(cls, info: ResolveInfo) -> bool:
-        return info.context.user.is_staff
     
     @classmethod
-    def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
-        return info.context.user.is_staff
+    def has_permission(cls, info: ResolveInfo, model, id):
+        if info.context.user.is_staff:
+            return model.objects.filter(pk=id)
+        return model.objects.none()
 
+    @classmethod
+    def has_filter_permission(cls, info: ResolveInfo, queryset):
+        return queryset if info.context.user.is_staff else queryset.none()
 
     
 class AllowSuperuser(object):
@@ -119,22 +120,25 @@ class AllowSuperuser(object):
     """
     
     @classmethod
-    def has_permission(cls, info: ResolveInfo) -> bool:
-        return info.context.user.is_superuser
-    
-    @classmethod
-    def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
-        return info.context.user.is_superuser
+    def has_permission(cls, info: ResolveInfo, model, id):
+        if info.context.user.is_superuser:
+            return model.objects.filter(pk=id)
+        return model.objects.none()
 
+    @classmethod
+    def has_filter_permission(cls, info: ResolveInfo, queryset):
+        return queryset if info.context.user.is_superuser else queryset.none()
+
+    
 
 class AllowOwner(object):
     
     @classmethod
-    def has_permission(cls, info: ResolveInfo, model, id) -> bool:
+    def has_permission(cls, info: ResolveInfo, model, id):
         return model.objects.filter(pk=id, created_by=info.context.user)  # type: ignore
     
     @classmethod
-    def has_filter_permission(cls, info: ResolveInfo, queryset) -> bool:
+    def has_filter_permission(cls, info: ResolveInfo, queryset):
         return queryset.filter(created_by=info.context.user)
     
 

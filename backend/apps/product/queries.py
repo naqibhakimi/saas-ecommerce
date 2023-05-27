@@ -24,7 +24,7 @@ from .types import (
 
 class PriceListQuery:
     price_lists = DjangoFilterConnectionField(PriceListNode)
-    price_list = graphene.relay.Node(PriceListNode)
+    price_list = graphene.relay.Node.Field(PriceListNode)
 
 
 class ProductTypeQuery:

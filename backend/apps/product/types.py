@@ -8,6 +8,7 @@ from apps.core.permissions import (
     AllowUpdateBy,
     AllowStaff,
     AllowSuperuser,
+    AllowAny,
 )
 from apps.core.permissions import PermissionNode
 
@@ -70,8 +71,9 @@ class PriceListNode(Node, DjangoObjectType):
 
 
 class MoneyAmountNode(PermissionNode ,Node, DjangoObjectType):
-    # permission_classes = (AllowOwner, AllowUpdateBy, AllowStaff, AllowSuperuser)
-    permission_classes = (AllowOwner, AllowUpdateBy)
+    # FIXME: this one doesn't work
+    permission_classes = (AllowOwner, AllowUpdateBy, AllowStaff, AllowSuperuser)
+    # permission_classes = (AllowOwner, AllowUpdateBy)
 
     class Meta:
         model = MoneyAmount
@@ -80,7 +82,8 @@ class MoneyAmountNode(PermissionNode ,Node, DjangoObjectType):
         connection_class = MoneyAmountConnection
 
 
-class ProductTypeNode(Node, DjangoObjectType):
+class ProductTypeNode(PermissionNode ,Node, DjangoObjectType):
+    permission_classes = (AllowAny)
     class Meta:
         model = ProductType
         filterset_class = ProductTypeFilter
@@ -106,7 +109,6 @@ class ImageNode(PermissionNode ,Node, DjangoObjectType):
 
 
 class ProductNode(PermissionNode, Node, DjangoObjectType):
-    permission_classes = (AllowOwner, AllowUpdateBy)
     
     class Meta:
         model = Product
