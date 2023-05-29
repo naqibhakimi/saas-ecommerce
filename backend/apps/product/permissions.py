@@ -1,6 +1,6 @@
-from apps.core.permissions import AllowAuthenticatedFilter
+# from apps.core.permissions import AllowAuthenticatedFilter
 
 
-class ProductAccess(AllowAuthenticatedFilter):
-    pass 
+# class ProductAccess(AllowAuthenticatedFilter):
+#     pass 
 

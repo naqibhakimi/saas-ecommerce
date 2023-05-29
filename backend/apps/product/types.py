@@ -2,8 +2,15 @@ from graphene_django import DjangoObjectType
 import graphene
 
 from apps.core.types import Node
-from apps.core.permissions import AllowAuthenticated, AllowOwner, AllowUpdateBy
-from apps.core.permissions import AuthFilter, PermissionNode
+from apps.core.permissions import (
+    AllowAuthenticated, 
+    AllowOwner, 
+    AllowUpdateBy,
+    AllowStaff,
+    AllowSuperuser,
+    AllowAny,
+)
+from apps.core.permissions import PermissionNode
 
 from .models import (
     PriceList,
@@ -63,7 +70,11 @@ class PriceListNode(Node, DjangoObjectType):
         connection_class = PriceListConnection
 
 
-class MoneyAmountNode(Node, DjangoObjectType):
+class MoneyAmountNode(PermissionNode ,Node, DjangoObjectType):
+    # FIXME: this one doesn't work
+    permission_classes = (AllowOwner, AllowUpdateBy, AllowStaff, AllowSuperuser)
+    # permission_classes = (AllowOwner, AllowUpdateBy)
+
     class Meta:
         model = MoneyAmount
         filterset_class = MoneyAmountFilter
@@ -71,7 +82,8 @@ class MoneyAmountNode(Node, DjangoObjectType):
         connection_class = MoneyAmountConnection
 
 
-class ProductTypeNode(Node, DjangoObjectType):
+class ProductTypeNode(PermissionNode ,Node, DjangoObjectType):
+    permission_classes = (AllowAny)
     class Meta:
         model = ProductType
         filterset_class = ProductTypeFilter
@@ -87,7 +99,8 @@ class ProductTagNode(Node, DjangoObjectType):
         connection_class = ProductTagConnection
 
 
-class ImageNode(Node, DjangoObjectType):
+class ImageNode(PermissionNode ,Node, DjangoObjectType):
+    permission_classes = (AllowOwner, AllowUpdateBy)
     class Meta:
         model = Image
         filterset_class = ImageFilter
@@ -96,7 +109,6 @@ class ImageNode(Node, DjangoObjectType):
 
 
 class ProductNode(PermissionNode, Node, DjangoObjectType):
-    permission_classes = (AllowOwner, AllowUpdateBy)
     
     class Meta:
         model = Product
