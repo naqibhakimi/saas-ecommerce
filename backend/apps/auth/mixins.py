@@ -67,6 +67,7 @@ class SignupMixin(Output):
 class SignInMixin(Output):
     form = SingInForm
     token = graphene.String()
+    user = graphene.Field(UserNode)
 
     @classmethod
     def resolve_mutation(cls, root, info, *args, **kwargs):
@@ -86,7 +87,7 @@ class SignInMixin(Output):
                 if not check_password(password, user.password):
                     raise InvalidCredentials()
 
-                return cls(success=True, token=get_token(user))
+                return cls(success=True, token=get_token(user), user=user)
 
         except InvalidCredentials:
             return cls(success=False, errors=Messages.INVALID_CREDENTIALS)
