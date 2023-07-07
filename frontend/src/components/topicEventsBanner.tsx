@@ -17,7 +17,7 @@ export default function TopicEventsBanner() {
         data.topicEvents = null;
     };
 
-    if (data?.topicEvents == 'Done'){
+    if (data?.topicEvents == 'Done') {
         window.location.reload();
     }
 

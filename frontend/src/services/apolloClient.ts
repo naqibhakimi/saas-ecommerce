@@ -136,7 +136,8 @@ const link = process.browser
     : customErrors.concat(ApolloLink.from([authLink, Errors, httpLink]));
 
 const ApolloParams = {
-    link: link,
+    link: customErrors.concat(ApolloLink.from([authLink, Errors, httpLink])),
+
     cache: new InMemoryCache(),
     defaultOptions: Options,
     connectToDevTools: true,

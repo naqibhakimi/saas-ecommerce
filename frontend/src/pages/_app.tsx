@@ -18,8 +18,6 @@ import SuccessMessage from '@/components/alerts/successMessage';
 
 import NonSSRWrapper from '@/utils/nonSSRWrapper';
 
-import TopicEventsBanner from '@/components/topicEventsBanner';
-
 function App({ Component, ...rest }) {
     const { store, props } = wrapper.useWrappedStore(rest);
     const { pageProps } = props;
@@ -37,7 +35,6 @@ function App({ Component, ...rest }) {
                     <UserContext.Provider value={user}>
                         <ErrorsMessage />
                         <SuccessMessage />
-                        <TopicEventsBanner />
                         <Component {...pageProps} />
                     </UserContext.Provider>
                 </ApolloProvider>

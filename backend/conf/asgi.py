@@ -1,3 +1,4 @@
+from apps.core.consumer import GraphQLSubscriptionConsumer
 import os
 
 from channels.auth import AuthMiddlewareStack
@@ -11,7 +12,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "conf.settings.dev")
 # is populated before importing code that may import ORM models.
 django_asgi_app = get_asgi_application()
 
-from apps.core.consumer import GraphQLSubscriptionConsumer
 
 application = ProtocolTypeRouter(
     {
@@ -22,7 +22,7 @@ application = ProtocolTypeRouter(
             AuthMiddlewareStack(
                 URLRouter(
                     [
-                        path("graphql", GraphQLSubscriptionConsumer.as_asgi()),
+                        path("graphql/", GraphQLSubscriptionConsumer.as_asgi()),
                     ]
                 )
             )

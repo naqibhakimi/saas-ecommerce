@@ -45,7 +45,6 @@ export const VERIFY_ACCOUNT = gql`
                 email
                 firstName
                 lastName
-                groupName
             }
         }
     }
