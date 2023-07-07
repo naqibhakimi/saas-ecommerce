@@ -1,6 +1,10 @@
 to activate shir env:
   source /Users/shirhussaindanishyar/Data/Code/personal_project/saas-ecommerce/.v
 env/bin/activate
+
+to run frontend:   npm run dev
+
+
 mutation createCustomer($input: CreateCustomerInput!){
  createCustomer(input: $input){
   customer{
