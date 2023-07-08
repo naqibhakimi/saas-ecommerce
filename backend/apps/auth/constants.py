@@ -27,6 +27,14 @@ class Messages:
         {"message": _("This email address already exists"), "code": "email_in_use"}
     ]
 
+    EMAIL_FAIL = [
+        {"message": _("An error occurred while sending the email, SMTPException problem ")}
+    ]
+
+    NOT_VERIFIED_PASSWORD_RESET = [
+        {"message": _("your email is not verified to rest the password")}
+    ]
+
 
 class EMAIL_MESSAGES:
     SIGN_UP = {

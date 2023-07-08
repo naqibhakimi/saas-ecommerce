@@ -86,9 +86,12 @@ class SwapEmails(DynamicInputMixin, RelayMutationMixin, SwapEmailsMixin, graphen
     _inputs = ["password"]
 
 
-class PasswordResetEmail(DynamicInputMixin, RelayMutationMixin, PasswordResetMixin, graphene.ClientIDMutation):
+class PasswordReset(
+    DynamicInputMixin, RelayMutationMixin, PasswordResetMixin, graphene.ClientIDMutation
+):
     __doc__ = PasswordResetMixin.__doc__
-    _inputs = ["email"]
+    # _required_args = ["token", "new_password1", "new_password2"]
+    _inputs = ["token", "new_password1", "new_password2"]
 
 
 class Mutation:
@@ -100,4 +103,4 @@ class Mutation:
     send_password_reset_email = SendPasswordResetEmail.Field()
     send_secondary_email_verification = SendSecondaryEmailVerification.Field()
     swap_emails = SwapEmails.Field()
-    password_reset_email = PasswordResetEmail.Field()
+    password_reset = PasswordReset.Field()

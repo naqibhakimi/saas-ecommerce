@@ -143,7 +143,7 @@ export default function Layout({ children }) {
                                             <img
                                                 alt="QuikBuy"
                                                 className="h-8 w-auto"
-                                                src="/Skryb.svg"
+                                                src="/SassEcommerce.svg"
                                             />{' '}
                                         </div>
                                         <nav className="flex flex-1 flex-col">
@@ -153,7 +153,7 @@ export default function Layout({ children }) {
                                             >
                                                 <li className="w-full">
                                                     {baseEvent.event_type ===
-                                                        'skrybing' &&
+                                                        'SassEcommerceing' &&
                                                     baseEvent.data !==
                                                         '100%' ? (
                                                         <div className="flex-shrink-0">
@@ -165,7 +165,7 @@ export default function Layout({ children }) {
                                                                 }
                                                                 type="button"
                                                             >
-                                                                Skrybing{' '}
+                                                                SassEcommerceing{' '}
                                                                 {baseEvent.data}
                                                             </button>
                                                         </div>
@@ -178,7 +178,8 @@ export default function Layout({ children }) {
                                                                 }
                                                                 type="button"
                                                             >
-                                                                Start Skrybing
+                                                                Start
+                                                                SassEcommerceing
                                                             </button>
                                                         </div>
                                                     )}
@@ -281,7 +282,7 @@ export default function Layout({ children }) {
                             <img
                                 alt="QuikBuy"
                                 className="h-8 w-auto"
-                                src="/Skryb.svg"
+                                src="/SassEcommerce.svg"
                             />{' '}
                         </div>
                         <nav className="flex flex-1 flex-col">
@@ -290,7 +291,8 @@ export default function Layout({ children }) {
                                 role="list"
                             >
                                 <li className="w-full">
-                                    {baseEvent.event_type === 'skrybing' &&
+                                    {baseEvent.event_type ===
+                                        'SassEcommerceing' &&
                                     baseEvent.data !== '100%' ? (
                                         <div className="flex-shrink-0">
                                             <button
@@ -299,7 +301,8 @@ export default function Layout({ children }) {
                                                 onClick={openCreateModal}
                                                 type="button"
                                             >
-                                                Skrybing {baseEvent.data}
+                                                SassEcommerceing{' '}
+                                                {baseEvent.data}
                                             </button>
                                         </div>
                                     ) : (
@@ -309,7 +312,7 @@ export default function Layout({ children }) {
                                                 onClick={openCreateModal}
                                                 type="button"
                                             >
-                                                Start Skrybing
+                                                Start SassEcommerceing
                                             </button>
                                         </div>
                                     )}
@@ -352,34 +355,32 @@ export default function Layout({ children }) {
                                         className="-mx-2 mt-2 space-y-1"
                                         role="list"
                                     >
-                                   {settings.map(item => (
-                                                            <li key={item.name}>
-                                                                <Link
-                                                                    className={classNames(
-                                                                        router.asPath ==
-                                                                            item.href
-                                                                            ? 'bg-gray-900 text-pink-600'
-                                                                            : 'text-gray-400 hover:text-pink-600 hover:bg-gray-800',
-                                                                        'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
-                                                                    )}
-                                                                    href={
-                                                                        item.href
-                                                                    }
-                                                                >
-                                                                    <item.icon
-                                                                        aria-hidden="true"
-                                                                        className={classNames(
-                                                                            router.asPath ==
-                                                                                item.href
-                                                                                ? 'text-pink-600'
-                                                                                : 'text-gray-400 group-hover:text-pink-600',
-                                                                            'h-6 w-6 shrink-0',
-                                                                        )}
-                                                                    />
-                                                                    {item.name}
-                                                                </Link>
-                                                            </li>
-                                                        ))}
+                                        {settings.map(item => (
+                                            <li key={item.name}>
+                                                <Link
+                                                    className={classNames(
+                                                        router.asPath ==
+                                                            item.href
+                                                            ? 'bg-gray-900 text-pink-600'
+                                                            : 'text-gray-400 hover:text-pink-600 hover:bg-gray-800',
+                                                        'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
+                                                    )}
+                                                    href={item.href}
+                                                >
+                                                    <item.icon
+                                                        aria-hidden="true"
+                                                        className={classNames(
+                                                            router.asPath ==
+                                                                item.href
+                                                                ? 'text-pink-600'
+                                                                : 'text-gray-400 group-hover:text-pink-600',
+                                                            'h-6 w-6 shrink-0',
+                                                        )}
+                                                    />
+                                                    {item.name}
+                                                </Link>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </li>
                             </ul>

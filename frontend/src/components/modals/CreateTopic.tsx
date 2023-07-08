@@ -141,7 +141,7 @@ export default function CreateTopic() {
                         dispatch(
                             setEvent({
                                 event_id: '',
-                                event_type: 'skrybing',
+                                event_type: 'SassEcommerceing',
                                 data:
                                     ((ev.loaded / ev.total) * 100).toFixed(0) +
                                     '%',
@@ -210,9 +210,10 @@ export default function CreateTopic() {
                                                     and text files to be
                                                     QuikBuyd. Simply drag and
                                                     drop your files, review the
-                                                    preview, and click Skryb It
-                                                    to start the upload and
-                                                    skrybing process.
+                                                    preview, and click
+                                                    SassEcommerce It to start
+                                                    the upload and
+                                                    SassEcommerceing process.
                                                 </h6>
                                                 <div
                                                     className=""
@@ -301,7 +302,7 @@ export default function CreateTopic() {
                                                 onClick={onSubmit}
                                                 type="submit"
                                             >
-                                                Skryb it
+                                                SassEcommerce it
                                             </button>
                                             {/* {JSON.stringify(errors)} */}
                                         </div>

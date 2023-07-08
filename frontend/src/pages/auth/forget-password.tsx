@@ -29,12 +29,15 @@ const ForgetPassword = () => {
         router.prefetch('/');
     }, [router]);
 
-    const [sentPasswordResetEmail, { data, loading, error }] = useMutation(SENT_PASSWORD_RESET_EMAIL, {
-        onError(error) {
-            dispatch(setErrors([{ message: error.message }]));
-            dispatch(clearSuccessMessage(null));
+    const [sentPasswordResetEmail, { data, loading, error }] = useMutation(
+        SENT_PASSWORD_RESET_EMAIL,
+        {
+            onError(error) {
+                dispatch(setErrors([{ message: error.message }]));
+                dispatch(clearSuccessMessage(null));
+            },
         },
-    });
+    );
 
     if (loading) {
         dispatch(setSuccessMessage('Loading...'));
@@ -57,17 +60,17 @@ const ForgetPassword = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <Link href="/">
+                    <Link href="/">
                         <Image
                             alt="Your Company"
                             className="mx-auto h-10 w-auto"
-                            src="/Skryb-Light.svg"
+                            src="/SassEcommerce-Light.svg"
                             width={120}
                             height={50}
                         />
                     </Link>
                     <h2 className="mt-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                       Reset password
+                        Reset password
                     </h2>
                     <p className="text-center text-sm  tracking-tight text-gray-600">
                         Please enter your email address to reset your password
@@ -98,8 +101,7 @@ const ForgetPassword = () => {
                                 type="email"
                             />
 
-
-{errors.email?.type === 'required' && (
+                            {errors.email?.type === 'required' && (
                                 <p className="mt-1 mb-2 text-sm text-red-600 dark:text-red-500">
                                     {' '}
                                     Email address required!
@@ -120,7 +122,7 @@ const ForgetPassword = () => {
                             type="submit"
                         >
                             <span className="absolute left-0 inset-y-0 flex items-center pl-3"></span>
-                            Reset 
+                            Reset
                         </button>
                     </div>
                 </form>
