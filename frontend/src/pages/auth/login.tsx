@@ -58,11 +58,11 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <Link href="/">
+                    <Link href="/">
                         <Image
                             alt="Your Company"
                             className="mx-auto h-10 w-auto"
-                            src="/Skryb-Light.svg"
+                            src="/SassEcommerce-Light.svg"
                             width={120}
                             height={50}
                         />

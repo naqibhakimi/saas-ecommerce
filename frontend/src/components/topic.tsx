@@ -355,7 +355,7 @@ export default function Example() {
                     <div className="px-4 sm:px-6 lg:px-8 mt-6">
                         <div className="flex justify-between">
                             <h4 className="text-xl text-gray-900 font-semibold">
-                                Skryb Notes {tab}
+                                SassEcommerce Notes {tab}
                             </h4>
                             <span className="isolate inline-flex rounded-md shadow-sm">
                                 <button

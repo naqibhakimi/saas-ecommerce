@@ -53,15 +53,15 @@ const VerifyEmail = () => {
                 <div className="py-24 sm:py-32 lg:py-40">
                     <div className="mx-auto max-w-10xl px-6 lg:px-8">
                         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                        <Link href="/">
-                        <Image
-                            alt="Your Company"
-                            className="mx-auto h-10 w-auto"
-                            src="/Skryb-Light.svg"
-                            width={120}
-                            height={50}
-                        />
-                    </Link>
+                            <Link href="/">
+                                <Image
+                                    alt="Your Company"
+                                    className="mx-auto h-10 w-auto"
+                                    src="/SassEcommerce-Light.svg"
+                                    width={120}
+                                    height={50}
+                                />
+                            </Link>
                             <h2 className="mt-5 mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                                 Please verify your email
                             </h2>

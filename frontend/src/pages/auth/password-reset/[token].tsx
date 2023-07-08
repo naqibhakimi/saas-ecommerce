@@ -15,7 +15,6 @@ import Image from 'next/image';
 
 import { LOGIN_WELLCOME_MESSAGE } from '@/constents';
 
-
 const SetPassword = () => {
     const dispatch = useDispatch();
     const router = useRouter();
@@ -54,23 +53,19 @@ const SetPassword = () => {
 
     if (data?.passwordReset?.errors?.newPassword2) {
         dispatch(clearSuccessMessage(null));
-        dispatch(
-            setErrors([
-                {
-                    code: '',
-                    message: data.passwordReset.errors.newPassword2[0],
-                },
-            ]),
-        );
+        dispatch(setErrors(data.passwordReset.errors.newPassword2));
     }
 
     if (data?.passwordReset.success) {
         router.push('/auth/login');
     }
 
-    const onSubmit = useCallback(data => {
-        passwordReset({ variables: { input: { ...data, token } } });
-    }, []);
+    const onSubmit = useCallback(
+        data => {
+            passwordReset({ variables: { input: { ...data, token } } });
+        },
+        [token],
+    );
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -80,7 +75,7 @@ const SetPassword = () => {
                         <Image
                             alt="Your Company"
                             className="mx-auto h-10 w-auto"
-                            src="/Skryb-Light.svg"
+                            src="/SassEcommerce-Light.svg"
                             width={120}
                             height={50}
                         />

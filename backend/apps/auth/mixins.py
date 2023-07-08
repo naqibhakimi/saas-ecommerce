@@ -22,9 +22,9 @@ from .exceptions import (EmailAlreadyInUse, InvalidCredentials,
 from .forms import EmailForm, SignupForm, SingInForm, UpdateAccountForm
 from .models import SEUser, UserStatus
 from .shortcuts import get_user_by_email
-from .signals import user_registered
+from .signals import user_registered, user_verified
 from .types import UserNode
-from .utils import get_token_payload
+from .utils import revoke_user_refresh_token
 
 logger = logging.getLogger(__name__)
 
@@ -112,6 +112,14 @@ class UpdateAccountMixin(Output):
 
 
 class VerifyAccountMixin(Output):
+    """
+    Verify user account.
+
+    Receive the token that was sent by email.
+    If the token is valid, make the user verified
+    by making the `user.status.verified` field true.
+    """
+
     token = graphene.String()
     user = graphene.Field(UserNode)
 
@@ -132,6 +140,16 @@ class VerifyAccountMixin(Output):
 
 
 class ResendActivationEmailMixin(Output):
+    """
+    Sends activation email.
+
+    It is called resend because theoretically
+    the first activation email was sent when
+    the user registered.
+
+    If there is no user with the requested email,
+    a successful response is returned.
+    """
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
         logger.info("Sending ResendActivationEmail")
@@ -139,13 +157,14 @@ class ResendActivationEmailMixin(Output):
             email = kwargs.get("email")
             f = EmailForm({"email": email})
             if f.is_valid():
+                # FIXME: check if this User status is correct
                 user = get_user_by_email(email)
                 user.status.resend_activation_email(info)
                 return cls(success=True)
             return cls(success=False, errors=f.errors.get_json_data())
         except ObjectDoesNotExist:
             logger.warn(f"{email} ObjectDoesNotExist")
-            return cls(success=True)  # even if user is not registred
+            return cls(success=True)  # even if user is not registered
         except SMTPException:
             return cls(success=False, errors=Messages.EMAIL_FAIL)
         except UserAlreadyVerified:
@@ -172,6 +191,17 @@ class VerifySecondaryEmailMixin(Output):
 
 
 class SendPasswordResetEmailMixin(Output):
+    """
+    Send password reset email.
+
+    For non verified users, send an activation
+    email instead.
+
+    Accepts both primary and secondary email.
+
+    If there is no user with the requested email,
+    a successful response is returned.
+    """
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
@@ -224,63 +254,44 @@ class SwapEmailsMixin(Output):
 
 
 class PasswordResetMixin(Output):
-    email = graphene.String(required=True)
+    """
+    Change user password without old password.
+
+    Receive the token that was sent by email.
+
+    If token and new passwords are valid, update
+    user password and in case of using refresh
+    tokens, revoke all of them.
+
+    Also, if user has not been verified yet, verify it.
+    """
+
+    form = SetPasswordForm
 
     @classmethod
     def resolve_mutation(cls, root, info, **kwargs):
-
-        email = kwargs.get('email')
-
         try:
-            user = SEUser.objects.get(email=email)
-            user.status.send_password_reset_email(info, [email])
-            return cls(success=True)
+            token = kwargs.pop("token")
+            user = get_user_by_token(
+                token,
+                TokenAction.PASSWORD_RESET
+            )
+            f = cls.form(user, kwargs)
+            if f.is_valid():
+                revoke_user_refresh_token(user)
+                user = f.save()
 
-        except SEUser.DoesNotExist:
-            return cls(success=False, errors=Messages.INVALID_EMAIL)
+                if user.status.verified is False:
+                    user.status.verified = True
+                    user.status.save(update_fields=["verified"])
+                    user_verified.send(sender=cls, user=user)
 
-
-# class PasswordResetMixin(Output):
-#     """
-#     Change user password without old password.
-
-#     Receive the token that was sent by email.
-
-#     If token and new passwords are valid, update
-#     user password and in case of using refresh
-#     tokens, revoke all of them.
-
-#     Also, if user has not been verified yet, verify it.
-#     """
-
-#     form = SetPasswordForm
-
-#     @classmethod
-#     def resolve_mutation(cls, root, info, **kwargs):
-#         try:
-#             token = kwargs.pop("token")
-#             payload = get_token_payload(
-#                 token,
-#                 TokenAction.PASSWORD_RESET,
-#                 AUTH.EXPIRATION_PASSWORD_RESET_TOKEN,
-#             )
-#             user = UserModel._default_manager.get(**payload)
-#             f = cls.form(user, kwargs)
-#             if f.is_valid():
-#                 revoke_user_refresh_token(user)
-#                 user = f.save()
-
-#                 if user.status.verified is False:
-#                     user.status.verified = True
-#                     user.status.save(update_fields=["verified"])
-#                     user_verified.send(sender=cls, user=user)
-
-#                 return cls(success=True)
-#             return cls(success=False, errors=f.errors.get_json_data())
-#         except SignatureExpired:
-#             return cls(success=False, errors=Messages.EXPIRED_TOKEN)
-#         except (BadSignature, TokenScopeError):
-#             return cls(success=False, errors=Messages.INVALID_TOKEN)
+                return cls(success=True)
+            return cls(success=False, errors=f.errors.get_json_data())
+        except SignatureExpired:
+            return cls(success=False, errors=Messages.EXPIRED_TOKEN)
+        except (BadSignature, TokenScopeError):
+            return cls(success=False, errors=Messages.INVALID_TOKEN)
 
 
 # class PasswordSetMixin(Output):

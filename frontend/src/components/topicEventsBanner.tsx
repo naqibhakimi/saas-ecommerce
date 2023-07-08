@@ -29,7 +29,7 @@ export default function TopicEventsBanner() {
                         <p className="text-sm leading-6 text-white">
                             <a href="#">
                                 <strong className="font-semibold">
-                                    Skrybing :{' '}
+                                    SassEcommerceing :{' '}
                                 </strong>
                                 {data?.topicEvents}
                             </a>
