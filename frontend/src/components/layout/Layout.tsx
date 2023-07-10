@@ -30,6 +30,7 @@ const navigation = [
     },
     { name: 'Notes', href: '/notes', icon: FolderIcon, current: false },
     { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
+    { name: 'Customers', href: '/customers', icon: UsersIcon, current: false },
 ];
 const settings = [
     { name: 'Team', href: '/team', icon: UsersIcon, current: false },
@@ -158,7 +159,7 @@ export default function Layout({ children }) {
                                                         '100%' ? (
                                                         <div className="flex-shrink-0">
                                                             <button
-                                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm disabled:bg-pink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm disabled:bg-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                                                                 disabled={true}
                                                                 onClick={
                                                                     openCreateModal
@@ -172,7 +173,7 @@ export default function Layout({ children }) {
                                                     ) : (
                                                         <div className="flex-shrink-0">
                                                             <button
-                                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                                                                 onClick={
                                                                     openCreateModal
                                                                 }
@@ -200,8 +201,8 @@ export default function Layout({ children }) {
                                                                         className={classNames(
                                                                             router.asPath ==
                                                                                 item.href
-                                                                                ? 'bg-gray-900 text-pink-600'
-                                                                                : 'text-gray-400 hover:text-pink-600 hover:bg-gray-800',
+                                                                                ? 'bg-gray-900 text-indigo-600'
+                                                                                : 'text-gray-400 hover:text-indigo-600 hover:bg-gray-800',
                                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                                                         )}
                                                                         href={
@@ -213,8 +214,8 @@ export default function Layout({ children }) {
                                                                             className={classNames(
                                                                                 router.asPath ==
                                                                                     item.href
-                                                                                    ? 'text-pink-600'
-                                                                                    : 'text-gray-400 group-hover:text-pink-600',
+                                                                                    ? 'text-indigo-600'
+                                                                                    : 'text-gray-400 group-hover:text-indigo-600',
                                                                                 'h-6 w-6 shrink-0',
                                                                             )}
                                                                         />
@@ -241,8 +242,8 @@ export default function Layout({ children }) {
                                                                     className={classNames(
                                                                         router.asPath ==
                                                                             item.href
-                                                                            ? 'bg-gray-900 text-pink-600'
-                                                                            : 'text-gray-400 hover:text-pink-600 hover:bg-gray-800',
+                                                                            ? 'bg-gray-900 text-indigo-600'
+                                                                            : 'text-gray-400 hover:text-indigo-600 hover:bg-gray-800',
                                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                                                     )}
                                                                     href={
@@ -254,8 +255,8 @@ export default function Layout({ children }) {
                                                                         className={classNames(
                                                                             router.asPath ==
                                                                                 item.href
-                                                                                ? 'text-pink-600'
-                                                                                : 'text-gray-400 group-hover:text-pink-600',
+                                                                                ? 'text-indigo-600'
+                                                                                : 'text-gray-400 group-hover:text-indigo-600',
                                                                             'h-6 w-6 shrink-0',
                                                                         )}
                                                                     />
@@ -296,7 +297,7 @@ export default function Layout({ children }) {
                                     baseEvent.data !== '100%' ? (
                                         <div className="flex-shrink-0">
                                             <button
-                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm disabled:bg-pink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm disabled:bg-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                                                 disabled={true}
                                                 onClick={openCreateModal}
                                                 type="button"
@@ -308,7 +309,7 @@ export default function Layout({ children }) {
                                     ) : (
                                         <div className="flex-shrink-0">
                                             <button
-                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                                                className=" w-full text-center justify-center relative inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                                                 onClick={openCreateModal}
                                                 type="button"
                                             >
@@ -325,8 +326,8 @@ export default function Layout({ children }) {
                                                     className={classNames(
                                                         router.asPath ==
                                                             item.href
-                                                            ? 'bg-gray-900 text-pink-600'
-                                                            : 'text-gray-400 hover:text-pink-600 hover:bg-gray-800',
+                                                            ? 'bg-gray-900 text-indigo-600'
+                                                            : 'text-gray-400 hover:text-indigo-600 hover:bg-gray-800',
                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                                     )}
                                                     href={item.href}
@@ -336,8 +337,8 @@ export default function Layout({ children }) {
                                                         className={classNames(
                                                             router.asPath ==
                                                                 item.href
-                                                                ? 'text-pink-600'
-                                                                : 'text-gray-400 group-hover:text-pink-600',
+                                                                ? 'text-indigo-600'
+                                                                : 'text-gray-400 group-hover:text-indigo-600',
                                                             'h-6 w-6 shrink-0',
                                                         )}
                                                     />
@@ -361,8 +362,8 @@ export default function Layout({ children }) {
                                                     className={classNames(
                                                         router.asPath ==
                                                             item.href
-                                                            ? 'bg-gray-900 text-pink-600'
-                                                            : 'text-gray-400 hover:text-pink-600 hover:bg-gray-800',
+                                                            ? 'bg-gray-900 text-indigo-600'
+                                                            : 'text-gray-400 hover:text-indigo-600 hover:bg-gray-800',
                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                                     )}
                                                     href={item.href}
@@ -372,8 +373,8 @@ export default function Layout({ children }) {
                                                         className={classNames(
                                                             router.asPath ==
                                                                 item.href
-                                                                ? 'text-pink-600'
-                                                                : 'text-gray-400 group-hover:text-pink-600',
+                                                                ? 'text-indigo-600'
+                                                                : 'text-gray-400 group-hover:text-indigo-600',
                                                             'h-6 w-6 shrink-0',
                                                         )}
                                                     />
