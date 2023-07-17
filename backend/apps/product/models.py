@@ -22,6 +22,23 @@ class PriceList(BaseModel):
 
 
 class MoneyAmount(BaseModel):
+    """
+
+    The PriceList model can be used to set different prices for product variants depending
+    on the price list. For example, you could have a price list for wholesale
+    customers and a price list for retail customers.
+
+    You can use the PriceList model to set different prices for product variants
+    in different regions or for different customer groups.
+
+    currency: The currency code for the price.
+    amount: The price amount.
+    min_quantity: The minimum quantity for the price to apply.
+    max_quantity: The maximum quantity for the price to apply.
+    region: The region for the price.
+    customer_group: The customer group for the price.
+    """
+
     # todo:
     # do we need this ?
     # currency_code = models.CharField(max_length=255, null=True, blank=True)
