@@ -17,11 +17,13 @@ import {
     ChevronDownIcon,
     MagnifyingGlassIcon,
     PlusIcon,
+    TagIcon,
 } from '@heroicons/react/20/solid';
 
 const navigation = [
     { name: 'Home', href: '/', icon: HomeIcon, current: false },
     { name: 'My favourites', href: '#', icon: StarIcon, current: false },
+    { products: 'Products', href: '/products', icon: TagIcon, current: false },
     {
         name: 'Topics',
         href: '/topics',
