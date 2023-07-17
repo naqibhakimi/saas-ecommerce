@@ -28,6 +28,9 @@ from .connections import (
 
 
 class CustomerNode(Node, DjangoObjectType):
+    full_name = graphene.String(source="full_name")
+    number_of_orders = graphene.Int(source="number_of_orders")
+
     class Meta:
         model = Customer
         filterset_class = CustomerFilter

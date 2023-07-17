@@ -67,6 +67,14 @@ class Customer(BaseModel):
         """
         return f"{self.first_name} {self.last_name} ({self.email})"
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @property
+    def number_of_orders(self):
+        return 10
+
 
 class CustomerGroup(BaseModel):
     name = models.CharField(max_length=255, unique=True)

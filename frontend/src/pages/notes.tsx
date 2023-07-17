@@ -9,11 +9,19 @@ export default function Index() {
     const { data, error, loading } = useQuery(_MEETINGS);
 
     if (loading) {
-        return <Layout><></></Layout>;
+        return (
+            <Layout>
+                <></>
+            </Layout>
+        );
     }
 
     if (error) {
-        return <Layout><></></Layout>;
+        return (
+            <Layout>
+                <></>
+            </Layout>
+        );
     }
 
     return (
