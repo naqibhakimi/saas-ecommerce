@@ -6,7 +6,7 @@ export default function ProductInfo() {
                     <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:pb-0">
                         <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                             <label
-                                htmlFor="street-address"
+                                htmlFor="title"
                                 className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                             >
                                 Title
@@ -14,9 +14,27 @@ export default function ProductInfo() {
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
                                 <input
                                     type="text"
-                                    name="street-address"
-                                    id="street-address"
-                                    autoComplete="street-address"
+                                    name="title"
+                                    id="title"
+                                    autoComplete="title"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="subtitle"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Subtitle
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <input
+                                    type="text"
+                                    name="subtitle"
+                                    id="subtitle"
+                                    autoComplete="subtitle"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
                                 />
                             </div>
