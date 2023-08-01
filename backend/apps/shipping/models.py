@@ -12,6 +12,12 @@ class ShippingProfileType(models.TextChoices):
 
 
 class ShippingProfile(BaseModel):
+    """
+        A ShippingProfile model is typically used to store information
+        related to shipping rules, rates, and options. It could include 
+        details such as shipping methods, delivery time frames,
+        shipping zones, and more.
+    """
     Shipping_Profile_Type = (
         ("default", "DEFAULT"),
         ("gift_card", "GIFT_CARD"),

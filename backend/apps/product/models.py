@@ -122,6 +122,34 @@ class Product(BaseModel):
         This is important for a number of reasons. For example, gift cards may need to
         be handled differently in the checkout process, and they may
         need to be displayed differently on the website.
+
+    external_id: allows storing an external identifier for a product. 
+        An external identifier is a unique code or reference number that 
+        is used to identify the product within an external system or integration.
+
+        By using external_id, the e-commerce platform can communicate with external
+        systems more effectively and keep track of the product's associations
+        and mappings across different platforms. It simplifies the data 
+        synchronization process and allows for smooth 
+        interoperability between various systems.
+
+    sales_channels: is useful if you want to track the sales of your products
+        across different channels. For example, you could use the sales_channels
+        field to track the number of products sold on your website,
+        in physical stores, and through third-party marketplaces.
+
+        Let's say that you are selling a smartphone on your online store.
+        You want to track the sales of the smartphone on your website and through Amazon.
+        You would create two sales channels, one for your website and one for Amazon.
+        You would then associate the smartphone with both sales channels.
+        When a customer purchases the smartphone from your website, 
+        the sale would be recorded in the sales channel for your website.
+        When a customer purchases the smartphone from Amazon, 
+        the sale would be recorded in the sales channel for Amazon.
+        This would allow you to track the sales of the smartphone across both channels
+        and see which channel is generating more sales.
+
+
     """
     Product_Status = (
         ("draft", "DRAFT"),
@@ -135,8 +163,9 @@ class Product(BaseModel):
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
     status = models.CharField(max_length=255, choices=Product_Status, default="draft")
+    # FIXME: DO WE HAVE TO REMOVE IMAGES
     images = models.ManyToManyField(Image, related_name="+")
-    thumbnail = models.TextField(null=True, blank=True)
+    thumbnail = models.ImageField(upload_to="Product/Thumbnail", null=True, blank=True)
     profile = models.ForeignKey(
         ShippingProfile, on_delete=models.CASCADE, related_name="+", null=True, blank=True
     )

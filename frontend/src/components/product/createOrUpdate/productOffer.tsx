@@ -39,50 +39,6 @@ export default function productOffer() {
                                 />
                             </div>
                         </div>
-                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-                            <label
-                                htmlFor="condition"
-                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
-                            >
-                                Condition
-                            </label>
-                            <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
-                                    id="condition"
-                                    name="condition"
-                                    autoComplete="condition-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>Select</option>
-                                    <option>New</option>
-                                    <option>Used - Adaptable</option>
-                                    <option>Used - Good </option>
-                                    <option>Used - Like New </option>
-                                    <option>Used - very Good </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-                            <label
-                                htmlFor="is-gift-card"
-                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
-                            >
-                                Is Gift Card
-                            </label>
-                            <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
-                                    id="is-gift-card"
-                                    name="is-gift-card"
-                                    autoComplete="is-gift-card-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>Select</option>
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
-                            </div>
-                        </div>
 
                         <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                             <label
@@ -121,6 +77,150 @@ export default function productOffer() {
                                         <option>EUR</option>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="condition"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Condition
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <select
+                                    id="condition"
+                                    name="condition"
+                                    autoComplete="condition"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                >
+                                    <option>Select</option>
+                                    <option>New</option>
+                                    <option>Used - Adaptable</option>
+                                    <option>Used - Good </option>
+                                    <option>Used - Like New </option>
+                                    <option>Used - very Good </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="product-type"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Product Type
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <select
+                                    id="product-type"
+                                    name="product-type"
+                                    autoComplete="product-type"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                >
+                                    <option>Select</option>
+                                    <option>Food and Beverages:</option>
+                                    <option>Electronics</option>
+                                    <option>Beauty and Personal Care </option>
+                                    <option>Books and Media </option>
+                                    <option>Toys and Games</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="product-tag"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Product Tag
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <select
+                                    id="product-tag"
+                                    name="product-tag"
+                                    autoComplete="product-tag"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                >
+                                    <option>Select</option>
+                                    <option>On Sale</option>
+                                    <option>New Arrival</option>
+                                    <option>Bestseller </option>
+                                    <option>Limited Edition </option>
+                                    <option>Seasonal</option>
+                                    <option>Organic</option>
+                                    <option>Handmade</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="product-collections"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Product Collections
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <select
+                                    id="product-collections"
+                                    name="product-collections"
+                                    autoComplete="product-collections"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                >
+                                    <option>Select</option>
+                                    <option>Summer Essentials</option>
+                                    <option>Back-to-School Supplies</option>
+                                    <option>Best-Selling Products </option>
+                                    <option>New Arrivals </option>
+                                    <option>Eco-Friendly Products</option>
+                                    <option>Travel Accessories</option>
+                                    <option>
+                                        Tech Gadgets and Accessories
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="is-gift-card"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Is Gift Card
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <select
+                                    id="is-gift-card"
+                                    name="is-gift-card"
+                                    autoComplete="is-gift-card"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                >
+                                    <option>Select</option>
+                                    <option>Yes</option>
+                                    <option>No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="discountable"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Discountable
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <select
+                                    id="discountable"
+                                    name="discountable"
+                                    autoComplete="discountable"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                >
+                                    <option>Select</option>
+                                    <option>Yes</option>
+                                    <option>No</option>
+                                </select>
                             </div>
                         </div>
 
