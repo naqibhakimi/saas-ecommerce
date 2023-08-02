@@ -87,7 +87,7 @@ class ProductCollection(BaseModel):
     of the winter clearance sale.
 
     "Women's Accessories": This collection includes various accessories 
-    like handbags, scarves, and hats targeted specifically for women.
+    like handbags, scarves, and hats tasrgeted specifically for women.
     """
     title = models.CharField(max_length=255)
     handle = models.CharField(max_length=255, unique=True, null=True)
@@ -169,10 +169,10 @@ class Product(BaseModel):
     profile = models.ForeignKey(
         ShippingProfile, on_delete=models.CASCADE, related_name="+", null=True, blank=True
     )
-    # weight = models.PositiveIntegerField(null=True, blank=True)
-    # length = models.PositiveIntegerField(null=True, blank=True)
-    # height = models.PositiveIntegerField(null=True, blank=True)
-    # width = models.PositiveIntegerField(null=True, blank=True)
+    weight = models.PositiveIntegerField(null=True, blank=True)
+    length = models.PositiveIntegerField(null=True, blank=True)
+    height = models.PositiveIntegerField(null=True, blank=True)
+    width = models.PositiveIntegerField(null=True, blank=True)
     hs_code = models.TextField(null=True, blank=True)
     origin_country = models.TextField(null=True, blank=True)
     mid_code = models.TextField(null=True, blank=True)
