@@ -29,6 +29,10 @@ class CreateProductFrom(BaseForm):
             "discountable",
             "external_id",
             "sales_channels",
+            "each_unit_count",
+            "unit_count",
+            "unit_count_type",
+            "is_expirable",
             "metadata"
         )
 
@@ -61,6 +65,10 @@ class UpdateProductFrom(BaseForm):
             "discountable",
             "external_id",
             "sales_channels",
+            "each_unit_count",
+            "unit_count",
+            "unit_count_type",
+            "is_expirable",
             "metadata"
         )
 

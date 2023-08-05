@@ -51,7 +51,7 @@ class ImageFilter(django_filters.FilterSet):
 class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
-        exclude = "metadata"
+        exclude = ("metadata", "thumbnail")
 
 
 class ProductCategoryFilter(django_filters.FilterSet):

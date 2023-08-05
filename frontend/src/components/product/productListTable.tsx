@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Product({ products }) {
     return (
         <div>
@@ -43,23 +45,29 @@ export default function Product({ products }) {
                                 {products.map(product => (
                                     <tr key={product.email}>
                                         <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                            <div className="flex items-center">
-                                                <div className="h-11 w-11 flex-shrink-0">
-                                                    <img
-                                                        className="h-11 w-11 rounded-full"
-                                                        src={product.thumbnail}
-                                                        alt=""
-                                                    />
-                                                </div>
-                                                <div className="ml-4">
-                                                    <div className="font-medium text-gray-900">
-                                                        {product.name}
+                                            <Link
+                                                href={'product/' + product.id}
+                                            >
+                                                <div className="flex items-center">
+                                                    <div className="h-11 w-11 flex-shrink-0">
+                                                        <img
+                                                            className="h-11 w-11 rounded-full"
+                                                            src={
+                                                                product.thumbnail
+                                                            }
+                                                            alt=""
+                                                        />
                                                     </div>
-                                                    <div className="mt-1 text-gray-500">
-                                                        {product.title}
+                                                    <div className="ml-4">
+                                                        <div className="font-medium text-gray-900">
+                                                            {product.name}
+                                                        </div>
+                                                        <div className="mt-1 text-gray-500">
+                                                            {product.title}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </td>
                                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                             <div className="text-gray-900">

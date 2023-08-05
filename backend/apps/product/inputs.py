@@ -25,6 +25,10 @@ class CreateProductInputField(graphene.InputObjectType):
     discountable = graphene.String()
     external_id = graphene.String()
     sales_channels = graphene.List(graphene.ID)
+    each_unit_count = graphene.Int()
+    unit_count = graphene.Int()
+    unit_count_type = graphene.String()
+    is_expirable = graphene.Int()
     metadata = graphene.String()
 
 
@@ -53,6 +57,10 @@ class UpdateProductInputField(graphene.InputObjectType):
     discountable = graphene.String()
     external_id = graphene.String()
     sales_channels = graphene.List(graphene.ID)
+    each_unit_count = graphene.Int()
+    unit_count = graphene.Int()
+    unit_count_type = graphene.String()
+    is_expirable = graphene.Int()
     metadata = graphene.String()
 
 

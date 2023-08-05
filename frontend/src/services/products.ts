@@ -34,3 +34,34 @@ export const _GET_PRODUCTS = gql`
         }
     }
 `;
+
+export const _GET_PRODUCT_ID = gql`
+    query _GET_PRODUCT_BY_ID($id: ID!) {
+        product(id: $id) {
+            id
+            createdAt
+            updatedAt
+            updatedBy {
+                id
+                firstName
+                lastName
+            }
+            title
+            subtitle
+            description
+            handle
+            isGiftCard
+            status
+            thumbnail
+            weight
+            length
+            height
+            width
+            originCountry
+            midCode
+            material
+            discountable
+            externalId
+        }
+    }
+`;

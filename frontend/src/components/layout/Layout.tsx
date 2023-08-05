@@ -28,14 +28,14 @@ const navigation = [
     { name: 'Home', href: '/', icon: HomeIcon, current: false },
     { name: 'My favourites', href: '#', icon: StarIcon, current: false },
     { name: 'Products', href: '/products', icon: TagIcon, current: false },
-    {
-        name: 'Topics',
-        href: '/topics',
-        icon: DocumentDuplicateIcon,
-        current: true,
-    },
-    { name: 'Notes', href: '/notes', icon: FolderIcon, current: false },
-    { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
+    // {
+    //     name: 'Topics',
+    //     href: '/topics',
+    //     icon: DocumentDuplicateIcon,
+    //     current: true,
+    // },
+    // { name: 'Notes', href: '/notes', icon: FolderIcon, current: false },
+    // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
     { name: 'Customers', href: '/customers', icon: UsersIcon, current: false },
 ];
 const settings = [
