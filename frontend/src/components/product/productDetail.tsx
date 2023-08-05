@@ -2,7 +2,7 @@ import ProductInfo from '@/components/product/createOrUpdate/productInfo';
 import ProductVariant from '@/components/product/createOrUpdate/productVariant';
 import ProductOffer from '@/components/product/createOrUpdate/productOffer';
 import ProductImage from '@/components/product/createOrUpdate/productImage';
-
+import GET_PRODUCT_BY_ID from '@/services/products';
 import { useState } from 'react';
 
 const tabs = [

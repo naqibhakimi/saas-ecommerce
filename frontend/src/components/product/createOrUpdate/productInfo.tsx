@@ -1,7 +1,40 @@
+import { useForm, Controller } from 'react-hook-form';
+import { _GET_PRODUCTS, _GET_PRODUCT_ID } from '@/services/products';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
+import Layout from '@/components/layout/Layout';
+
 export default function ProductInfo() {
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm();
+
+    const router = useRouter();
+    const { productId } = router.query;
+
+    const { loading, error, data } = useQuery(_GET_PRODUCT_ID, {
+        variables: { id: productId },
+    });
+
+    const onSubmit = data => {
+        console.log(data);
+    };
+
+    // const countryQuery = useQuery(_GET_COUNTRY);
+
+    if (loading || error) {
+        return (
+            <Layout>
+                <></>
+            </Layout>
+        );
+    }
+
     return (
         <>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:pb-0">
                         <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
@@ -12,13 +45,24 @@ export default function ProductInfo() {
                                 Title
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
-                                    type="text"
+                                <Controller
                                     name="title"
-                                    id="title"
-                                    autoComplete="title"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                    control={control}
+                                    defaultValue={data.product.title}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            {...field}
+                                            autoComplete="title"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                        />
+                                    )}
                                 />
+                                {errors.title && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        Title is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -30,13 +74,24 @@ export default function ProductInfo() {
                                 Subtitle
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
-                                    type="text"
+                                <Controller
                                     name="subtitle"
-                                    id="subtitle"
-                                    autoComplete="subtitle"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            {...field}
+                                            autoComplete="subtitle"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                        />
+                                    )}
                                 />
+                                {errors.title && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        Sub Title is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -140,16 +195,34 @@ export default function ProductInfo() {
                                 Country/Region of Origin
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
-                                    id="country"
-                                    name="country"
-                                    autoComplete="country-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>United States</option>
-                                    <option>Canada</option>
-                                    <option>Mexico</option>
-                                </select>
+                                <Controller
+                                    name="originCountry"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        // <input
+                                        //     type="text"
+                                        //     {...field}
+                                        //     autoComplete="subtitle"
+                                        //     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                        // />
+                                        <select
+                                            {...field}
+                                            autoComplete="country-name"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                        >
+                                            <option>United States</option>
+                                            <option>Canada</option>
+
+                                            <option>Mexico</option>
+                                        </select>
+                                    )}
+                                />
+                                {errors.title && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        Sub Title is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 

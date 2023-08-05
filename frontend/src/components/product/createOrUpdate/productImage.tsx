@@ -1,9 +1,20 @@
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+import { useLazyQuery } from '@apollo/client';
+import { useState } from 'react';
+import { _GET_PRODUCT_ID } from '@/services/products';
 
 export default function productImage() {
+    const [productId, setProductId] = useState('');
+    const [getProductById, { loading, error, data }] =
+        useLazyQuery(_GET_PRODUCT_ID);
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        getProductById({ variables: { id: productId } });
+    };
     return (
         <>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div>
                     <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:pb-0">
                         <div className="sm:grid sm:grid-cols-3 sm:items-center sm:gap-4 sm:py-6">
