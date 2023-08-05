@@ -71,6 +71,7 @@ class ProductTag(BaseModel):
 
 class Image(BaseModel):
     url = models.CharField(max_length=255, null=True, blank=True)
+    file = models.ImageField(upload_to="product/images/",  null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
@@ -91,7 +92,6 @@ class ProductCollection(BaseModel):
     """
     title = models.CharField(max_length=255)
     handle = models.CharField(max_length=255, unique=True, null=True)
-    # products = models.ManyToManyField(Product, related_name="+")
     metadata = models.JSONField(null=True)
 
 
@@ -163,7 +163,6 @@ class Product(BaseModel):
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
     status = models.CharField(max_length=255, choices=Product_Status, default="draft")
-    # FIXME: DO WE HAVE TO REMOVE IMAGES
     images = models.ManyToManyField(Image, related_name="+")
     thumbnail = models.ImageField(upload_to="Product/Thumbnail", null=True, blank=True)
     profile = models.ForeignKey(
@@ -174,7 +173,8 @@ class Product(BaseModel):
     height = models.PositiveIntegerField(null=True, blank=True)
     width = models.PositiveIntegerField(null=True, blank=True)
     hs_code = models.TextField(null=True, blank=True)
-    origin_country = models.TextField(null=True, blank=True)
+    origin_country = models.ForeignKey(
+        "customer.Country", blank=True, null=True, on_delete=models.SET_NULL)
     mid_code = models.TextField(null=True, blank=True)
     material = models.TextField(null=True, blank=True)
     collection = models.ForeignKey(
@@ -186,6 +186,9 @@ class Product(BaseModel):
     )
     type = models.ForeignKey(
         ProductType, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+    category = models.ForeignKey(
+        "ProductCategory", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
     )
     tags = models.ManyToManyField(ProductTag, related_name="+")
     discountable = models.BooleanField(default=True)
