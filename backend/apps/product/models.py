@@ -70,7 +70,6 @@ class ProductTag(BaseModel):
 
 
 class Image(BaseModel):
-    url = models.CharField(max_length=255, null=True, blank=True)
     file = models.ImageField(upload_to="product/images/",  null=True, blank=True)
     metadata = models.JSONField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -90,6 +89,7 @@ class ProductCollection(BaseModel):
     "Women's Accessories": This collection includes various accessories 
     like handbags, scarves, and hats tasrgeted specifically for women.
     """
+    products = models.ManyToManyField('Product')
     title = models.CharField(max_length=255)
     handle = models.CharField(max_length=255, unique=True, null=True)
     metadata = models.JSONField(null=True)
@@ -177,20 +177,24 @@ class Product(BaseModel):
         "customer.Country", blank=True, null=True, on_delete=models.SET_NULL)
     mid_code = models.TextField(null=True, blank=True)
     material = models.TextField(null=True, blank=True)
-    collection = models.ForeignKey(
-        ProductCollection,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="+",
-    )
-    type = models.ForeignKey(
-        ProductType, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
-    )
-    category = models.ForeignKey(
-        "ProductCategory", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
-    )
-    tags = models.ManyToManyField(ProductTag, related_name="+")
+
+    collection = models.ManyToManyField(
+        ProductCollection, null=True, blank=True, related_name="+")
+
+    type = models.ForeignKey(ProductType, on_delete=models.CASCADE,
+                             null=True, blank=True, related_name="+")
+
+    category = models.ManyToManyField(
+        "ProductCategory",  null=True, blank=True, related_name="+")
+
+    tags = models.ManyToManyField(ProductTag, null=True, blank=True, related_name="+")
+
+    price = models.ForeignKey(MoneyAmount, on_delete=models.CASCADE,
+                              null=True, blank=True, related_name="+")
+
+    tax_rate = models.ForeignKey(
+        'ProductTaxRate', on_delete=models.CASCADE,  blank=True, related_name="+")
+
     discountable = models.BooleanField(default=True)
     external_id = models.TextField(null=True, blank=True)
     sales_channels = models.ManyToManyField(
@@ -233,18 +237,26 @@ class ProductOptionValue(BaseModel):
 
 
 class ProductTaxRate(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     tax_rate = models.ForeignKey(TaxRate, on_delete=models.CASCADE)
     metadata = models.JSONField(null=True)
 
 
 class ProductTypeTaxRate(BaseModel):
+    # FIXME: I NEED TO LOOK AT THIS DEEP
     product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     tax_rate = models.ForeignKey(TaxRate, on_delete=models.CASCADE)
     metadata = models.JSONField(blank=True, null=True)
 
 
 class ProductVariantInventoryItem(BaseModel):
+    """
+    Suppose your e-commerce site sells customizable products,
+    and each product variant can have multiple customizable options,
+    such as size, color, and material. In this case,
+    you would use a ManyToManyField to associate multiple ProductOptionValue
+    instances with each ProductVariant
+
+    """
     inventory_item_id = models.TextField(unique=True)
     variant_id = models.TextField(unique=True)
     required_quantity = models.PositiveIntegerField(default=1)
@@ -256,6 +268,9 @@ class ProductVariantInventoryItem(BaseModel):
 class ProductVariant(BaseModel):
     title = models.CharField(max_length=255)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="+")
+    options = models.ManyToManyField(ProductOptionValue)
+    inventory = models.ManyToManyField('ProductVariantInventoryItem')
+    tax_rate = models.ForeignKey('ProductTypeTaxRate', on_delete=models.CASCADE)
     sku = models.CharField(max_length=255, null=True, unique=True)
     barcode = models.CharField(max_length=255, null=True, unique=True)
     ean = models.CharField(max_length=255, null=True, unique=True)
