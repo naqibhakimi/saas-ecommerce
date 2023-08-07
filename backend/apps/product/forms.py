@@ -166,7 +166,7 @@ class CreateImageForm(BaseForm):
     class Meta:
         model = Image
         fields = (
-            "url",
+            "file",
             "metadata"
         )
 
@@ -176,7 +176,7 @@ class UpdateImageForm(BaseForm):
         model = Image
         fields = (
             "id",
-            "url",
+            "file",
             "metadata"
         )
 
@@ -275,7 +275,6 @@ class CreateProductTaxRateForm(BaseForm):
     class Meta:
         model = ProductTaxRate
         fields = (
-            "product",
             "tax_rate",
             "metadata",
         )
@@ -286,7 +285,6 @@ class UpdateProductTaxRateForm(BaseForm):
         model = ProductTaxRate
         fields = (
             "id",
-            "product",
             "tax_rate",
             "metadata",
         )
