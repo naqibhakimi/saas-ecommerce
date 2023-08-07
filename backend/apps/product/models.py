@@ -193,7 +193,7 @@ class Product(BaseModel):
                               null=True, blank=True, related_name="+")
 
     tax_rate = models.ForeignKey(
-        'ProductTaxRate', on_delete=models.CASCADE,  blank=True, related_name="+")
+        'ProductTaxRate', on_delete=models.CASCADE,  blank=True, null=True, related_name="+")
 
     discountable = models.BooleanField(default=True)
     external_id = models.TextField(null=True, blank=True)
@@ -242,7 +242,6 @@ class ProductTaxRate(BaseModel):
 
 
 class ProductTypeTaxRate(BaseModel):
-    # FIXME: I NEED TO LOOK AT THIS DEEP
     product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     tax_rate = models.ForeignKey(TaxRate, on_delete=models.CASCADE)
     metadata = models.JSONField(blank=True, null=True)
@@ -267,10 +266,12 @@ class ProductVariantInventoryItem(BaseModel):
 
 class ProductVariant(BaseModel):
     title = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="+")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                related_name="+", null=True, blank=True)
     options = models.ManyToManyField(ProductOptionValue)
     inventory = models.ManyToManyField('ProductVariantInventoryItem')
-    tax_rate = models.ForeignKey('ProductTypeTaxRate', on_delete=models.CASCADE)
+    tax_rate = models.ForeignKey(
+        'ProductTypeTaxRate', on_delete=models.CASCADE, null=True, blank=True)
     sku = models.CharField(max_length=255, null=True, unique=True)
     barcode = models.CharField(max_length=255, null=True, unique=True)
     ean = models.CharField(max_length=255, null=True, unique=True)
