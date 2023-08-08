@@ -2,6 +2,12 @@ to activate shir env:
   source /Users/shirhussaindanishyar/Data/Code/personal_project/saas-ecommerce/.v
 env/bin/activate
 
+# UI should I use 
+https://blog.logrocket.com/using-material-ui-with-react-hook-form/
+https://mui.com/material-ui/react-select/
+
+
+
 to run frontend:   npm run dev
 
 
