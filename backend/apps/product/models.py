@@ -164,9 +164,6 @@ class Product(BaseModel):
     status = models.CharField(max_length=255, choices=Product_Status, default="draft")
     images = models.ManyToManyField(Image, related_name="+")
     thumbnail = models.ImageField(upload_to="Product/Thumbnail", null=True, blank=True)
-    profile = models.ForeignKey(
-        ShippingProfile, on_delete=models.CASCADE, related_name="+", null=True, blank=True
-    )
     weight = models.PositiveIntegerField(null=True, blank=True)
     length = models.PositiveIntegerField(null=True, blank=True)
     height = models.PositiveIntegerField(null=True, blank=True)
@@ -180,9 +177,11 @@ class Product(BaseModel):
     collection = models.ManyToManyField(
         ProductCollection, null=True, blank=True, related_name="+")
 
-    type = models.ForeignKey(ProductType, on_delete=models.CASCADE,
-                             null=True, blank=True, related_name="+")
+    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE,
+                                     null=True, blank=True, related_name="+")
 
+    profile = models.ForeignKey(ShippingProfile, on_delete=models.CASCADE,
+                                null=True, blank=True, related_name="+")
     category = models.ManyToManyField(
         "ProductCategory",  null=True, blank=True, related_name="+")
 

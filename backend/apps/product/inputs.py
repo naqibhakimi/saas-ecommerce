@@ -16,7 +16,7 @@ class CreateProductInputField(graphene.InputObjectType):
     height = graphene.Int()
     width = graphene.Int()
     hs_code = graphene.String()
-    origin_country = graphene.String()
+    origin_country = graphene.ID()
     mid_code = graphene.String()
     material = graphene.String()
     collection = graphene.ID()
