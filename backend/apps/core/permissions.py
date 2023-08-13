@@ -17,7 +17,7 @@ class AllowAny(object):
 
     @classmethod
     def has_filter_permission(cls, info: ResolveInfo, queryset):
-        return queryset
+        return queryset.filter()
 
 
 class BasePermission:

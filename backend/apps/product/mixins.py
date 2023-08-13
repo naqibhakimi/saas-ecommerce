@@ -30,7 +30,7 @@ class CreateProductMixin(Output):
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.PRODUCT_CREATED)
+                return cls(success=True)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
 
@@ -66,7 +66,7 @@ class DeleteProductMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         try:
             Product.objects.get(id=kwargs.get("id")).delete()
-            return cls(success=True, errors=Message.PRODUCT_DELETED)
+            return cls(success=True)
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.PRODUCT_NOT_FOUND)
 

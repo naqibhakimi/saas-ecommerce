@@ -162,7 +162,7 @@ class Product(BaseModel):
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
     status = models.CharField(max_length=255, choices=Product_Status, default="draft")
-    images = models.ManyToManyField(Image, related_name="+")
+    images = models.ManyToManyField(Image, related_name="+", null=True, blank=True)
     thumbnail = models.ImageField(upload_to="Product/Thumbnail", null=True, blank=True)
     weight = models.PositiveIntegerField(null=True, blank=True)
     length = models.PositiveIntegerField(null=True, blank=True)
@@ -205,6 +205,10 @@ class Product(BaseModel):
     unit_count_type = models.CharField(max_length=50, null=True, blank=True)
     is_expirable = models.BooleanField(default=False)
     metadata = models.JSONField(null=True, blank=True)
+
+    @property
+    def inventory(self):
+        return 343
 
 
 class ProductCategory(BaseModel):

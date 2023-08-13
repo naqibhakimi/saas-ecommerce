@@ -8,10 +8,11 @@ export const _GET_PRODUCTS = gql`
                     id
                     createdAt
                     updatedAt
+                    createdBy {
+                        id
+                    }
                     updatedBy {
                         id
-                        firstName
-                        lastName
                     }
                     title
                     subtitle
@@ -19,16 +20,72 @@ export const _GET_PRODUCTS = gql`
                     handle
                     isGiftCard
                     status
+                    images {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
                     thumbnail
                     weight
                     length
                     height
                     width
-                    originCountry
+                    hsCode
+                    originCountry {
+                        id
+                    }
                     midCode
                     material
+                    collection {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                    productType {
+                        id
+                    }
+
+                    category {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                    tags {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                    price {
+                        id
+                    }
+                    profile {
+                        id
+                    }
+                    taxRate {
+                        id
+                    }
                     discountable
                     externalId
+                    salesChannels {
+                        edges {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                    eachUnitCount
+                    unitCount
+                    unitCountType
+                    isExpirable
+                    inventory
                 }
             }
         }
@@ -41,10 +98,11 @@ export const _GET_PRODUCT_ID = gql`
             id
             createdAt
             updatedAt
+            createdBy {
+                id
+            }
             updatedBy {
                 id
-                firstName
-                lastName
             }
             title
             subtitle
@@ -52,16 +110,90 @@ export const _GET_PRODUCT_ID = gql`
             handle
             isGiftCard
             status
+            images {
+                edges {
+                    node {
+                        id
+                    }
+                }
+            }
             thumbnail
             weight
             length
             height
             width
-            originCountry
+            hsCode
+            originCountry {
+                id
+            }
             midCode
             material
+            collection {
+                edges {
+                    node {
+                        id
+                    }
+                }
+            }
+            productType {
+                id
+            }
+
+            category {
+                edges {
+                    node {
+                        id
+                    }
+                }
+            }
+            tags {
+                edges {
+                    node {
+                        id
+                    }
+                }
+            }
+            price {
+                id
+            }
+            profile {
+                id
+            }
+            taxRate {
+                id
+            }
             discountable
             externalId
+            salesChannels {
+                edges {
+                    node {
+                        id
+                    }
+                }
+            }
+            eachUnitCount
+            unitCount
+            unitCountType
+            isExpirable
+            inventory
+        }
+    }
+`;
+
+export const _CREATE_PRODUCT = gql`
+    mutation _CREATE_PRODUCT($input: CreateProductInput!) {
+        createProduct(input: $input) {
+            success
+            errors
+        }
+    }
+`;
+
+export const _Update_PRODUCT = gql`
+    mutation _Update_PRODUCT($input: UpdateProductInput!) {
+        updateProduct(input: $input) {
+            success
+            errors
         }
     }
 `;

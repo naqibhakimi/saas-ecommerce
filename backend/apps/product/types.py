@@ -83,7 +83,7 @@ class MoneyAmountNode(PermissionNode, Node, DjangoObjectType):
 
 
 class ProductTypeNode(PermissionNode, Node, DjangoObjectType):
-    permission_classes = (AllowAny)
+    permission_classes = (AllowAny,)
 
     class Meta:
         model = ProductType
@@ -112,6 +112,7 @@ class ImageNode(PermissionNode, Node, DjangoObjectType):
 
 
 class ProductNode(PermissionNode, Node, DjangoObjectType):
+    inventory = graphene.String(source='inventory')
 
     class Meta:
         model = Product

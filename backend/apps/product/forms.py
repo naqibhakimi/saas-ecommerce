@@ -25,7 +25,10 @@ class CreateProductFrom(BaseForm):
             "collection",
             "product_type",
             "profile",
+            "category",
             "tags",
+            "price",
+            "tax_rate",
             "discountable",
             "external_id",
             "sales_channels",
@@ -33,7 +36,7 @@ class CreateProductFrom(BaseForm):
             "unit_count",
             "unit_count_type",
             "is_expirable",
-            "metadata"
+            "metadata",
         )
 
 
@@ -61,7 +64,10 @@ class UpdateProductFrom(BaseForm):
             "collection",
             "product_type",
             "profile",
+            "category",
             "tags",
+            "price",
+            "tax_rate",
             "discountable",
             "external_id",
             "sales_channels",
@@ -69,7 +75,7 @@ class UpdateProductFrom(BaseForm):
             "unit_count",
             "unit_count_type",
             "is_expirable",
-            "metadata"
+            "metadata",
         )
 
 

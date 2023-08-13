@@ -1,8 +1,10 @@
 import { useForm, Controller } from 'react-hook-form';
 import { _GET_PRODUCTS, _GET_PRODUCT_ID } from '@/services/products';
+import { _GET_COUNTRIES } from '@/services/customers';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout/Layout';
+import { convertEdgeToList } from '@/utils/helpers';
 
 export default function ProductInfo() {
     const {
@@ -17,6 +19,8 @@ export default function ProductInfo() {
     const { loading, error, data } = useQuery(_GET_PRODUCT_ID, {
         variables: { id: productId },
     });
+
+    const countriesQuery = useQuery(_GET_COUNTRIES);
 
     const onSubmit = data => {
         console.log(data);
@@ -77,7 +81,7 @@ export default function ProductInfo() {
                                 <Controller
                                     name="subtitle"
                                     control={control}
-                                    defaultValue=""
+                                    defaultValue={data.product.subtitle}
                                     render={({ field }) => (
                                         <input
                                             type="text"
@@ -87,7 +91,7 @@ export default function ProductInfo() {
                                         />
                                     )}
                                 />
-                                {errors.title && (
+                                {errors.subtitle && (
                                     <p className="text-red-500 text-sm mt-1">
                                         Sub Title is required
                                     </p>
@@ -103,13 +107,34 @@ export default function ProductInfo() {
                                 Description
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <textarea
+                                {/* <textarea
                                     id="about"
                                     name="about"
                                     rows={3}
                                     className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     defaultValue={''}
+                                /> */}
+
+                                <Controller
+                                    name="description"
+                                    control={control}
+                                    defaultValue={data.product.description}
+                                    render={({ field }) => (
+                                        <textarea
+                                            id="description"
+                                            {...field}
+                                            rows={3}
+                                            autoComplete="description"
+                                            className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            defaultValue={''}
+                                        />
+                                    )}
                                 />
+                                {errors.description && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        description is required
+                                    </p>
+                                )}
                                 <p className="mt-3 text-sm leading-6 text-gray-600">
                                     Write a few sentences about the product.
                                 </p>
@@ -123,13 +148,34 @@ export default function ProductInfo() {
                                 Each unit count
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
+                                {/* <input
                                     type="text"
                                     name="each-unit-count"
                                     id="each-unit-count"
                                     autoComplete="each-unit-count"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                /> */}
+
+                                <Controller
+                                    name="eachUnitCount"
+                                    control={control}
+                                    defaultValue={data.product.eachUnitCount}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            // name="each-unit-count"
+                                            {...field}
+                                            id="each-unit-count"
+                                            autoComplete="each-unit-count"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                        />
+                                    )}
                                 />
+                                {errors.eachUnitCount && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        eachUnitCount is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -141,13 +187,26 @@ export default function ProductInfo() {
                                 Unit count
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
-                                    type="text"
-                                    name="unit-count"
-                                    id="unit-count"
-                                    autoComplete="unit-count"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                <Controller
+                                    name="unitCount"
+                                    control={control}
+                                    defaultValue={data.product.unitCount}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            name="unit-count"
+                                            {...field}
+                                            id="unit-count"
+                                            autoComplete="unit-count"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                        />
+                                    )}
                                 />
+                                {errors.title && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        Title is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -159,13 +218,26 @@ export default function ProductInfo() {
                                 Unit count type
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
-                                    type="text"
-                                    name="unit-count-type"
-                                    id="unit-count-type"
-                                    autoComplete="unit-count-type"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                <Controller
+                                    name="unitCountType"
+                                    control={control}
+                                    defaultValue={data.product.unitCountType}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            name="unit-count-type"
+                                            {...field}
+                                            id="unit-count-type"
+                                            autoComplete="unit-count-type"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                        />
+                                    )}
                                 />
+                                {errors.unitCountType && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        unitCountType is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -177,13 +249,26 @@ export default function ProductInfo() {
                                 Material
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
-                                    type="text"
+                                <Controller
                                     name="material"
-                                    id="material"
-                                    autoComplete="material"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                    control={control}
+                                    defaultValue={data.product.material}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            name="material"
+                                            {...field}
+                                            id="material"
+                                            autoComplete="material"
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                        />
+                                    )}
                                 />
+                                {errors.material && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        material is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -198,23 +283,24 @@ export default function ProductInfo() {
                                 <Controller
                                     name="originCountry"
                                     control={control}
-                                    defaultValue=""
+                                    // defaultValue={data.product.originCountry.id}
                                     render={({ field }) => (
-                                        // <input
-                                        //     type="text"
-                                        //     {...field}
-                                        //     autoComplete="subtitle"
-                                        //     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
-                                        // />
                                         <select
                                             {...field}
                                             autoComplete="country-name"
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                         >
-                                            <option>United States</option>
-                                            <option>Canada</option>
-
-                                            <option>Mexico</option>
+                                            {convertEdgeToList(
+                                                countriesQuery?.data?.countries
+                                                    .edges || [],
+                                            ).map(country => (
+                                                <option
+                                                    value={country.id}
+                                                    key={country.id}
+                                                >
+                                                    {country.name}
+                                                </option>
+                                            ))}
                                         </select>
                                     )}
                                 />
@@ -228,22 +314,46 @@ export default function ProductInfo() {
 
                         <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                             <label
-                                htmlFor="country"
+                                htmlFor="isExpirable"
                                 className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                             >
                                 Is product Expirable?
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
-                                    id="country"
-                                    name="country"
-                                    autoComplete="country-name"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>Select</option>
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+                                <Controller
+                                    name="isExpirable"
+                                    control={control}
+                                    defaultValue={data.product.isExpirable}
+                                    render={({ field }) => (
+                                        <select
+                                            id="isExpirable"
+                                            {...field}
+                                            autoComplete={
+                                                data.product.isExpirable
+                                            }
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                        >
+                                            <option>Select</option>
+                                            <option
+                                                value="true"
+                                                key={data.product.isExpirable}
+                                            >
+                                                Yes
+                                            </option>
+                                            <option
+                                                value="false"
+                                                key={data.product.isExpirable}
+                                            >
+                                                No
+                                            </option>
+                                        </select>
+                                    )}
+                                />
+                                {errors.isExpirable && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        isExpirable is required
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>

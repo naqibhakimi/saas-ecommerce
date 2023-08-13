@@ -15,3 +15,25 @@ export const _GET_CUSTOMERS = gql`
         }
     }
 `;
+
+export const _GET_COUNTRIES = gql`
+    query _GET_COUNTRIES {
+        countries {
+            edges {
+                node {
+                    id
+                    iso2
+                    iso3
+                    numCode
+                    numCode
+                    name
+                    displayName
+                    region {
+                        id
+                        name
+                    }
+                }
+            }
+        }
+    }
+`;
