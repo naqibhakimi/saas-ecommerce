@@ -5,6 +5,19 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout/Layout';
 import { convertEdgeToList } from '@/utils/helpers';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+
+import * as React from 'react';
+import Autocomplete from '@mui/joy/Autocomplete';
+import AutocompleteOption from '@mui/joy/AutocompleteOption';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import ListItemContent from '@mui/joy/ListItemContent';
+import Typography from '@mui/joy/Typography';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
+
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 
 export default function ProductInfo() {
     const {
@@ -54,11 +67,12 @@ export default function ProductInfo() {
                                     control={control}
                                     defaultValue={data.product.title}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
+                                        <TextField
+                                            className="w-full"
+                                            id="title-basic"
+                                            label="Title"
+                                            variant="standard"
                                             {...field}
-                                            autoComplete="title"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
                                         />
                                     )}
                                 />
@@ -107,26 +121,15 @@ export default function ProductInfo() {
                                 Description
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                {/* <textarea
-                                    id="about"
-                                    name="about"
-                                    rows={3}
-                                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    defaultValue={''}
-                                /> */}
-
                                 <Controller
                                     name="description"
                                     control={control}
                                     defaultValue={data.product.description}
                                     render={({ field }) => (
-                                        <textarea
-                                            id="description"
+                                        <TextareaAutosize
+                                            className="w-full"
                                             {...field}
-                                            rows={3}
-                                            autoComplete="description"
-                                            className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            defaultValue={''}
+                                            minRows={2}
                                         />
                                     )}
                                 />
@@ -148,14 +151,6 @@ export default function ProductInfo() {
                                 Each unit count
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                {/* <input
-                                    type="text"
-                                    name="each-unit-count"
-                                    id="each-unit-count"
-                                    autoComplete="each-unit-count"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
-                                /> */}
-
                                 <Controller
                                     name="eachUnitCount"
                                     control={control}
@@ -285,23 +280,50 @@ export default function ProductInfo() {
                                     control={control}
                                     // defaultValue={data.product.originCountry.id}
                                     render={({ field }) => (
-                                        <select
-                                            {...field}
-                                            autoComplete="country-name"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                        >
-                                            {convertEdgeToList(
+                                        <Autocomplete
+                                            id="country-select-demo"
+                                            value={data.product.originCountry}
+                                            placeholder="Choose a country"
+                                            slotProps={{
+                                                input: {
+                                                    autoComplete:
+                                                        'new-password', // disable autocomplete and autofill
+                                                },
+                                            }}
+                                            sx={{ width: 300 }}
+                                            options={convertEdgeToList(
                                                 countriesQuery?.data?.countries
                                                     .edges || [],
-                                            ).map(country => (
-                                                <option
-                                                    value={country.id}
-                                                    key={country.id}
-                                                >
-                                                    {country.name}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            )}
+                                            autoHighlight
+                                            getOptionLabel={option =>
+                                                option.displayName
+                                            }
+                                            renderOption={(props, option) => (
+                                                <AutocompleteOption {...props}>
+                                                    {/* <ListItemDecorator>
+                                                        <img
+                                                            loading="lazy"
+                                                            width="20"
+                                                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                                            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                                            alt=""
+                                                        />
+                                                    </ListItemDecorator> */}
+                                                    <ListItemContent
+                                                        className="w-full"
+                                                        sx={{ fontSize: 'sm' }}
+                                                    >
+                                                        {option.displayName}
+                                                        {/* <Typography level="body-xs">
+                                                            ({option.iso3}) +
+                                                            {option.numCode}
+                                                            {option.displayName}
+                                                        </Typography> */}
+                                                    </ListItemContent>
+                                                </AutocompleteOption>
+                                            )}
+                                        />
                                     )}
                                 />
                                 {errors.title && (
@@ -325,28 +347,14 @@ export default function ProductInfo() {
                                     control={control}
                                     defaultValue={data.product.isExpirable}
                                     render={({ field }) => (
-                                        <select
-                                            id="isExpirable"
-                                            {...field}
-                                            autoComplete={
+                                        <Select
+                                            defaultValue={
                                                 data.product.isExpirable
                                             }
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                         >
-                                            <option>Select</option>
-                                            <option
-                                                value="true"
-                                                key={data.product.isExpirable}
-                                            >
-                                                Yes
-                                            </option>
-                                            <option
-                                                value="false"
-                                                key={data.product.isExpirable}
-                                            >
-                                                No
-                                            </option>
-                                        </select>
+                                            <Option value={true}>False</Option>
+                                            <Option value={false}>True</Option>
+                                        </Select>
                                     )}
                                 />
                                 {errors.isExpirable && (

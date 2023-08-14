@@ -25,7 +25,6 @@ export const _GET_COUNTRIES = gql`
                     iso2
                     iso3
                     numCode
-                    numCode
                     name
                     displayName
                     region {

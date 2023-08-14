@@ -125,6 +125,15 @@ export const _GET_PRODUCT_ID = gql`
             hsCode
             originCountry {
                 id
+                iso2
+                iso3
+                numCode
+                name
+                displayName
+                region {
+                    id
+                    name
+                }
             }
             midCode
             material
