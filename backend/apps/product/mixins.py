@@ -30,7 +30,7 @@ class CreateProductMixin(Output):
                 return cls(success=False, errors=form.errors)
             if form.is_valid():
                 form.save()
-                return cls(success=True, errors=Message.PRODUCT_CREATED)
+                return cls(success=True)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
 
@@ -47,14 +47,18 @@ class UpdateProductMixin(Output):
             if form.is_valid():
                 # for many to many
                 tags = product_data.pop("tags")
-                images = product_data.pop("images")
+                # images = product_data.pop("images")
+                collection = product_data.pop("collection")
+                category = product_data.pop("category")
                 sales_channels = product_data.pop("sales_channels")
                 instance = form.save(commit=False)
                 instance.save(update_fields=product_data.keys())
                 instance.tags.set(tags, clear=True)
-                instance.images.set(images, clear=True)
+                # instance.images.set(images, clear=True)
+                instance.collection.set(collection, clear=True)
+                instance.category.set(category, clear=True)
                 instance.sales_channels.set(sales_channels, clear=True)
-                return cls(success=True, errors=Message.PRODUCT_UPDATED)
+                return cls(success=True)
             return cls(success=False, errors=form.errors)
         except (ValueError, ValidationError) as e:
             return cls(success=False, errors=e)
@@ -66,7 +70,7 @@ class DeleteProductMixin(Output):
     def resolve_mutation(cls, root, info, **kwargs):
         try:
             Product.objects.get(id=kwargs.get("id")).delete()
-            return cls(success=True, errors=Message.PRODUCT_DELETED)
+            return cls(success=True)
         except ObjectDoesNotExist:
             return cls(success=False, errors=Message.PRODUCT_NOT_FOUND)
 
@@ -305,7 +309,6 @@ class DeleteProductCollectionMixin(Output):
 
 
 class CreateMoneyAmountMixin(Output):
-    #   TODO: explaining the whole form
     form = CreateMoneyAmountForm
 
     @classmethod

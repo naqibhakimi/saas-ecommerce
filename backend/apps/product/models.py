@@ -89,7 +89,6 @@ class ProductCollection(BaseModel):
     "Women's Accessories": This collection includes various accessories 
     like handbags, scarves, and hats tasrgeted specifically for women.
     """
-    products = models.ManyToManyField('Product')
     title = models.CharField(max_length=255)
     handle = models.CharField(max_length=255, unique=True, null=True)
     metadata = models.JSONField(null=True)
@@ -163,11 +162,8 @@ class Product(BaseModel):
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
     status = models.CharField(max_length=255, choices=Product_Status, default="draft")
-    images = models.ManyToManyField(Image, related_name="+")
+    images = models.ManyToManyField(Image, related_name="+", null=True, blank=True)
     thumbnail = models.ImageField(upload_to="Product/Thumbnail", null=True, blank=True)
-    profile = models.ForeignKey(
-        ShippingProfile, on_delete=models.CASCADE, related_name="+", null=True, blank=True
-    )
     weight = models.PositiveIntegerField(null=True, blank=True)
     length = models.PositiveIntegerField(null=True, blank=True)
     height = models.PositiveIntegerField(null=True, blank=True)
@@ -181,9 +177,11 @@ class Product(BaseModel):
     collection = models.ManyToManyField(
         ProductCollection, null=True, blank=True, related_name="+")
 
-    type = models.ForeignKey(ProductType, on_delete=models.CASCADE,
-                             null=True, blank=True, related_name="+")
+    product_type = models.ForeignKey(ProductType, on_delete=models.CASCADE,
+                                     null=True, blank=True, related_name="+")
 
+    profile = models.ForeignKey(ShippingProfile, on_delete=models.CASCADE,
+                                null=True, blank=True, related_name="+")
     category = models.ManyToManyField(
         "ProductCategory",  null=True, blank=True, related_name="+")
 
@@ -207,6 +205,10 @@ class Product(BaseModel):
     unit_count_type = models.CharField(max_length=50, null=True, blank=True)
     is_expirable = models.BooleanField(default=False)
     metadata = models.JSONField(null=True, blank=True)
+
+    @property
+    def inventory(self):
+        return 343
 
 
 class ProductCategory(BaseModel):
@@ -252,8 +254,24 @@ class ProductVariantInventoryItem(BaseModel):
     Suppose your e-commerce site sells customizable products,
     and each product variant can have multiple customizable options,
     such as size, color, and material. In this case,
-    you would use a ManyToManyField to associate multiple ProductOptionValue
-    instances with each ProductVariant
+
+    Suppose you have a customizable product, such as a "T-shirt," 
+    with multiple options like size and color. Each specific combination 
+    of size and color forms a unique product variant. 
+    Let's say you have the following inventory items:
+
+    Variant: "T-shirt - Size: S, Color: Red" (variant_id: "tshirt-s-red")
+    Variant: "T-shirt - Size: M, Color: Blue" (variant_id: "tshirt-m-blue")
+    Variant: "T-shirt - Size: L, Color: Green" (variant_id: "tshirt-l-green")
+    Each of these variants has its own inventory item,
+    and you can track the available quantity for each. For example:
+
+    For "T-shirt - Size: S, Color: Red," you might have inventory_item_id as
+        "inventory-123," and the required_quantity is 50.
+    For "T-shirt - Size: M, Color: Blue," you might have inventory_item_id as
+        "inventory-456," and the required_quantity is 30.
+    For "T-shirt - Size: L, Color: Green," you might have inventory_item_id as
+        "inventory-789," and the required_quantity is 40.
 
     """
     inventory_item_id = models.TextField(unique=True)

@@ -45,9 +45,17 @@ class ShippingOptionRequirementQuery:
 
 class ShippingProfileQuery:
     shipping_profiles = DjangoFilterConnectionField(ShippingProfileNode)
-    shipping_profile = graphene.Field(ShippingProfileNode, id=graphene.ID())
+    shipping_profile = graphene.relay.Node.Field(ShippingProfileNode)
 
 
 class ShippingTaxRateQuery:
     shipping_tax_rates = DjangoFilterConnectionField(ShippingTaxRateNode)
     shipping_tax_rate = graphene.Field(ShippingTaxRateNode, id=graphene.ID())
+
+
+class Query(ShippingMethodQuery, ShippingOptionQuery,
+            CustomShippingOptionQuery, ShippingMethodTaxLineQuery,
+            ShippingOptionRequirementQuery,
+            ShippingProfileQuery, ShippingTaxRateQuery,
+            ):
+    pass
