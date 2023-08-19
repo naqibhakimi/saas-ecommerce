@@ -164,6 +164,7 @@ export const _GET_PRODUCT_ID = gql`
             }
             price {
                 id
+                amount
             }
             profile {
                 id

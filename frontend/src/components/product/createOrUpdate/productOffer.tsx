@@ -1,4 +1,101 @@
+import TextField from '@mui/material/TextField';
+import { useForm, Controller } from 'react-hook-form';
+import { _GET_PRODUCTS, _GET_PRODUCT_ID } from '@/services/products';
+// import { _GET_COUNTRIES } from '@/services/customers';
+import { useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
+import Layout from '@/components/layout/Layout';
+import { convertEdgeToList } from '@/utils/helpers';
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+
+import * as React from 'react';
+import Autocomplete from '@mui/joy/Autocomplete';
+import AutocompleteOption from '@mui/joy/AutocompleteOption';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import ListItemContent from '@mui/joy/ListItemContent';
+import Typography from '@mui/joy/Typography';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
+
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Chip from '@mui/material/Chip';
+import MaterialSelect from '@mui/material/Select';
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+const names = [
+    'Oliver Hansen',
+    'Van Henry',
+    'April Tucker',
+    'Ralph Hubbard',
+    'Omar Alexander',
+    'Carlos Abbott',
+    'Miriam Wagner',
+    'Bradley Wilkerson',
+    'Virginia Andrews',
+    'Kelly Snyder',
+];
+
+function getStyles(name, personName, theme) {
+    return {
+        fontWeight:
+            personName.indexOf(name) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+    };
+}
 export default function productOffer() {
+    const theme = useTheme();
+    const [personName, setPersonName] = React.useState([]);
+
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm();
+
+    const router = useRouter();
+    const { productId } = router.query;
+
+    const { loading, error, data } = useQuery(_GET_PRODUCT_ID, {
+        variables: { id: productId },
+    });
+
+    const onSubmit = data => {
+        console.log(data.product.price.amount);
+    };
+
+    console.log(data?.product?.price?.amount);
+    if (loading || error) {
+        return <></>;
+    }
+
+    const handleChange = event => {
+        const {
+            target: { value },
+        } = event;
+        setPersonName(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
     return (
         <>
             <form>
@@ -12,13 +109,25 @@ export default function productOffer() {
                                 HS code
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
-                                    type="text"
-                                    name="hs-code"
-                                    id="hs-code"
-                                    autoComplete="hs-code"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                <Controller
+                                    name="HS-code"
+                                    control={control}
+                                    defaultValue={data.product.hsCode}
+                                    render={({ field }) => (
+                                        <TextField
+                                            className="w-full"
+                                            id="hs-code"
+                                            label="HS code"
+                                            variant="standard"
+                                            {...field}
+                                        />
+                                    )}
                                 />
+                                {errors.hsCode && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        HS code is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -30,13 +139,25 @@ export default function productOffer() {
                                 Manufacturer code
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <input
-                                    type="text"
+                                <Controller
                                     name="mid-code"
-                                    id="mid-code"
-                                    autoComplete="mid-code"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                    control={control}
+                                    defaultValue={data.product.midCode}
+                                    render={({ field }) => (
+                                        <TextField
+                                            className="w-full"
+                                            id="md-code"
+                                            label="MD code"
+                                            variant="standard"
+                                            {...field}
+                                        />
+                                    )}
                                 />
+                                {errors.midCode && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        HS code is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -48,35 +169,28 @@ export default function productOffer() {
                                 Price
                             </label>
                             <div className="relative mt-2 rounded-md shadow-sm">
-                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <span className="text-gray-500 sm:text-sm">
-                                        $
-                                    </span>
-                                </div>
-                                <input
-                                    type="text"
-                                    name="price"
-                                    id="price"
-                                    className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    placeholder="0.00"
+                                <Controller
+                                    name="mid-code"
+                                    control={control}
+                                    defaultValue={data?.product?.price?.amount}
+                                    render={({ field }) => (
+                                        <Input
+                                            {...field}
+                                            id="product-price"
+                                            className="w-full"
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                    $
+                                                </InputAdornment>
+                                            }
+                                        />
+                                    )}
                                 />
-                                <div className="absolute inset-y-0 right-0 flex items-center">
-                                    <label
-                                        htmlFor="currency"
-                                        className="sr-only"
-                                    >
-                                        Currency
-                                    </label>
-                                    <select
-                                        id="currency"
-                                        name="currency"
-                                        className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                                    >
-                                        <option>USD</option>
-                                        <option>CAD</option>
-                                        <option>EUR</option>
-                                    </select>
-                                </div>
+                                {errors.midCode && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        HS code is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -88,7 +202,7 @@ export default function productOffer() {
                                 Condition
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
+                                {/* <select
                                     id="condition"
                                     name="condition"
                                     autoComplete="condition"
@@ -100,7 +214,28 @@ export default function productOffer() {
                                     <option>Used - Good </option>
                                     <option>Used - Like New </option>
                                     <option>Used - very Good </option>
-                                </select>
+                                </select> */}
+                                <Controller
+                                    name="isExpirable"
+                                    control={control}
+                                    defaultValue={data.product.isExpirable}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            defaultValue={
+                                                data.product.isExpirable
+                                            }
+                                        >
+                                            <Option value={true}>False</Option>
+                                            <Option value={false}>True</Option>
+                                        </Select>
+                                    )}
+                                />
+                                {errors.isExpirable && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        isExpirable is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -112,7 +247,7 @@ export default function productOffer() {
                                 Product Type
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
+                                {/* <select
                                     id="product-type"
                                     name="product-type"
                                     autoComplete="product-type"
@@ -124,7 +259,84 @@ export default function productOffer() {
                                     <option>Beauty and Personal Care </option>
                                     <option>Books and Media </option>
                                     <option>Toys and Games</option>
-                                </select>
+                                </select> */}
+                                <Controller
+                                    name="isExpirable"
+                                    control={control}
+                                    defaultValue={data.product.isExpirable}
+                                    render={({ field }) => (
+                                        // <Select
+                                        //     defaultValue={
+                                        //         data.product.isExpirable
+                                        //     }
+                                        // >
+                                        //     <Option value={true}>False</Option>
+                                        //     <Option value={false}>True</Option>
+                                        //     <option>Select</option>
+                                        //     <option>Food and Beverages:</option>
+                                        //     <option>Electronics</option>
+                                        //     <option>
+                                        //         Beauty and Personal Care{' '}
+                                        //     </option>
+                                        //     <option>Books and Media </option>
+                                        //     <option>Toys and Games</option>
+                                        // </Select>
+                                        <FormControl sx={{ m: 1, width: 300 }}>
+                                            <InputLabel id="demo-multiple-chip-label">
+                                                Chip
+                                            </InputLabel>
+                                            <MaterialSelect
+                                                labelId="demo-multiple-chip-label"
+                                                id="demo-multiple-chip"
+                                                multiple
+                                                value={personName}
+                                                onChange={handleChange}
+                                                input={
+                                                    <OutlinedInput
+                                                        id="select-multiple-chip"
+                                                        label="Chip"
+                                                    />
+                                                }
+                                                renderValue={selected => (
+                                                    <Box
+                                                        sx={{
+                                                            display: 'flex',
+                                                            flexWrap: 'wrap',
+                                                            gap: 0.5,
+                                                        }}
+                                                    >
+                                                        {selected.map(value => (
+                                                            <Chip
+                                                                key={value}
+                                                                label={value}
+                                                            />
+                                                        ))}
+                                                    </Box>
+                                                )}
+                                                MenuProps={MenuProps}
+                                            >
+                                                {names.map(name => (
+                                                    <MenuItem
+                                                        key={name}
+                                                        value={name}
+                                                        style={getStyles(
+                                                            name,
+                                                            personName,
+                                                            theme,
+                                                        )}
+                                                    >
+                                                        {name}
+                                                    </MenuItem>
+                                                ))}
+                                            </MaterialSelect>
+                                        </FormControl>
+                                    )}
+                                />
+                                {errors.isExpirable && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        isExpirable is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 

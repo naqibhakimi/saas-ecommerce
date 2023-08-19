@@ -1,4 +1,50 @@
+import { useForm, Controller } from 'react-hook-form';
+import {
+    _Update_PRODUCT,
+    _GET_PRODUCTS,
+    _GET_PRODUCT_ID,
+} from '@/services/products';
+import { _GET_COUNTRIES } from '@/services/customers';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
+import Layout from '@/components/layout/Layout';
+import { convertEdgeToList } from '@/utils/helpers';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+
+import * as React from 'react';
+import Autocomplete from '@mui/joy/Autocomplete';
+import AutocompleteOption from '@mui/joy/AutocompleteOption';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import ListItemContent from '@mui/joy/ListItemContent';
+import Typography from '@mui/joy/Typography';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
+
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import { useDispatch } from 'react-redux';
+import { setErrors } from '@/store/slices/errorSlice';
+import {
+    clearSuccessMessage,
+    setSuccessMessage,
+} from '@/store/slices/successMessage';
+
 export default function Variant() {
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm();
+
+    const router = useRouter();
+    const { productId } = router.query;
+
+    const { loading, error, data } = useQuery(_GET_PRODUCT_ID, {
+        variables: { id: productId },
+    });
+
+    const countriesQuery = useQuery(_GET_COUNTRIES);
+
     return (
         <>
             <form>
@@ -23,6 +69,26 @@ export default function Variant() {
                                     <option>Size Name</option>
                                     <option>Size Name Color Name</option>
                                 </select>
+                                {/* <Controller
+                                    name="country"
+                                    control={control}
+                                    defaultValue={data.product.isExpirable}
+                                    render={({ field }) => (
+                                        <Select
+                                            defaultValue={
+                                                data.product.isExpirable
+                                            }
+                                        >
+                                            <Option value={true}>False</Option>
+                                            <Option value={false}>True</Option>
+                                        </Select>
+                                    )}
+                                />
+                                {errors.isExpirable && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        isExpirable is required
+                                    </p>
+                                )} */}
                             </div>
                         </div>
                     </div>

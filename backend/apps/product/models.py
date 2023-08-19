@@ -161,7 +161,8 @@ class Product(BaseModel):
     description = models.TextField(null=True, blank=True)
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
-    status = models.CharField(max_length=255, choices=Product_Status, default="draft")
+    status = models.CharField(max_length=255, choices=Product_Status,
+                              default="draft", null=True, blank=True)
     images = models.ManyToManyField(Image, related_name="+", null=True, blank=True)
     thumbnail = models.ImageField(upload_to="Product/Thumbnail", null=True, blank=True)
     weight = models.PositiveIntegerField(null=True, blank=True)

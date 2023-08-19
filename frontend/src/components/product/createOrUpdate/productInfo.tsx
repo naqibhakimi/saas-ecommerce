@@ -1,7 +1,11 @@
 import { useForm, Controller } from 'react-hook-form';
-import { _GET_PRODUCTS, _GET_PRODUCT_ID } from '@/services/products';
+import {
+    _Update_PRODUCT,
+    _GET_PRODUCTS,
+    _GET_PRODUCT_ID,
+} from '@/services/products';
 import { _GET_COUNTRIES } from '@/services/customers';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout/Layout';
 import { convertEdgeToList } from '@/utils/helpers';
@@ -18,6 +22,12 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import { useDispatch } from 'react-redux';
+import { setErrors } from '@/store/slices/errorSlice';
+import {
+    clearSuccessMessage,
+    setSuccessMessage,
+} from '@/store/slices/successMessage';
 
 export default function ProductInfo() {
     const {
@@ -35,17 +45,48 @@ export default function ProductInfo() {
 
     const countriesQuery = useQuery(_GET_COUNTRIES);
 
-    const onSubmit = data => {
-        console.log(data);
-    };
+    const dispatch = useDispatch();
+    const [
+        updateProduct,
+        { data: productData, loading: productLoading, error: productError },
+    ] = useMutation(_Update_PRODUCT, {
+        onError(error) {
+            dispatch(setErrors([{ message: error.message }]));
+            dispatch(clearSuccessMessage(null));
+        },
+    });
 
-    // const countryQuery = useQuery(_GET_COUNTRY);
+    if (productLoading) {
+        dispatch(setSuccessMessage('Loading...'));
+    }
+
+    if (productData?.updateProduct?.errors) {
+        dispatch(setErrors(data.updateProduct.errors.nonFieldErrors));
+    }
+
+    if (productData?.updateProduct.success) {
+        // dispatch(setSuccessMessage(LOGIN_WELLCOME_MESSAGE));
+        // localStorage.setItem('auth', JSON.stringify(productData.updateProduct));
+        // router.push('/');
+    }
+
+    const onSubmit = React.useCallback(
+        data => {
+            console.log(data);
+            updateProduct({
+                variables: { input: { Product: { id: productId, ...data } } },
+            });
+        },
+        [productId],
+    );
 
     if (loading || error) {
         return (
-            <Layout>
-                <></>
-            </Layout>
+            <></>
+
+            // <Layout>
+            //     <></>
+            // </Layout>
         );
     }
 
@@ -97,11 +138,12 @@ export default function ProductInfo() {
                                     control={control}
                                     defaultValue={data.product.subtitle}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
+                                        <TextField
+                                            className="w-full"
+                                            id="subtitle-basic"
+                                            label="Subtitle"
+                                            variant="standard"
                                             {...field}
-                                            autoComplete="subtitle"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
                                         />
                                     )}
                                 />
@@ -138,14 +180,11 @@ export default function ProductInfo() {
                                         description is required
                                     </p>
                                 )}
-                                <p className="mt-3 text-sm leading-6 text-gray-600">
-                                    Write a few sentences about the product.
-                                </p>
                             </div>
                         </div>
                         <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                             <label
-                                htmlFor="street-address"
+                                htmlFor="each-unit-count"
                                 className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                             >
                                 Each unit count
@@ -154,15 +193,26 @@ export default function ProductInfo() {
                                 <Controller
                                     name="eachUnitCount"
                                     control={control}
-                                    defaultValue={data.product.eachUnitCount}
+                                    // defaultValue={data.product.eachUnitCount}
+                                    defaultValue={parseInt(
+                                        data.product.eachUnitCount,
+                                        10,
+                                    )}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
-                                            // name="each-unit-count"
+                                        <TextField
                                             {...field}
+                                            className="w-full"
                                             id="each-unit-count"
-                                            autoComplete="each-unit-count"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                            label="Each unit count"
+                                            type="number"
+                                            variant="standard"
+                                            onChange={event => {
+                                                const value = parseInt(
+                                                    event.target.value,
+                                                    10,
+                                                );
+                                                field.onChange(value);
+                                            }}
                                         />
                                     )}
                                 />
@@ -187,21 +237,23 @@ export default function ProductInfo() {
                                     control={control}
                                     defaultValue={data.product.unitCount}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
-                                            name="unit-count"
+                                        <TextField
                                             {...field}
-                                            id="unit-count"
-                                            autoComplete="unit-count"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                            className="w-full"
+                                            id="unitCount"
+                                            label="Unit count"
+                                            type="number"
+                                            variant="standard"
+                                            onChange={event => {
+                                                const value = parseInt(
+                                                    event.target.value,
+                                                    10,
+                                                );
+                                                field.onChange(value);
+                                            }}
                                         />
                                     )}
                                 />
-                                {errors.title && (
-                                    <p className="text-red-500 text-sm mt-1">
-                                        Title is required
-                                    </p>
-                                )}
                             </div>
                         </div>
 
@@ -218,21 +270,16 @@ export default function ProductInfo() {
                                     control={control}
                                     defaultValue={data.product.unitCountType}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
-                                            name="unit-count-type"
+                                        <TextField
                                             {...field}
+                                            className="w-full"
                                             id="unit-count-type"
-                                            autoComplete="unit-count-type"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
+                                            label="Unit count type"
+                                            // type="number"
+                                            variant="standard"
                                         />
                                     )}
                                 />
-                                {errors.unitCountType && (
-                                    <p className="text-red-500 text-sm mt-1">
-                                        unitCountType is required
-                                    </p>
-                                )}
                             </div>
                         </div>
 
@@ -249,13 +296,12 @@ export default function ProductInfo() {
                                     control={control}
                                     defaultValue={data.product.material}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
-                                            name="material"
+                                        <TextField
+                                            className="w-full"
+                                            id="material-basic"
+                                            label="material"
+                                            variant="standard"
                                             {...field}
-                                            id="material"
-                                            autoComplete="material"
-                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xl sm:text-sm sm:leading-6"
                                         />
                                     )}
                                 />
