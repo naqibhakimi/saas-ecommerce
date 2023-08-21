@@ -110,6 +110,7 @@ export const _GET_PRODUCT_ID = gql`
             handle
             isGiftCard
             status
+            condition
             images {
                 edges {
                     node {

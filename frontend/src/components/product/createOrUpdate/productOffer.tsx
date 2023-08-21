@@ -28,6 +28,8 @@ import FormControl from '@mui/material/FormControl';
 import Chip from '@mui/material/Chip';
 import MaterialSelect from '@mui/material/Select';
 
+import Grid from '@mui/material/Grid';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -64,6 +66,12 @@ export default function productOffer() {
     const theme = useTheme();
     const [personName, setPersonName] = React.useState([]);
 
+    const [currency, setCurrency] = React.useState('$'); // Default currency symbol
+    const [amount, setAmount] = React.useState('');
+
+    const handleCurrencyChange = event => {
+        setCurrency(event.target.value);
+    };
     const {
         handleSubmit,
         control,
@@ -77,11 +85,22 @@ export default function productOffer() {
         variables: { id: productId },
     });
 
-    const onSubmit = data => {
-        console.log(data.product.price.amount);
+    const [condition, setCondition] = React.useState(
+        data?.product?.condition || '',
+    );
+
+    const handleConditionChange = event => {
+        setCondition(event.target.value);
     };
 
-    console.log(data?.product?.price?.amount);
+    const onSubmit = data => {
+        // console.log(data.product.price.amount);
+    };
+
+    if (error) {
+        return <p>Error: {error.message}</p>; // Display an error message if there's an error
+    }
+
     if (loading || error) {
         return <></>;
     }
@@ -170,23 +189,69 @@ export default function productOffer() {
                             </label>
                             <div className="relative mt-2 rounded-md shadow-sm">
                                 <Controller
-                                    name="mid-code"
+                                    name="product-price"
                                     control={control}
                                     defaultValue={data?.product?.price?.amount}
                                     render={({ field }) => (
-                                        <Input
-                                            {...field}
-                                            id="product-price"
-                                            className="w-full"
-                                            startAdornment={
-                                                <InputAdornment position="start">
-                                                    $
-                                                </InputAdornment>
-                                            }
-                                        />
+                                        <div>
+                                            <Grid
+                                                container
+                                                spacing={2}
+                                                alignItems="flex-end"
+                                            >
+                                                <Grid item xs={9}>
+                                                    <FormControl
+                                                        fullWidth
+                                                        sx={{ m: 1 }}
+                                                        variant="standard"
+                                                    >
+                                                        <InputLabel htmlFor="standard-adornment-amount">
+                                                            Amount
+                                                        </InputLabel>
+                                                        <Input
+                                                            id="standard-adornment-amount"
+                                                            value={amount}
+                                                            {...field}
+                                                            onChange={e =>
+                                                                setAmount(
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            startAdornment={
+                                                                <InputAdornment position="start">
+                                                                    {currency}
+                                                                </InputAdornment>
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                    <FormControl sx={{ m: 1 }}>
+                                                        <Select
+                                                            value={currency}
+                                                            onChange={
+                                                                handleCurrencyChange
+                                                            }
+                                                            label="Currency"
+                                                        >
+                                                            <MenuItem value="$">
+                                                                $ (USD)
+                                                            </MenuItem>
+                                                            <MenuItem value="€">
+                                                                € (EUR)
+                                                            </MenuItem>
+                                                            <MenuItem value="£">
+                                                                £ (GBP)
+                                                            </MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
+                                            </Grid>
+                                        </div>
                                     )}
                                 />
-                                {errors.midCode && (
+                                {errors.amount && (
                                     <p className="text-red-500 text-sm mt-1">
                                         HS code is required
                                     </p>
@@ -202,33 +267,39 @@ export default function productOffer() {
                                 Condition
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                {/* <select
-                                    id="condition"
-                                    name="condition"
-                                    autoComplete="condition"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>Select</option>
-                                    <option>New</option>
-                                    <option>Used - Adaptable</option>
-                                    <option>Used - Good </option>
-                                    <option>Used - Like New </option>
-                                    <option>Used - very Good </option>
-                                </select> */}
                                 <Controller
-                                    name="isExpirable"
+                                    name="Status"
                                     control={control}
-                                    defaultValue={data.product.isExpirable}
+                                    defaultValue={data.product.status}
                                     render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            defaultValue={
-                                                data.product.isExpirable
-                                            }
-                                        >
-                                            <Option value={true}>False</Option>
-                                            <Option value={false}>True</Option>
-                                        </Select>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="product-condition-label">
+                                                Product Condition
+                                            </InputLabel>
+                                            <Select
+                                                {...field}
+                                                labelId="product-condition-label"
+                                                id="product-condition"
+                                                value={condition}
+                                                label="Product Condition"
+                                                onChange={handleConditionChange}
+                                            >
+                                                {data.product
+                                                    .PRODUCT_CONDITION_CHOICES &&
+                                                    data.product.PRODUCT_CONDITION_CHOICES.map(
+                                                        choice => (
+                                                            <MenuItem
+                                                                key={choice[0]}
+                                                                value={
+                                                                    choice[0]
+                                                                }
+                                                            >
+                                                                {choice[1]}
+                                                            </MenuItem>
+                                                        ),
+                                                    )}
+                                            </Select>
+                                        </FormControl>
                                     )}
                                 />
                                 {errors.isExpirable && (
@@ -265,25 +336,9 @@ export default function productOffer() {
                                     control={control}
                                     defaultValue={data.product.isExpirable}
                                     render={({ field }) => (
-                                        // <Select
-                                        //     defaultValue={
-                                        //         data.product.isExpirable
-                                        //     }
-                                        // >
-                                        //     <Option value={true}>False</Option>
-                                        //     <Option value={false}>True</Option>
-                                        //     <option>Select</option>
-                                        //     <option>Food and Beverages:</option>
-                                        //     <option>Electronics</option>
-                                        //     <option>
-                                        //         Beauty and Personal Care{' '}
-                                        //     </option>
-                                        //     <option>Books and Media </option>
-                                        //     <option>Toys and Games</option>
-                                        // </Select>
                                         <FormControl sx={{ m: 1, width: 300 }}>
                                             <InputLabel id="demo-multiple-chip-label">
-                                                Chip
+                                                Product Type
                                             </InputLabel>
                                             <MaterialSelect
                                                 labelId="demo-multiple-chip-label"
@@ -294,7 +349,7 @@ export default function productOffer() {
                                                 input={
                                                     <OutlinedInput
                                                         id="select-multiple-chip"
-                                                        label="Chip"
+                                                        label="Product Type"
                                                     />
                                                 }
                                                 renderValue={selected => (
