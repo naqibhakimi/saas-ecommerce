@@ -208,3 +208,17 @@ export const _Update_PRODUCT = gql`
         }
     }
 `;
+
+export const _GET_PRODUCT_TYPES = gql`
+    query _GET_PRODUCT_TYPE {
+        productTypes {
+            edges {
+                node {
+                    id
+                    value
+                    metadata
+                }
+            }
+        }
+    }
+`;

@@ -374,7 +374,7 @@ export default function ProductInfo() {
                                 />
                                 {errors.title && (
                                     <p className="text-red-500 text-sm mt-1">
-                                        Sub Title is required
+                                        Country is required
                                     </p>
                                 )}
                             </div>

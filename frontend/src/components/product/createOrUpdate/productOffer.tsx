@@ -1,8 +1,13 @@
 import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
-import { _GET_PRODUCTS, _GET_PRODUCT_ID } from '@/services/products';
+import {
+    _GET_PRODUCTS,
+    _GET_PRODUCT_ID,
+    _Update_PRODUCT,
+    _GET_PRODUCT_TYPES,
+} from '@/services/products';
 // import { _GET_COUNTRIES } from '@/services/customers';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout/Layout';
 import { convertEdgeToList } from '@/utils/helpers';
@@ -29,6 +34,12 @@ import Chip from '@mui/material/Chip';
 import MaterialSelect from '@mui/material/Select';
 
 import Grid from '@mui/material/Grid';
+import { setErrors } from '@/store/slices/errorSlice';
+import {
+    clearSuccessMessage,
+    setSuccessMessage,
+} from '@/store/slices/successMessage';
+import { useDispatch } from 'react-redux';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -64,7 +75,9 @@ function getStyles(name, personName, theme) {
 }
 export default function productOffer() {
     const theme = useTheme();
-    const [personName, setPersonName] = React.useState([]);
+    const [productType, setProductType] = React.useState([]);
+    const [productTag, setProductTag] = React.useState([]);
+    const [productCollection, setProductCollection] = React.useState([]);
 
     const [currency, setCurrency] = React.useState('$'); // Default currency symbol
     const [amount, setAmount] = React.useState('');
@@ -93,49 +106,100 @@ export default function productOffer() {
         setCondition(event.target.value);
     };
 
-    const onSubmit = data => {
-        // console.log(data.product.price.amount);
-    };
+    const categories = useQuery(_GET_PRODUCT_TYPES);
 
-    if (error) {
-        return <p>Error: {error.message}</p>; // Display an error message if there's an error
-    }
-
-    if (loading || error) {
-        return <></>;
-    }
-
-    const handleChange = event => {
+    const handleTypeChange = event => {
         const {
             target: { value },
         } = event;
-        setPersonName(
+        setProductType(
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
 
+    const handleTagChange = event => {
+        const {
+            target: { value },
+        } = event;
+        setProductTag(typeof value === 'string' ? value.split(',') : value);
+    };
+
+    const handleCollectionChange = event => {
+        const {
+            target: { value },
+        } = event;
+        setProductCollection(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
+    const dispatch = useDispatch();
+    const [
+        updateProduct,
+        { data: productData, loading: productLoading, error: productError },
+    ] = useMutation(_Update_PRODUCT, {
+        onError(error) {
+            dispatch(setErrors([{ message: error.message }]));
+            dispatch(clearSuccessMessage(null));
+        },
+    });
+
+    if (productLoading) {
+        dispatch(setSuccessMessage('Loading...'));
+    }
+
+    if (productData?.updateProduct?.errors) {
+        dispatch(setErrors(data.updateProduct.errors.nonFieldErrors));
+    }
+
+    if (productData?.updateProduct.success) {
+        // dispatch(setSuccessMessage(LOGIN_WELLCOME_MESSAGE));
+        // localStorage.setItem('auth', JSON.stringify(productData.updateProduct));
+        // router.push('/');
+    }
+
+    const onSubmit = React.useCallback(
+        data => {
+            // console.log(data);
+            updateProduct({
+                variables: { input: { Product: { id: productId, ...data } } },
+            });
+        },
+        [productId],
+    );
+
+    if (loading || error) {
+        return (
+            <></>
+
+            // <Layout>
+            //     <></>
+            // </Layout>
+        );
+    }
+
     return (
         <>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:pb-0">
                         <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                             <label
-                                htmlFor="hs-code"
+                                htmlFor="hsCode"
                                 className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                             >
                                 HS code
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
                                 <Controller
-                                    name="HS-code"
+                                    name="hsCode"
                                     control={control}
                                     defaultValue={data.product.hsCode}
                                     render={({ field }) => (
                                         <TextField
                                             className="w-full"
-                                            id="hs-code"
+                                            id="hsCode"
                                             label="HS code"
                                             variant="standard"
                                             {...field}
@@ -159,7 +223,7 @@ export default function productOffer() {
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
                                 <Controller
-                                    name="mid-code"
+                                    name="midCode"
                                     control={control}
                                     defaultValue={data.product.midCode}
                                     render={({ field }) => (
@@ -268,9 +332,9 @@ export default function productOffer() {
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
                                 <Controller
-                                    name="Status"
+                                    name="condition"
                                     control={control}
-                                    defaultValue={data.product.status}
+                                    defaultValue={data.product.condition}
                                     render={({ field }) => (
                                         <FormControl fullWidth>
                                             <InputLabel id="product-condition-label">
@@ -300,6 +364,41 @@ export default function productOffer() {
                                                     )}
                                             </Select>
                                         </FormControl>
+
+                                        // <Autocomplete
+                                        //     id="product-condition-select-demo"
+                                        //     value={data.product.condition} // Make sure to adjust this according to your data structure
+                                        //     placeholder="Choose a product condition"
+                                        //     slotProps={{
+                                        //         input: {
+                                        //             autoComplete:
+                                        //                 'new-password', // disable autocomplete and autofill
+                                        //         },
+                                        //     }}
+                                        //     sx={{ width: 300 }}
+                                        //     options={
+                                        //         data.product.condition
+                                        //             .PRODUCT_CONDITION_CHOICES &&
+                                        //         data.product.condition
+                                        //             .PRODUCT_CONDITION_CHOICES
+                                        //     }
+                                        //     autoHighlight
+                                        //     getOptionLabel={option => option}
+                                        //     renderOption={(props, option) => (
+                                        //         <AutocompleteOption {...props}>
+                                        //             <ListItemContent
+                                        //                 className="w-full"
+                                        //                 sx={{ fontSize: 'sm' }}
+                                        //             >
+                                        //                 {option}
+                                        //                 {/* <Typography level="body-xs">
+                                        //                     ({option.iso3}) + {option.numCode}
+                                        //                     {option.displayName}
+                                        //                 </Typography> */}
+                                        //             </ListItemContent>
+                                        //         </AutocompleteOption>
+                                        //     )}
+                                        // />
                                     )}
                                 />
                                 {errors.isExpirable && (
@@ -318,38 +417,96 @@ export default function productOffer() {
                                 Product Type
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
+                                <Controller
+                                    name="productType"
+                                    control={control}
+                                    defaultValue={data.product.productType.id}
+                                    render={({ field }) => (
+                                        <Autocomplete
+                                            id="product-type-select-demo"
+                                            value={
+                                                data.product.productType.value
+                                            }
+                                            placeholder="Choose a product type"
+                                            slotProps={{
+                                                input: {
+                                                    autoComplete:
+                                                        'new-password',
+                                                },
+                                            }}
+                                            sx={{ width: 300 }}
+                                            options={convertEdgeToList(
+                                                categories?.data?.productTypes
+                                                    .edges || [],
+                                            )}
+                                            autoHighlight
+                                            getOptionLabel={option =>
+                                                option.value
+                                            }
+                                            renderOption={(props, option) => (
+                                                <AutocompleteOption {...props}>
+                                                    <ListItemContent
+                                                        className="w-full"
+                                                        sx={{ fontSize: 'sm' }}
+                                                    >
+                                                        {option.value}
+                                                    </ListItemContent>
+                                                </AutocompleteOption>
+                                            )}
+                                        />
+                                    )}
+                                />
+
+                                {errors.productType && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        productType is required
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+                            <label
+                                htmlFor="product-tag"
+                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+                            >
+                                Product Tag
+                            </label>
+                            <div className="mt-2 sm:col-span-2 sm:mt-0">
                                 {/* <select
-                                    id="product-type"
-                                    name="product-type"
-                                    autoComplete="product-type"
+                                    id="product-tag"
+                                    name="product-tag"
+                                    autoComplete="product-tag"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                 >
                                     <option>Select</option>
-                                    <option>Food and Beverages:</option>
-                                    <option>Electronics</option>
-                                    <option>Beauty and Personal Care </option>
-                                    <option>Books and Media </option>
-                                    <option>Toys and Games</option>
+                                    <option>On Sale</option>
+                                    <option>New Arrival</option>
+                                    <option>Bestseller </option>
+                                    <option>Limited Edition </option>
+                                    <option>Seasonal</option>
+                                    <option>Organic</option>
+                                    <option>Handmade</option>
                                 </select> */}
                                 <Controller
-                                    name="isExpirable"
+                                    name="tags"
                                     control={control}
-                                    defaultValue={data.product.isExpirable}
+                                    defaultValue={data.product.tags}
                                     render={({ field }) => (
                                         <FormControl sx={{ m: 1, width: 300 }}>
-                                            <InputLabel id="demo-multiple-chip-label">
-                                                Product Type
-                                            </InputLabel>
+                                            <InputLabel id="product-tag">
+                                                Product Tag
+                                            </InputLabel>{' '}
                                             <MaterialSelect
-                                                labelId="demo-multiple-chip-label"
-                                                id="demo-multiple-chip"
+                                                labelId="product-tag"
+                                                id="product-tag-id"
                                                 multiple
-                                                value={personName}
-                                                onChange={handleChange}
+                                                value={productTag}
+                                                onChange={handleTagChange}
                                                 input={
                                                     <OutlinedInput
                                                         id="select-multiple-chip"
-                                                        label="Product Type"
+                                                        label="Product Tag"
                                                     />
                                                 }
                                                 renderValue={selected => (
@@ -376,7 +533,7 @@ export default function productOffer() {
                                                         value={name}
                                                         style={getStyles(
                                                             name,
-                                                            personName,
+                                                            productTag,
                                                             theme,
                                                         )}
                                                     >
@@ -387,37 +544,11 @@ export default function productOffer() {
                                         </FormControl>
                                     )}
                                 />
-                                {errors.isExpirable && (
+                                {errors.tags && (
                                     <p className="text-red-500 text-sm mt-1">
-                                        isExpirable is required
+                                        tags is required
                                     </p>
                                 )}
-                            </div>
-                        </div>
-
-                        <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-                            <label
-                                htmlFor="product-tag"
-                                className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
-                            >
-                                Product Tag
-                            </label>
-                            <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
-                                    id="product-tag"
-                                    name="product-tag"
-                                    autoComplete="product-tag"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>Select</option>
-                                    <option>On Sale</option>
-                                    <option>New Arrival</option>
-                                    <option>Bestseller </option>
-                                    <option>Limited Edition </option>
-                                    <option>Seasonal</option>
-                                    <option>Organic</option>
-                                    <option>Handmade</option>
-                                </select>
                             </div>
                         </div>
 
@@ -429,7 +560,7 @@ export default function productOffer() {
                                 Product Collections
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
+                                {/* <select
                                     id="product-collections"
                                     name="product-collections"
                                     autoComplete="product-collections"
@@ -445,7 +576,70 @@ export default function productOffer() {
                                     <option>
                                         Tech Gadgets and Accessories
                                     </option>
-                                </select>
+                                </select> */}
+                                <Controller
+                                    name="collection"
+                                    control={control}
+                                    defaultValue={data.product.collection}
+                                    render={({ field }) => (
+                                        <FormControl sx={{ m: 1, width: 300 }}>
+                                            <InputLabel id="product-collection">
+                                                Product Collection
+                                            </InputLabel>{' '}
+                                            <MaterialSelect
+                                                labelId="product-collection"
+                                                id="product-collection-id"
+                                                multiple
+                                                value={productCollection}
+                                                onChange={
+                                                    handleCollectionChange
+                                                }
+                                                input={
+                                                    <OutlinedInput
+                                                        id="select-multiple-chip"
+                                                        label="Product Collection"
+                                                    />
+                                                }
+                                                renderValue={selected => (
+                                                    <Box
+                                                        sx={{
+                                                            display: 'flex',
+                                                            flexWrap: 'wrap',
+                                                            gap: 0.5,
+                                                        }}
+                                                    >
+                                                        {selected.map(value => (
+                                                            <Chip
+                                                                key={value}
+                                                                label={value}
+                                                            />
+                                                        ))}
+                                                    </Box>
+                                                )}
+                                                MenuProps={MenuProps}
+                                            >
+                                                {names.map(name => (
+                                                    <MenuItem
+                                                        key={name}
+                                                        value={name}
+                                                        style={getStyles(
+                                                            name,
+                                                            productCollection,
+                                                            theme,
+                                                        )}
+                                                    >
+                                                        {name}
+                                                    </MenuItem>
+                                                ))}
+                                            </MaterialSelect>
+                                        </FormControl>
+                                    )}
+                                />
+                                {errors.collection && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        collection is required
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -457,16 +651,27 @@ export default function productOffer() {
                                 Is Gift Card
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
-                                    id="is-gift-card"
-                                    name="is-gift-card"
-                                    autoComplete="is-gift-card"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>Select</option>
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+                                <Controller
+                                    name="isGiftCard"
+                                    control={control}
+                                    defaultValue={data.product.isGiftCard}
+                                    render={({ field }) => (
+                                        <Select
+                                            defaultValue={
+                                                data.product.isGiftCard
+                                            }
+                                        >
+                                            <Option value={true}>False</Option>{' '}
+                                            <Option value={false}>True</Option>{' '}
+                                        </Select>
+                                    )}
+                                />
+                                {errors.isGiftCard && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        isGiftCard is required{' '}
+                                        {/* Changed the error message */}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -478,16 +683,26 @@ export default function productOffer() {
                                 Discountable
                             </label>
                             <div className="mt-2 sm:col-span-2 sm:mt-0">
-                                <select
-                                    id="discountable"
+                                <Controller
                                     name="discountable"
-                                    autoComplete="discountable"
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                >
-                                    <option>Select</option>
-                                    <option>Yes</option>
-                                    <option>No</option>
-                                </select>
+                                    control={control}
+                                    defaultValue={data.product.discountable}
+                                    render={({ field }) => (
+                                        <Select
+                                            defaultValue={
+                                                data.product.discountable
+                                            }
+                                        >
+                                            <Option value={true}>False</Option>{' '}
+                                            <Option value={false}>True</Option>{' '}
+                                        </Select>
+                                    )}
+                                />
+                                {errors.discountable && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        discountable is required{' '}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>
