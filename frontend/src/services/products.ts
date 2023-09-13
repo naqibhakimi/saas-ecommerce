@@ -110,6 +110,7 @@ export const _GET_PRODUCT_ID = gql`
             handle
             isGiftCard
             status
+            condition
             images {
                 edges {
                     node {
@@ -164,6 +165,7 @@ export const _GET_PRODUCT_ID = gql`
             }
             price {
                 id
+                amount
             }
             profile {
                 id
@@ -203,6 +205,20 @@ export const _Update_PRODUCT = gql`
         updateProduct(input: $input) {
             success
             errors
+        }
+    }
+`;
+
+export const _GET_PRODUCT_TYPES = gql`
+    query _GET_PRODUCT_TYPE {
+        productTypes {
+            edges {
+                node {
+                    id
+                    value
+                    metadata
+                }
+            }
         }
     }
 `;

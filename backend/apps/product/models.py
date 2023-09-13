@@ -156,12 +156,27 @@ class Product(BaseModel):
         ("published", "PUBLISHED"),
         ("rejected", "REJECTED"),
     )
+
+    NEW = "New"
+    USED = "Used"
+    REFURBISHED = "Refurbished"
+    # Add more condition choices as needed
+
+    PRODUCT_CONDITION_CHOICES = [
+        (NEW, "New"),
+        (USED, "Used"),
+        (REFURBISHED, "Refurbished"),
+        # Add more choices here
+    ]
     title = models.CharField(max_length=255)
     subtitle = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     handle = models.TextField(null=True, blank=True, unique=True)
     is_gift_card = models.BooleanField(default=False)
-    status = models.CharField(max_length=255, choices=Product_Status, default="draft")
+    status = models.CharField(max_length=255, choices=Product_Status,
+                              default="draft", null=True, blank=True)
+    condition = models.CharField(max_length=20, choices=PRODUCT_CONDITION_CHOICES,
+                                 default="New", null=True, blank=True)
     images = models.ManyToManyField(Image, related_name="+", null=True, blank=True)
     thumbnail = models.ImageField(upload_to="Product/Thumbnail", null=True, blank=True)
     weight = models.PositiveIntegerField(null=True, blank=True)
